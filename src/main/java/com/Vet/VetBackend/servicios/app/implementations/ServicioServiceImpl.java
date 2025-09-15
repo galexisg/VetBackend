@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -25,7 +26,7 @@ public class ServicioServiceImpl implements ServicioService {
     @Override
     public ServicioRes crear(ServicioReq req) {
         validar(req);
-        repo.findByNombreIgnoreCase(req.getNombre())
+        repo.findByNombreIgnoreCase(req.getNombre().trim())
                 .ifPresent(s -> { throw new IllegalArgumentException("nombre ya existe"); });
         Servicio s = aplicar(req, new Servicio());
         return map(repo.save(s));
@@ -35,10 +36,14 @@ public class ServicioServiceImpl implements ServicioService {
     public ServicioRes actualizar(Long id, ServicioReq req) {
         validar(req);
         Servicio s = repo.findById(id).orElseThrow(() -> new NoSuchElementException("no encontrado"));
-        if (!s.getNombre().equalsIgnoreCase(req.getNombre())
-                && repo.findByNombreIgnoreCase(req.getNombre()).isPresent()) {
+
+        String nuevoNombre = req.getNombre().trim();
+        // Si cambió el nombre, validar unicidad
+        if (!Objects.equals(s.getNombre().toLowerCase(), nuevoNombre.toLowerCase())
+                && repo.findByNombreIgnoreCase(nuevoNombre).isPresent()) {
             throw new IllegalArgumentException("nombre ya existe");
         }
+
         s = aplicar(req, s);
         return map(repo.save(s));
     }
@@ -60,13 +65,21 @@ public class ServicioServiceImpl implements ServicioService {
     @Transactional(readOnly = true)
     public Page<ServicioRes> listar(String q, Boolean activo, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("nombre").ascending());
-        Specification<Servicio> spec = Specification.where(null);
+
+        // spec base (true)
+        Specification<Servicio> spec = (root, query, cb) -> cb.conjunction();
+
         if (q != null && !q.isBlank()) {
-            spec = spec.and((r, cb, cx) -> cb.like(cb.lower(r.get("nombre")), "%" + q.toLowerCase() + "%"));
+            String like = "%" + q.toLowerCase().trim() + "%";
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("nombre")), like));
         }
+
         if (activo != null) {
-            spec = spec.and((r, cb, cx) -> cb.equal(r.get("activo"), activo));
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("activo"), activo));
         }
+
         return repo.findAll(spec, pageable).map(this::map);
     }
 
@@ -87,9 +100,13 @@ public class ServicioServiceImpl implements ServicioService {
 
     private ServicioRes map(Servicio s) {
         return ServicioRes.builder()
-                .id(s.getId()).nombre(s.getNombre()).descripcion(s.getDescripcion())
-                .precioBase(s.getPrecioBase()).activo(s.getActivo())
-                .createdAt(s.getCreatedAt()).updatedAt(s.getUpdatedAt())
+                .id(s.getId())
+                .nombre(s.getNombre())
+                .descripcion(s.getDescripcion())
+                .precioBase(s.getPrecioBase())
+                .activo(s.getActivo())
+                .createdAt(s.getCreatedAt())
+                .updatedAt(s.getUpdatedAt())
                 .build();
     }
 }

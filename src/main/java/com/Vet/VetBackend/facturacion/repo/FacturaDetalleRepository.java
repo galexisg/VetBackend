@@ -13,72 +13,111 @@ import java.util.List;
 @Repository
 public interface FacturaDetalleRepository extends JpaRepository<FacturaDetalle, Long> {
 
-    // Buscar detalles por factura
+    // ===== Búsquedas base =====
     List<FacturaDetalle> findByFacturaId(Long facturaId);
 
-    // Buscar detalles por servicio
     List<FacturaDetalle> findByServicioId(Long servicioId);
 
-    // Buscar detalles por factura ordenados por ID
+    // NUEVO: para tratamientos (útil a futuro)
+    List<FacturaDetalle> findByTratamientoId(Long tratamientoId);
+
     List<FacturaDetalle> findByFacturaIdOrderById(Long facturaId);
 
-    // Query personalizada: Detalles con información de factura
+    // NUEVO: contar detalles por factura (lo uso al eliminar para no borrar el único ítem)
+    long countByFacturaId(Long facturaId);
+
+    // ===== Fetch con factura =====
     @Query("SELECT fd FROM FacturaDetalle fd JOIN FETCH fd.factura WHERE fd.factura.id = :facturaId")
     List<FacturaDetalle> findByFacturaIdWithFactura(@Param("facturaId") Long facturaId);
 
-    // Estadísticas: Servicios más vendidos
-    @Query("SELECT fd.servicioId, SUM(fd.cantidad) as totalCantidad " +
-            "FROM FacturaDetalle fd " +
-            "JOIN fd.factura f " +
-            "WHERE f.estado != 'ANULADA' " +
-            "GROUP BY fd.servicioId " +
-            "ORDER BY totalCantidad DESC")
+    // ===== Estadísticas: SERVICIOS =====
+    @Query("""
+           SELECT fd.servicioId, SUM(fd.cantidad) as totalCantidad
+           FROM FacturaDetalle fd
+           JOIN fd.factura f
+           WHERE f.estado <> 'ANULADA'
+             AND fd.servicioId IS NOT NULL
+           GROUP BY fd.servicioId
+           ORDER BY totalCantidad DESC
+           """)
     List<Object[]> getServiciosMasVendidos();
 
-    // Estadísticas: Total vendido por servicio
-    @Query("SELECT fd.servicioId, SUM(fd.subtotal) as totalVendido " +
-            "FROM FacturaDetalle fd " +
-            "JOIN fd.factura f " +
-            "WHERE f.estado != 'ANULADA' " +
-            "GROUP BY fd.servicioId " +
-            "ORDER BY totalVendido DESC")
+    @Query("""
+           SELECT fd.servicioId, SUM(fd.subtotal) as totalVendido
+           FROM FacturaDetalle fd
+           JOIN fd.factura f
+           WHERE f.estado <> 'ANULADA'
+             AND fd.servicioId IS NOT NULL
+           GROUP BY fd.servicioId
+           ORDER BY totalVendido DESC
+           """)
     List<Object[]> getTotalVendidoPorServicio();
 
-    // Estadísticas: Ventas de un servicio en período
-    @Query("SELECT SUM(fd.cantidad), SUM(fd.subtotal) " +
-            "FROM FacturaDetalle fd " +
-            "JOIN fd.factura f " +
-            "WHERE fd.servicioId = :servicioId " +
-            "AND f.createdAt BETWEEN :fechaInicio AND :fechaFin " +
-            "AND f.estado != 'ANULADA'")
+    @Query("""
+           SELECT SUM(fd.cantidad), SUM(fd.subtotal)
+           FROM FacturaDetalle fd
+           JOIN fd.factura f
+           WHERE fd.servicioId = :servicioId
+             AND f.createdAt BETWEEN :fechaInicio AND :fechaFin
+             AND f.estado <> 'ANULADA'
+           """)
     Object[] getVentasServicioEnPeriodo(@Param("servicioId") Long servicioId,
                                         @Param("fechaInicio") LocalDateTime fechaInicio,
                                         @Param("fechaFin") LocalDateTime fechaFin);
 
-    // Buscar detalles con descuento aplicado
+    // ===== Estadísticas: TRATAMIENTOS (opcional pero recomendable) =====
+    @Query("""
+           SELECT fd.tratamientoId, SUM(fd.cantidad) as totalCantidad
+           FROM FacturaDetalle fd
+           JOIN fd.factura f
+           WHERE f.estado <> 'ANULADA'
+             AND fd.tratamientoId IS NOT NULL
+           GROUP BY fd.tratamientoId
+           ORDER BY totalCantidad DESC
+           """)
+    List<Object[]> getTratamientosMasAplicados();
+
+    @Query("""
+           SELECT fd.tratamientoId, SUM(fd.subtotal) as totalVendido
+           FROM FacturaDetalle fd
+           JOIN fd.factura f
+           WHERE f.estado <> 'ANULADA'
+             AND fd.tratamientoId IS NOT NULL
+           GROUP BY fd.tratamientoId
+           ORDER BY totalVendido DESC
+           """)
+    List<Object[]> getTotalVendidoPorTratamiento();
+
+    @Query("""
+           SELECT SUM(fd.cantidad), SUM(fd.subtotal)
+           FROM FacturaDetalle fd
+           JOIN fd.factura f
+           WHERE fd.tratamientoId = :tratamientoId
+             AND f.createdAt BETWEEN :fechaInicio AND :fechaFin
+             AND f.estado <> 'ANULADA'
+           """)
+    Object[] getVentasTratamientoEnPeriodo(@Param("tratamientoId") Long tratamientoId,
+                                           @Param("fechaInicio") LocalDateTime fechaInicio,
+                                           @Param("fechaFin") LocalDateTime fechaFin);
+
+    // ===== Filtros varios =====
     List<FacturaDetalle> findByDescuentoGreaterThan(BigDecimal descuento);
 
-    // Query personalizada: Total de subtotales por factura (verificación)
     @Query("SELECT SUM(fd.subtotal) FROM FacturaDetalle fd WHERE fd.factura.id = :facturaId")
     BigDecimal getTotalSubtotalesPorFactura(@Param("facturaId") Long facturaId);
 
-    // Buscar detalles por rango de precios
     @Query("SELECT fd FROM FacturaDetalle fd WHERE fd.precioUnitario BETWEEN :precioMin AND :precioMax")
     List<FacturaDetalle> findByRangoPrecios(@Param("precioMin") BigDecimal precioMin,
                                             @Param("precioMax") BigDecimal precioMax);
 
-    // Contar detalles por servicio
     @Query("SELECT COUNT(fd) FROM FacturaDetalle fd WHERE fd.servicioId = :servicioId")
     Long countByServicioId(@Param("servicioId") Long servicioId);
 
-    // Promedio de cantidad por servicio
     @Query("SELECT AVG(fd.cantidad) FROM FacturaDetalle fd WHERE fd.servicioId = :servicioId")
     Double getPromedioCantidadPorServicio(@Param("servicioId") Long servicioId);
 
-    // Detalles con mayor subtotal
     @Query("SELECT fd FROM FacturaDetalle fd ORDER BY fd.subtotal DESC")
     List<FacturaDetalle> findTopDetallesPorSubtotal();
 
-    // Eliminar detalles por factura (útil para actualizaciones)
     void deleteByFacturaId(Long facturaId);
 }

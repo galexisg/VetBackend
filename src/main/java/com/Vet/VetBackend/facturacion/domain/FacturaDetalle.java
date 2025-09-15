@@ -11,13 +11,25 @@ public class FacturaDetalle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // FK: factura_id (required)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "factura_id", nullable = false)
     private Factura factura;
 
-    @Column(name = "servicio_id", nullable = false)
+    // ---- Item polymorphism: SERVICIO o TRATAMIENTO (XOR) ----
+    // Both nullable at DB level; business rule enforced in @PrePersist/@PreUpdate
+
+    @Column(name = "servicio_id")            // now NULLABLE
     private Long servicioId;
 
+    @Column(name = "tratamiento_id")         // new column
+    private Long tratamientoId;
+
+    // Optional snapshot to "freeze" display name at the time of billing
+    @Column(name = "descripcion_item", length = 200)
+    private String descripcionItem;
+
+    // ---- Pricing fields ----
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
 
@@ -30,110 +42,124 @@ public class FacturaDetalle {
     @Column(name = "subtotal", precision = 12, scale = 2, nullable = false)
     private BigDecimal subtotal;
 
-    // Constructor vacío (requerido por JPA)
+    // ---- Constructors ----
     public FacturaDetalle() {}
 
-    // Constructor con campos obligatorios
+    // Constructor for SERVICIO
     public FacturaDetalle(Factura factura, Long servicioId, Integer cantidad, BigDecimal precioUnitario) {
         this.factura = factura;
         this.servicioId = servicioId;
+        this.tratamientoId = null;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.descuento = BigDecimal.ZERO;
         this.calcularSubtotal();
     }
 
-    // Constructor completo
-    public FacturaDetalle(Factura factura, Long servicioId, Integer cantidad,
-                          BigDecimal precioUnitario, BigDecimal descuento) {
+    // Constructor for TRATAMIENTO
+    public FacturaDetalle(Factura factura, Integer cantidad, BigDecimal precioUnitario, Long tratamientoId) {
         this.factura = factura;
-        this.servicioId = servicioId;
+        this.servicioId = null;
+        this.tratamientoId = tratamientoId;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
-        this.descuento = descuento != null ? descuento : BigDecimal.ZERO;
+        this.descuento = BigDecimal.ZERO;
         this.calcularSubtotal();
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Factura getFactura() {
-        return factura;
-    }
-
-    public void setFactura(Factura factura) {
+    // Full constructor (either servicioId or tratamientoId; never both)
+    public FacturaDetalle(Factura factura, Long servicioId, Long tratamientoId,
+                          Integer cantidad, BigDecimal precioUnitario, BigDecimal descuento, String descripcionItem) {
         this.factura = factura;
+        this.servicioId = servicioId;
+        this.tratamientoId = tratamientoId;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+        this.descuento = (descuento != null) ? descuento : BigDecimal.ZERO;
+        this.descripcionItem = descripcionItem;
+        this.calcularSubtotal();
     }
 
-    public Long getServicioId() {
-        return servicioId;
-    }
+    // ---- Getters / Setters ----
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
+    public Factura getFactura() { return factura; }
+    public void setFactura(Factura factura) { this.factura = factura; }
+
+    public Long getServicioId() { return servicioId; }
     public void setServicioId(Long servicioId) {
         this.servicioId = servicioId;
+        // Do not auto-clear tratamientoId here; XOR is enforced in callbacks
     }
 
-    public Integer getCantidad() {
-        return cantidad;
+    public Long getTratamientoId() { return tratamientoId; }
+    public void setTratamientoId(Long tratamientoId) {
+        this.tratamientoId = tratamientoId;
     }
 
+    public String getDescripcionItem() { return descripcionItem; }
+    public void setDescripcionItem(String descripcionItem) { this.descripcionItem = descripcionItem; }
+
+    public Integer getCantidad() { return cantidad; }
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
-        this.calcularSubtotal(); // Recalcula automáticamente
+        this.calcularSubtotal();
     }
 
-    public BigDecimal getPrecioUnitario() {
-        return precioUnitario;
-    }
-
+    public BigDecimal getPrecioUnitario() { return precioUnitario; }
     public void setPrecioUnitario(BigDecimal precioUnitario) {
         this.precioUnitario = precioUnitario;
-        this.calcularSubtotal(); // Recalcula automáticamente
+        this.calcularSubtotal();
     }
 
-    public BigDecimal getDescuento() {
-        return descuento;
-    }
-
+    public BigDecimal getDescuento() { return descuento; }
     public void setDescuento(BigDecimal descuento) {
-        this.descuento = descuento != null ? descuento : BigDecimal.ZERO;
-        this.calcularSubtotal(); // Recalcula automáticamente
+        this.descuento = (descuento != null) ? descuento : BigDecimal.ZERO;
+        this.calcularSubtotal();
     }
 
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
+    // ---- Domain logic ----
 
-    // Método para calcular subtotal automáticamente
+    /** Recalculate subtotal = cantidad * precio_unitario - descuento (never below 0). */
     public void calcularSubtotal() {
         if (cantidad != null && precioUnitario != null) {
-            BigDecimal montoBase = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
-            BigDecimal descuentoAplicar = descuento != null ? descuento : BigDecimal.ZERO;
-            this.subtotal = montoBase.subtract(descuentoAplicar);
+            BigDecimal base = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
+            BigDecimal desc = (descuento != null) ? descuento : BigDecimal.ZERO;
+            BigDecimal result = base.subtract(desc);
+            this.subtotal = (result.signum() >= 0) ? result : BigDecimal.ZERO;
         }
     }
 
-    // Método de callback para recalcular antes de persistir
-    @PrePersist
-    @PreUpdate
-    public void calcularSubtotalCallback() {
-        this.calcularSubtotal();
+    /** Business validation: cantidad>0, precio_unitario>0, and XOR between servicioId / tratamientoId. */
+    public boolean isValid() {
+        boolean qtyOk = (cantidad != null && cantidad > 0);
+        boolean priceOk = (precioUnitario != null && precioUnitario.compareTo(BigDecimal.ZERO) > 0);
+        boolean xor = (servicioId != null) ^ (tratamientoId != null);
+        return qtyOk && priceOk && xor;
     }
 
-    // Validaciones
-    public boolean isValid() {
-        return cantidad != null && cantidad > 0 &&
-                precioUnitario != null && precioUnitario.compareTo(BigDecimal.ZERO) > 0 &&
-                servicioId != null && servicioId > 0;
+    // Recalculate + enforce XOR before insert/update
+    @PrePersist
+    @PreUpdate
+    private void prePersistUpdate() {
+        this.calcularSubtotal();
+
+        // Normalize descuento
+        if (this.descuento == null) this.descuento = BigDecimal.ZERO;
+
+        // Enforce XOR: either servicioId or tratamientoId, but not both / not none
+        boolean xor = (servicioId != null) ^ (tratamientoId != null);
+        if (!xor) {
+            throw new IllegalStateException("Debe especificarse exactamente uno: servicio_id O tratamiento_id (XOR).");
+        }
+
+        // Defensive: subtotal must exist for DB NOT NULL
+        if (this.subtotal == null) {
+            throw new IllegalStateException("subtotal no puede ser null.");
+        }
     }
 }

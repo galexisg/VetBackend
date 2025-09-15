@@ -1,6 +1,7 @@
 package com.Vet.VetBackend.facturacion.app;
 
 import com.Vet.VetBackend.facturacion.domain.Factura;
+import com.Vet.VetBackend.facturacion.domain.FacturaEstado;
 import com.Vet.VetBackend.facturacion.domain.Pago;
 import com.Vet.VetBackend.facturacion.repo.FacturaRepository;
 import com.Vet.VetBackend.facturacion.repo.PagoRepository;
@@ -43,7 +44,7 @@ public class PagoService {
         Factura factura = facturaRepository.findById(facturaId)
                 .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
 
-        if ("ANULADA".equals(factura.getEstado())) {
+        if (factura.getEstado() == FacturaEstado.ANULADA) {
             throw new IllegalArgumentException("No se pueden registrar pagos en facturas anuladas");
         }
 
@@ -51,7 +52,6 @@ public class PagoService {
         if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El monto del pago debe ser mayor a cero");
         }
-
         if (monto.compareTo(factura.getSaldo()) > 0) {
             throw new IllegalArgumentException("El monto del pago no puede ser mayor al saldo pendiente");
         }
@@ -122,7 +122,7 @@ public class PagoService {
 
         Factura factura = pago.getFactura();
 
-        if ("ANULADA".equals(factura.getEstado())) {
+        if (factura.getEstado() == FacturaEstado.ANULADA) {
             throw new IllegalArgumentException("No se pueden anular pagos de facturas anuladas");
         }
 
@@ -135,18 +135,12 @@ public class PagoService {
 
     // ========== OPERACIONES DE CONSULTA Y ESTADÍSTICAS ==========
 
-    /**
-     * Obtener total pagado por factura
-     */
     @Transactional(readOnly = true)
     public BigDecimal obtenerTotalPagado(Long facturaId) {
         BigDecimal total = pagoRepository.getTotalPagadoPorFactura(facturaId);
         return total != null ? total : BigDecimal.ZERO;
     }
 
-    /**
-     * Obtener recaudación por método de pago
-     */
     @Transactional(readOnly = true)
     public List<RecaudacionPorMetodo> obtenerRecaudacionPorMetodo() {
         List<Object[]> resultados = pagoRepository.getTotalRecaudadoPorMetodo();
@@ -155,9 +149,6 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Obtener recaudación diaria
-     */
     @Transactional(readOnly = true)
     public List<RecaudacionDiaria> obtenerRecaudacionDiaria(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         List<Object[]> resultados = pagoRepository.getRecaudacionDiaria(fechaInicio, fechaFin);
@@ -166,18 +157,12 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Obtener total recaudado en período
-     */
     @Transactional(readOnly = true)
     public BigDecimal obtenerTotalRecaudado(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         BigDecimal total = pagoRepository.getTotalRecaudadoEnPeriodo(fechaInicio, fechaFin);
         return total != null ? total : BigDecimal.ZERO;
     }
 
-    /**
-     * Obtener pagos de un cliente
-     */
     @Transactional(readOnly = true)
     public List<PagoDTO> obtenerPagosPorCliente(Long clienteId) {
         return pagoRepository.findByClienteId(clienteId)
@@ -186,18 +171,12 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Obtener último pago de una factura
-     */
     @Transactional(readOnly = true)
     public Optional<PagoDTO> obtenerUltimoPago(Long facturaId) {
         Pago ultimoPago = pagoRepository.findUltimoPagoPorFactura(facturaId);
         return ultimoPago != null ? Optional.of(convertirADTO(ultimoPago)) : Optional.empty();
     }
 
-    /**
-     * Obtener estadísticas de pagos hoy
-     */
     @Transactional(readOnly = true)
     public EstadisticasPagosHoy obtenerEstadisticasHoy() {
         List<Pago> pagosHoy = pagoRepository.findPagosHoy();
@@ -217,28 +196,20 @@ public class PagoService {
 
     // ========== VALIDACIONES Y UTILIDADES ==========
 
-    /**
-     * Validar si se puede registrar un pago
-     */
     @Transactional(readOnly = true)
     public boolean puedeRegistrarPago(Long facturaId, BigDecimal monto) {
         Optional<Factura> facturaOpt = facturaRepository.findById(facturaId);
-
         if (!facturaOpt.isPresent()) {
             return false;
         }
-
         Factura factura = facturaOpt.get();
 
-        return !"ANULADA".equals(factura.getEstado()) &&
+        return factura.getEstado() != FacturaEstado.ANULADA &&
                 monto != null &&
                 monto.compareTo(BigDecimal.ZERO) > 0 &&
                 monto.compareTo(factura.getSaldo()) <= 0;
     }
 
-    /**
-     * Obtener saldo pendiente después de un posible pago
-     */
     @Transactional(readOnly = true)
     public BigDecimal calcularSaldoDespuesPago(Long facturaId, BigDecimal montoPago) {
         Factura factura = facturaRepository.findById(facturaId)
@@ -253,7 +224,6 @@ public class PagoService {
         if (metodo == null || metodo.trim().isEmpty()) {
             return false;
         }
-
         String metodoUpper = metodo.toUpperCase();
         return metodoUpper.equals("EFECTIVO") ||
                 metodoUpper.equals("TARJETA") ||
@@ -269,13 +239,13 @@ public class PagoService {
         BigDecimal nuevoSaldo = factura.getTotal().subtract(totalPagado);
         factura.setSaldo(nuevoSaldo);
 
-        // Actualizar estado
+        // Actualizar estado (enum)
         if (nuevoSaldo.compareTo(BigDecimal.ZERO) == 0) {
-            factura.setEstado("PAGADA");
+            factura.setEstado(FacturaEstado.PAGADA);
         } else if (nuevoSaldo.compareTo(factura.getTotal()) == 0) {
-            factura.setEstado("PENDIENTE");
+            factura.setEstado(FacturaEstado.PENDIENTE);
         } else {
-            factura.setEstado("PARCIAL");
+            factura.setEstado(FacturaEstado.PARCIAL);
         }
 
         facturaRepository.save(factura);
@@ -289,10 +259,7 @@ public class PagoService {
         dto.setMonto(pago.getMonto());
         dto.setFechaPago(pago.getFechaPago());
         dto.setCreatedAt(pago.getCreatedAt());
-
-        // Información adicional
         dto.setMetodoDescripcion(dto.getMetodoFormateado());
-
         return dto;
     }
 
@@ -307,7 +274,6 @@ public class PagoService {
             this.totalRecaudado = totalRecaudado;
         }
 
-        // Getters
         public String getMetodo() { return metodo; }
         public BigDecimal getTotalRecaudado() { return totalRecaudado; }
     }
@@ -321,7 +287,6 @@ public class PagoService {
             this.totalRecaudado = totalRecaudado;
         }
 
-        // Getters
         public java.sql.Date getFecha() { return fecha; }
         public BigDecimal getTotalRecaudado() { return totalRecaudado; }
     }
@@ -340,7 +305,6 @@ public class PagoService {
             this.fechaConsulta = fechaConsulta;
         }
 
-        // Getters
         public BigDecimal getTotalRecaudado() { return totalRecaudado; }
         public Integer getCantidadPagos() { return cantidadPagos; }
         public BigDecimal getPromedioPago() { return promedioPago; }
