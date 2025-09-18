@@ -23,6 +23,7 @@ public class Veterinario {
     @Column(name = "estado", nullable = false, columnDefinition = "ENUM('Activo','Inactivo') default 'Activo'")
     private Estado estado;
 
+
     public enum Estado {
         Activo,
         Inactivo
