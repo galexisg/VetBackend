@@ -7,12 +7,11 @@ import java.util.List;
 
 public class HistorialDto {
     private Long id;
-    private Long mascotaId;
+    private Integer mascotaId;
     private Long citaId;
-    private Long veterinarioId;
+    private Integer veterinarioId;
     private String diagnostico;
     private LocalDateTime creadoAt;
-    // Aquí integramos la lista de tratamientos aplicados
     private List<TratamientoAplicadoRes> tratamientosAplicados;
 
     public Long getId() {
@@ -23,11 +22,11 @@ public class HistorialDto {
         this.id = id;
     }
 
-    public Long getMascotaId() {
+    public Integer getMascotaId() {
         return mascotaId;
     }
 
-    public void setMascotaId(Long mascotaId) {
+    public void setMascotaId(Integer mascotaId) {
         this.mascotaId = mascotaId;
     }
 
@@ -39,11 +38,11 @@ public class HistorialDto {
         this.citaId = citaId;
     }
 
-    public Long getVeterinarioId() {
+    public Integer getVeterinarioId() {
         return veterinarioId;
     }
 
-    public void setVeterinarioId(Long veterinarioId) {
+    public void setVeterinarioId(Integer veterinarioId) {
         this.veterinarioId = veterinarioId;
     }
 
