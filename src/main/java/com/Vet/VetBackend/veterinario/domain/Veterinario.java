@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Veterinario {
+public class   Veterinario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +19,8 @@ public class Veterinario {
     @Column(name = "numero_licencia", length = 60, nullable = false)
     private String numeroLicencia;
 
+    @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false, columnDefinition = "ENUM('Activo','Inactivo') default 'Activo'")
     private Estado estado;
 
 
