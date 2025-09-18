@@ -14,18 +14,16 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class EstadoServiceImpl implements IEstadoService{
+public class EstadoCitaServiceImpl implements IEstadoService{
 
-    private static final Logger log = LoggerFactory.getLogger(EstadoServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(EstadoCitaServiceImpl.class);
     @Autowired
     private IEstadoRepository estadoRepository;
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/estados")
-public class EstadoController {
+public class EstadoCitaController {
 
     @Autowired
     private IEstadoService estadoService;

@@ -16,7 +16,8 @@ public class EstadoCita {
     @Column(name = "cita_estado_id")
     private Integer id;
 
+    @Enumerated(EnumType.STRING) // guarda el nombre del enum como texto
     @Column(name = "nombre", length = 40, nullable = false, unique = true)
-    private String nombre;
+    private EstadoCitaEnum nombre;
 }
 
