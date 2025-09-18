@@ -1,4 +1,9 @@
 package com.Vet.VetBackend.mascotas.repo;
 
-public interface MascotaRepository {
+import com.Vet.VetBackend.mascotas.domain.Mascota;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface MascotaRepository extends JpaRepository<Mascota, Integer> {
 }
