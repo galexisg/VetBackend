@@ -2,7 +2,6 @@ package com.Vet.VetBackend.compras.web.controller;
 
 import com.Vet.VetBackend.compras.domain.Compra;
 import com.Vet.VetBackend.compras.repo.CompraRepository;
-import com.Vet.VetBackend.compras.web.controller.CompraController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
