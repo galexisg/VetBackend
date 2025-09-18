@@ -6,7 +6,9 @@ import com.Vet.VetBackend.usuarios.domain.Estado;
 import com.Vet.VetBackend.usuarios.app.services.UsuarioService;
 import com.Vet.VetBackend.usuarios.web.dto.UsuarioReq;
 import com.Vet.VetBackend.usuarios.web.dto.UsuarioRes;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -88,9 +90,30 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/activos")
+    public List<UsuarioRes> listarActivos() {
+        return usuarioService.listarActivos()
+                .stream()
+                .map(this::mapToRes)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/inactivos")
+    public List<UsuarioRes> listarInactivos() {
+        return usuarioService.listarInactivos()
+                .stream()
+                .map(this::mapToRes)
+                .collect(Collectors.toList());
+    }
+
 
     @PutMapping("/{id}")
     public UsuarioRes editar(@PathVariable Integer id, @RequestBody UsuarioReq req) {
+        // Obtener usuario actual
+        Usuario usuarioExistente = usuarioService.obtenerPorId(id);
+        if (usuarioExistente == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+        }
         Usuario usuario = new Usuario();
         usuario.setId(id);
         usuario.setNickName(req.getNickName());
@@ -113,12 +136,12 @@ public class UsuarioController {
         rol.setId(req.getRolId());
         usuario.setRol(rol);
 
-        Estado estado = new Estado();
-        estado.setId((byte) req.getEstadoId());
-        usuario.setEstado(estado);
+        // ⚡ Mantener el estado actual del usuario
+        usuario.setEstado(usuarioExistente.getEstado());
 
         return mapToRes(usuarioService.editar(usuario));
     }
+
 
     // Metodo auxiliar para verificar SHA-256
     private boolean esClaveHasheada(String clave) {

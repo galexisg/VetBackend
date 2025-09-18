@@ -10,5 +10,7 @@ public interface UsuarioService {
     void activar(Integer id);
     Usuario obtenerPorId(Integer id);
     List<Usuario> listar();
+    List<Usuario> listarActivos();
+    List<Usuario> listarInactivos();
     Usuario obtenerPorNickName(String nickName);
 }

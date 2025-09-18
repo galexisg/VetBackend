@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -33,6 +35,11 @@ public class AuthController {
         Usuario usuario = usuarioService.obtenerPorNickName(nickName);
         if (usuario == null) {
             throw new RuntimeException("Usuario no encontrado");
+        }
+
+        // Validar estado del usuario
+        if ("Inactivo".equalsIgnoreCase(usuario.getEstado().getNombre())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "El usuario está inactivo, acceso denegado");
         }
 
         // Verificar contraseña SHA-256
@@ -62,6 +69,7 @@ public class AuthController {
 
         return res;
     }
+
 
 
     private String hashSHA256(String input) {

@@ -53,6 +53,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public List<Usuario> listarActivos() {
+        return usuarioRepository.findByEstadoNombreIgnoreCase("Activo");
+    }
+
+    @Override
+    public List<Usuario> listarInactivos() {
+        return usuarioRepository.findByEstadoNombreIgnoreCase("Inactivo");
+    }
+
+    @Override
     public Usuario obtenerPorId(Integer id) {
         return usuarioRepository.findById(id).orElse(null);
     }
