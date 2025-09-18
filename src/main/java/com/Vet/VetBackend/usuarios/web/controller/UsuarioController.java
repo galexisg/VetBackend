@@ -95,7 +95,14 @@ public class UsuarioController {
         usuario.setId(id);
         usuario.setNickName(req.getNickName());
         usuario.setCorreo(req.getCorreo());
-        usuario.setClave(req.getClave());
+
+        // Verificar si la clave ya está hasheada
+        if (!esClaveHasheada(req.getClave())) {
+            usuario.setClave(hashSHA256(req.getClave()));
+        } else {
+            usuario.setClave(req.getClave());
+        }
+
         usuario.setNombreCompleto(req.getNombreCompleto());
         usuario.setDui(req.getDui());
         usuario.setTelefono(req.getTelefono());
@@ -111,6 +118,11 @@ public class UsuarioController {
         usuario.setEstado(estado);
 
         return mapToRes(usuarioService.editar(usuario));
+    }
+
+    // Metodo auxiliar para verificar SHA-256
+    private boolean esClaveHasheada(String clave) {
+        return clave != null && clave.matches("^[a-fA-F0-9]{64}$");
     }
 
     @PatchMapping("/activar/{id}")
