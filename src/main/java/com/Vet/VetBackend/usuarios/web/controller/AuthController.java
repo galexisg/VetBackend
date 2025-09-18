@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,14 +43,27 @@ public class AuthController {
         // Generar token JWT con rol y duración 24h
         String token = jwtUtils.generarToken(usuario.getNickName(), usuario.getRol().getNombre());
 
+        // Calcular expiración del token (24h)
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
+
+        // Construir respuesta
         LoginRes res = new LoginRes();
         res.setToken(token);
-        res.setNickName(usuario.getNickName());
-        res.setRol(usuario.getRol().getNombre());
+        res.setExpiresAt(expiresAt);
+
+        LoginRes.UserDto userDto = new LoginRes.UserDto();
+        userDto.setId(usuario.getId());
+        userDto.setNickName(usuario.getNickName());
+        userDto.setNombreCompleto(usuario.getNombreCompleto());
+        userDto.setRol(usuario.getRol().getNombre());
+        userDto.setEstado(usuario.getEstado().getNombre());
+
+        res.setUser(userDto);
+
         return res;
     }
 
-    // Método para hashear la contraseña con SHA-256
+
     private String hashSHA256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
