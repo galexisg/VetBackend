@@ -1,4 +1,4 @@
 package com.Vet.VetBackend.agenda.domain;
 
-public class Especialidad {
+public class BloqueHorario {
 }
