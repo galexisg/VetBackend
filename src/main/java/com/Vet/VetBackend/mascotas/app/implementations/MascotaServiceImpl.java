@@ -33,8 +33,8 @@ public class MascotaServiceImpl implements MascotaService {
         existente.setNacimiento(mascota.getNacimiento());
         existente.setSexo(mascota.getSexo());
         existente.setPeso(mascota.getPeso());
-       // existente.setUsuario(mascota.getUsuario());
-//        existente.setRaza(mascota.getRaza());
+        // existente.setUsuario(mascota.getUsuario());
+        // existente.setRaza(mascota.getRaza());
 
         return mascotaRepository.save(existente);
     }
@@ -48,5 +48,14 @@ public class MascotaServiceImpl implements MascotaService {
     @Override
     public List<Mascota> listarTodos() {
         return mascotaRepository.findAll();
+    }
+
+   // método para eliminar
+    @Override
+    public void eliminar(Integer id) {
+        if (!mascotaRepository.existsById(id)) {
+            throw new NoSuchElementException("Mascota no encontrada con id " + id);
+        }
+        mascotaRepository.deleteById(id);
     }
 }
