@@ -20,7 +20,7 @@ public class CompraDetalleController {
 
     @GetMapping
     public List<ObtenerDetalle> listarDetalles() {
-        return detalleService.compradetalle();
+        return detalleService.compra_detalle();
     }
 
     @GetMapping("/{id}")
@@ -30,17 +30,17 @@ public class CompraDetalleController {
 
     @PostMapping
     public ObtenerDetalle crearDetalle(@RequestBody CrearDetalle dto) {
-        return detalleService.agregardetalle(dto);
+        return detalleService.agregar_detalle(dto);
     }
 
     @PutMapping("/{id}")
     public ObtenerDetalle actualizarDetalle(@PathVariable Long id, @RequestBody ActualizarDetalle dto) {
-        return detalleService.actualizardetalle(id, dto);
+        return detalleService.actualizar_detalle(id, dto);
     }
 
     @DeleteMapping("/{id}")
     public void eliminarDetalle(@PathVariable Long id, @RequestBody CancelarDetalle dto) {
-        detalleService.eliminardetalle(id, dto);
+        detalleService.eliminar_detalle(id, dto);
     }
 
     @GetMapping("/compra/{compraId}")

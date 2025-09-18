@@ -1,6 +1,5 @@
 package com.Vet.VetBackend.compras.repo;
 
-
 import com.Vet.VetBackend.compras.domain.CompraDetalle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

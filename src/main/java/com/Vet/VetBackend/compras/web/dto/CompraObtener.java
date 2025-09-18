@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.compras.web.dto;
 
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import lombok.Getter;
