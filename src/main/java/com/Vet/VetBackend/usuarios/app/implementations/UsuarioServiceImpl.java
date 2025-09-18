@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.usuarios.app.implementations;
 
+import com.Vet.VetBackend.usuarios.domain.Estado;
 import com.Vet.VetBackend.usuarios.domain.Usuario;
 import com.Vet.VetBackend.usuarios.repo.UsuarioRepository;
 import com.Vet.VetBackend.usuarios.app.services.UsuarioService;
@@ -29,18 +30,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public void desactivar(Integer id) {
-        usuarioRepository.findById(id).ifPresent(u -> {
-            u.getEstado().setId((byte)2); // desactivado
-            usuarioRepository.save(u);
-        });
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Estado estadoInactivo = new Estado();
+        estadoInactivo.setId((byte) 2); // ID de "inactivo" en tu BD
+        usuario.setEstado(estadoInactivo);
+
+        usuarioRepository.save(usuario);
     }
 
     @Override
     public void activar(Integer id) {
-        usuarioRepository.findById(id).ifPresent(u -> {
-            u.getEstado().setId((byte)1); // activo
-            usuarioRepository.save(u);
-        });
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Estado estadoActivo = new Estado();
+        estadoActivo.setId((byte) 1); // ID de "activo" en tu BD
+        usuario.setEstado(estadoActivo);
+
+        usuarioRepository.save(usuario);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class UsuarioController {
         usuario.setRol(rol);
 
         Estado estado = new Estado();
-        estado.setId(req.getEstadoId());
+        estado.setId((byte) req.getEstadoId());
         usuario.setEstado(estado);
 
         return mapToRes(usuarioService.crear(usuario));
@@ -89,7 +89,7 @@ public class UsuarioController {
         usuario.setRol(rol);
 
         Estado estado = new Estado();
-        estado.setId(req.getEstadoId());
+        estado.setId((byte) req.getEstadoId());
         usuario.setEstado(estado);
 
         return mapToRes(usuarioService.editar(usuario));
@@ -105,4 +105,3 @@ public class UsuarioController {
         usuarioService.desactivar(id);
     }
 }
-
