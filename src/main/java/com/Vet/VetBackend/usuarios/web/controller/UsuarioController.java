@@ -8,6 +8,9 @@ import com.Vet.VetBackend.usuarios.web.dto.UsuarioReq;
 import com.Vet.VetBackend.usuarios.web.dto.UsuarioRes;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +56,7 @@ public class UsuarioController {
         Usuario usuario = new Usuario();
         usuario.setNickName(req.getNickName());
         usuario.setCorreo(req.getCorreo());
-        usuario.setClave(req.getClave());
+        usuario.setClave(hashSHA256(req.getClave())); // <-- Hash de la contraseña
         usuario.setNombreCompleto(req.getNombreCompleto());
         usuario.setDui(req.getDui());
         usuario.setTelefono(req.getTelefono());
@@ -70,6 +73,21 @@ public class UsuarioController {
 
         return mapToRes(usuarioService.crear(usuario));
     }
+
+    private String hashSHA256(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al hashear contraseña", e);
+        }
+    }
+
 
     @PutMapping("/{id}")
     public UsuarioRes editar(@PathVariable Integer id, @RequestBody UsuarioReq req) {

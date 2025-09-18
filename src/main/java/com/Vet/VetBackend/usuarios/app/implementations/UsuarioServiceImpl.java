@@ -61,4 +61,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     public List<Usuario> listar() {
         return usuarioRepository.findAll();
     }
+
+    @Override
+    public Usuario obtenerPorNickName(String nickName) {
+        return usuarioRepository.findByNickName(nickName);
+    }
 }
