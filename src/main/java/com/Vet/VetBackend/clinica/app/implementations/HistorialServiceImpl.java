@@ -51,11 +51,16 @@ public class HistorialServiceImpl implements HistorialService {
         return CompletableFuture.supplyAsync(() -> {
             Historial entity = historialRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Historial no encontrado con id: " + id));
-            modelMapper.map(historialDTO, entity);
-            entity = historialRepository.save(entity);
-            return mapToDTO(entity);
+
+            // ✅ Solo actualizamos el campo diagnostico
+            entity.setDiagnostico(historialDTO.getDiagnostico());
+
+            Historial actualizado = historialRepository.save(entity);
+
+            return mapToDTO(actualizado);
         });
     }
+
 
     @Override
     public CompletableFuture<List<HistorialDto>> obtenerTodos() {
@@ -77,7 +82,7 @@ public class HistorialServiceImpl implements HistorialService {
     }
 
     @Override
-    public CompletableFuture<List<HistorialDto>> obtenerHistorialesPorMascota(Long mascotaId) {
+    public CompletableFuture<List<HistorialDto>> obtenerHistorialesPorMascota(Integer mascotaId) {
         return CompletableFuture.supplyAsync(() ->
                 historialRepository.findByMascotaId(mascotaId)
                         .stream()
