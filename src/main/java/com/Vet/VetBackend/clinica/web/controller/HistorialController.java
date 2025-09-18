@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 
 @RestController
-@RequestMapping("/historiales")
+@RequestMapping("/api/historiales")
 public class HistorialController {
     private final HistorialService historialService;
 
@@ -38,7 +38,7 @@ public class HistorialController {
     }
 
     @GetMapping("/mascota/{mascotaId}")
-    public CompletableFuture<List<HistorialDto>> obtenerPorMascota(@PathVariable Long mascotaId) {
+    public CompletableFuture<List<HistorialDto>> obtenerPorMascota(@PathVariable Integer mascotaId) {
         return historialService.obtenerHistorialesPorMascota(mascotaId);
     }
 
