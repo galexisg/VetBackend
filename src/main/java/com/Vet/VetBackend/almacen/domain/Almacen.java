@@ -1,12 +1,12 @@
 package com.Vet.VetBackend.almacen.domain;
 
+import com.Vet.VetBackend.inventario.domain.Inventario;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "Almacen")
 public class Almacen {
@@ -23,6 +23,6 @@ public class Almacen {
 
     private Boolean activo;
 
-//    @OneToMany(mappedBy = "almacen")
-//    private List<Inventario> inventario;
+    @OneToMany(mappedBy = "almacen")
+    private List<Inventario> inventario;
 }
