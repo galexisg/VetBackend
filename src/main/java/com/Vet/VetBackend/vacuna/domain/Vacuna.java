@@ -13,7 +13,7 @@ import lombok.*;
 public class Vacuna {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vacunaid")
+    @Column(name = "vacuna_id")
     @EqualsAndHashCode.Include
     private Integer vacunaId;
 
