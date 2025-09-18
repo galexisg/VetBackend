@@ -55,6 +55,14 @@
 			<artifactId>flyway-mysql</artifactId>
 		</dependency>
 
+		<!-- DEPENDENCIAS ADICIONALES -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<!-- FINAL DE DEPENDENCIAS ADICIONALES-->
+
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
@@ -79,6 +87,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.2.1</version> <!-- o la última disponible -->
+		</dependency>
+
 	</dependencies>
 
 	<build>
