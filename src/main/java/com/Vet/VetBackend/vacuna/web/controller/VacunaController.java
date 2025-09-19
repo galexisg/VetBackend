@@ -46,11 +46,4 @@ public class VacunaController { // Cambié el nombre a PascalCase
         Vacuna actualizada = vacunaService.actualizar(id, vacuna);
         return ResponseEntity.ok(actualizada);
     }
-
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar vacuna")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        vacunaService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
 }
