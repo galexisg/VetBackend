@@ -22,11 +22,6 @@ public class HistorialController {
         return historialService.crearHistorial(historialDTO);
     }
 
-    @PutMapping("/{id}")
-    public CompletableFuture<HistorialDto> actualizar(@PathVariable Long id, @RequestBody HistorialDto historialDTO) {
-        return historialService.actualizarHistorial(id, historialDTO);
-    }
-
     @GetMapping
     public CompletableFuture<List<HistorialDto>> obtenerTodos() {
         return historialService.obtenerTodos();
