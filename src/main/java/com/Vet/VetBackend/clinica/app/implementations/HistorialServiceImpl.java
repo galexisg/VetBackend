@@ -46,21 +46,6 @@ public class HistorialServiceImpl implements HistorialService {
         });
     }
 
-    @Override
-    public CompletableFuture<HistorialDto> actualizarHistorial(Long id, HistorialDto historialDTO) {
-        return CompletableFuture.supplyAsync(() -> {
-            Historial entity = historialRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Historial no encontrado con id: " + id));
-
-            // ✅ Solo actualizamos el campo diagnostico
-            entity.setDiagnostico(historialDTO.getDiagnostico());
-
-            Historial actualizado = historialRepository.save(entity);
-
-            return mapToDTO(actualizado);
-        });
-    }
-
 
     @Override
     public CompletableFuture<List<HistorialDto>> obtenerTodos() {
