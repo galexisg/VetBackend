@@ -24,27 +24,55 @@ public class Historial {
     @Column(name = "diagnostico", length = 500, nullable = false)
     private String diagnostico;
 
-    // Lo rellena MySQL con DEFAULT CURRENT_TIMESTAMP
-    @Column(name = "creado_at", nullable = false, insertable = false, updatable = false)
+    @Column(name = "creado_at", nullable = false, updatable = false, insertable = false)
+    @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime creadoAt;
 
-    // --- getters & setters ---
+    public Long getId() {
+        return id;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Integer getMascotaId() { return mascotaId; }
-    public void setMascotaId(Integer mascotaId) { this.mascotaId = mascotaId; }
+    public Integer getMascotaId() {
+        return mascotaId;
+    }
 
-    public Long getCitaId() { return citaId; }
-    public void setCitaId(Long citaId) { this.citaId = citaId; }
+    public void setMascotaId(Integer mascotaId) {
+        this.mascotaId = mascotaId;
+    }
 
-    public Integer getVeterinarioId() { return veterinarioId; }
-    public void setVeterinarioId(Integer veterinarioId) { this.veterinarioId = veterinarioId; }
+    public Long getCitaId() {
+        return citaId;
+    }
 
-    public String getDiagnostico() { return diagnostico; }
-    public void setDiagnostico(String diagnostico) { this.diagnostico = diagnostico; }
+    public void setCitaId(Long citaId) {
+        this.citaId = citaId;
+    }
 
-    public LocalDateTime getCreadoAt() { return creadoAt; }
-    public void setCreadoAt(LocalDateTime creadoAt) { this.creadoAt = creadoAt; }
+    public Integer getVeterinarioId() {
+        return veterinarioId;
+    }
+
+    public void setVeterinarioId(Integer veterinarioId) {
+        this.veterinarioId = veterinarioId;
+    }
+
+    public String getDiagnostico() {
+        return diagnostico;
+    }
+
+    public void setDiagnostico(String diagnostico) {
+        this.diagnostico = diagnostico;
+    }
+
+    public LocalDateTime getCreadoAt() {
+        return creadoAt;
+    }
+
+    public void setCreadoAt(LocalDateTime creadoAt) {
+        this.creadoAt = creadoAt;
+    }
 }
