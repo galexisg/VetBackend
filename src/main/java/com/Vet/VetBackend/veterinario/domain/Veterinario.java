@@ -23,6 +23,7 @@ public class   Veterinario {
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
+
     public enum Estado {
         Activo,
         Inactivo
