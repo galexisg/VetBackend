@@ -11,6 +11,7 @@ public interface IVeterinarioService {
     List<VeterinarioSalidaRes> listar();
 
     List<VeterinarioSalidaRes> listarActivos();
+    List<VeterinarioSalidaRes> listarInactivos();
 
     VeterinarioSalidaRes guardar(VeterinarioGuardarReq dto);
 

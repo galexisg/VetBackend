@@ -1,12 +1,10 @@
 package com.Vet.VetBackend.veterinario.web.controller;
 
-
 import com.Vet.VetBackend.veterinario.app.services.IVeterinarioService;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioGuardarReq;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioModificarReq;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioSalidaRes;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +17,7 @@ public class VeterinarioController {
 
     private final IVeterinarioService servicio;
 
-    // Guardar nuevo veterinario
+    // Guardar nuevo veterinario con especialidades
     @PostMapping
     public VeterinarioSalidaRes guardar(@RequestBody VeterinarioGuardarReq dto) {
         return servicio.guardar(dto);
@@ -37,21 +35,27 @@ public class VeterinarioController {
         return servicio.listarActivos();
     }
 
-    // Modificar veterinario
+    // Listar solo inactivos
+    @GetMapping("/inactivos")
+    public List<VeterinarioSalidaRes> listarInactivos() {
+        return servicio.listarInactivos();
+    }
+
+    // Modificar veterinario (solo datos básicos, no especialidades)
     @PutMapping("/{id}")
     public VeterinarioSalidaRes modificar(@PathVariable int id, @RequestBody VeterinarioModificarReq dto) {
         dto.setId(id); // asegura que se use el ID del path
         return servicio.modificar(dto);
     }
 
-    // Inactivar (soft delete → cambia estado a "Inactivo")
+    // Inactivar veterinario (soft delete)
     @PutMapping("/{id}/inactivar")
     public ResponseEntity<String> inactivar(@PathVariable int id) {
         servicio.inactivar(id);
         return ResponseEntity.ok("Veterinario marcado como inactivo con éxito");
     }
 
-    // Reactivar veterinario (cambia estado a "Activo")
+    // Activar veterinario
     @PutMapping("/{id}/activar")
     public ResponseEntity<String> activar(@PathVariable int id) {
         servicio.activar(id);

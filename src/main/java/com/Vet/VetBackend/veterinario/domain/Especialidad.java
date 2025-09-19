@@ -29,6 +29,9 @@ package com.Vet.VetBackend.veterinario.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "especialidad")
 @Data
@@ -47,4 +50,7 @@ public class Especialidad {
 
     @Column(name = "activo", nullable = false)
     private Boolean activo = true; // eliminación lógica
+
+    @ManyToMany(mappedBy = "especialidades")
+    private Set<Veterinario> veterinarios = new HashSet<>();
 }
