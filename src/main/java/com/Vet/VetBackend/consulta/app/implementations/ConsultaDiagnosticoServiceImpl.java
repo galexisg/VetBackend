@@ -59,7 +59,7 @@ public class ConsultaDiagnosticoServiceImpl  implements ConsultaDiagnosticoServi
     @Override
     public CompletableFuture<List<ConsultaDiagnosticoDto>> obtenerPorConsulta(Long consultaId) {
         return CompletableFuture.supplyAsync(() ->
-                consultaDiagnosticoRepository.findByConsultaId(consultaId)
+                consultaDiagnosticoRepository.findWithDiagnosticoByConsultaId(consultaId)
                         .stream().map(this::mapToDto).collect(Collectors.toList()));
     }
 

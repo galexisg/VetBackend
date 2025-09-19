@@ -62,4 +62,12 @@ public class HistorialDto {
     public void setTratamientosAplicados(List<TratamientoAplicadoRes> tratamientosAplicados) {
         this.tratamientosAplicados = tratamientosAplicados;
     }
+
+    public List<ConsultaDto> getConsultas() {
+        return consultas;
+    }
+
+    public void setConsultas(List<ConsultaDto> consultas) {
+        this.consultas = consultas;
+    }
 }

@@ -4,6 +4,9 @@ import com.Vet.VetBackend.clinica.domain.Historial;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "consulta")
@@ -22,6 +25,9 @@ public class Consulta {
 
     @Column(name = "recomendaciones", columnDefinition = "TEXT")
     private String recomendaciones;
+
+    @OneToMany(mappedBy = "consulta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ConsultaDiagnostico> consultaDiagnosticos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -53,5 +59,13 @@ public class Consulta {
 
     public void setRecomendaciones(String recomendaciones) {
         this.recomendaciones = recomendaciones;
+    }
+
+    public List<ConsultaDiagnostico> getConsultaDiagnosticos() {
+        return consultaDiagnosticos;
+    }
+
+    public void setConsultaDiagnosticos(List<ConsultaDiagnostico> consultaDiagnosticos) {
+        this.consultaDiagnosticos = consultaDiagnosticos;
     }
 }

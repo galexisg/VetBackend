@@ -9,6 +9,7 @@ import com.Vet.VetBackend.consulta.web.dto.DiagnosticoDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -28,18 +29,28 @@ public class ConsultaServiceImpl implements ConsultaService {
         this.modelMapper = modelMapper;
     }
 
-    private ConsultaDto mapToDto(Consulta entity) {
-        ConsultaDto dto = modelMapper.map(entity, ConsultaDto.class);
-        List<DiagnosticoDto> diags = consultaDiagnosticoRepository.findAll()
-                .stream()
-                .filter(cd -> cd.getConsulta().getId().equals(entity.getId()))
+    private ConsultaDto mapToDto(Consulta consulta) {
+        ConsultaDto dto = new ConsultaDto();
+        dto.setId(consulta.getId());
+        dto.setHistorialId(consulta.getHistorial().getId());
+        dto.setObservaciones(consulta.getObservaciones());
+        dto.setRecomendaciones(consulta.getRecomendaciones());
+
+        // Manejo seguro de diagnósticos
+        List<DiagnosticoDto> diagnosticos = (consulta.getConsultaDiagnosticos() != null)
+                ? consulta.getConsultaDiagnosticos().stream()
                 .map(cd -> {
-                    DiagnosticoDto d = modelMapper.map(cd.getDiagnostico(), DiagnosticoDto.class);
+                    DiagnosticoDto d = new DiagnosticoDto();
+                    d.setId(cd.getDiagnostico().getId());
+                    d.setNombre(cd.getDiagnostico().getNombre());
+                    d.setDescripcion(cd.getDiagnostico().getDescripcion());
                     d.setObservacion(cd.getObservacion());
                     return d;
                 })
-                .collect(Collectors.toList());
-        dto.setDiagnosticos(diags);
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        dto.setDiagnosticos(diagnosticos);
         return dto;
     }
 
@@ -57,32 +68,43 @@ public class ConsultaServiceImpl implements ConsultaService {
         return CompletableFuture.supplyAsync(() -> {
             Consulta entity = consultaRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Consulta no encontrada"));
-            modelMapper.map(dto, entity);
-            entity = consultaRepository.save(entity);
-            return mapToDto(entity);
+            // actualzar campos
+            entity.setObservaciones(dto.getObservaciones());
+            entity.setRecomendaciones(dto.getRecomendaciones());
+
+            Consulta actualizada = consultaRepository.save(entity);
+            return mapToDto(actualizada);
         });
     }
 
     @Override
     public CompletableFuture<ConsultaDto> obtenerPorId(Long id) {
-        return CompletableFuture.supplyAsync(() -> mapToDto(
-                consultaRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Consulta no encontrada"))
-        ));
+        return CompletableFuture.supplyAsync(() -> {
+            Consulta consulta = consultaRepository.findByIdWithDiagnosticos(id);
+            if (consulta == null) {
+                throw new RuntimeException("Consulta no encontrada con id: " + id);
+            }
+            return mapToDto(consulta);
+        });
     }
 
     @Override
     public CompletableFuture<List<ConsultaDto>> obtenerTodas() {
         return CompletableFuture.supplyAsync(() ->
-                consultaRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList()));
+                consultaRepository.findAllWithDiagnosticos()
+                        .stream()
+                        .map(this::mapToDto)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override
     public CompletableFuture<List<ConsultaDto>> obtenerPorHistorial(Long historialId) {
         return CompletableFuture.supplyAsync(() ->
-                consultaRepository.findAll().stream()
-                        .filter(c -> c.getHistorial().getId().equals(historialId))
+                consultaRepository.findByHistorialIdWithDiagnosticos(historialId)
+                        .stream()
                         .map(this::mapToDto)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList())
+        );
     }
 }

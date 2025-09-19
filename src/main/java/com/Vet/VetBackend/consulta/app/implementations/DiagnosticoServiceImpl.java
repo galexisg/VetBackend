@@ -1,6 +1,7 @@
 package com.Vet.VetBackend.consulta.app.implementations;
 
 import com.Vet.VetBackend.consulta.app.services.DiagnosticoService;
+import com.Vet.VetBackend.consulta.domain.Consulta;
 import com.Vet.VetBackend.consulta.domain.Diagnostico;
 import com.Vet.VetBackend.consulta.repo.DiagnosticoRepository;
 import com.Vet.VetBackend.consulta.web.dto.DiagnosticoDto;
@@ -39,9 +40,12 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
         return CompletableFuture.supplyAsync(() -> {
             Diagnostico entity = diagnosticoRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Diagnóstico no encontrado"));
-            modelMapper.map(dto, entity);
-            entity = diagnosticoRepository.save(entity);
-            return mapToDto(entity);
+            // actualzar campos
+            entity.setNombre(dto.getNombre());
+            entity.setDescripcion(dto.getDescripcion());
+
+            Diagnostico actualizado = diagnosticoRepository.save(entity);
+            return mapToDto(actualizado);
         });
     }
 

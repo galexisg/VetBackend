@@ -10,7 +10,7 @@ public class ConsultaDto {
     private Long id;
     private Long historialId;
     private String observaciones;
-    private String recomendacions;
+    private String recomendaciones;
     private List<DiagnosticoDto> diagnosticos;
 
     public Long getId() {
@@ -37,12 +37,12 @@ public class ConsultaDto {
         this.observaciones = observaciones;
     }
 
-    public String getRecomendacions() {
-        return recomendacions;
+    public String getRecomendaciones() {
+        return recomendaciones;
     }
 
-    public void setRecomendacions(String recomendacions) {
-        this.recomendacions = recomendacions;
+    public void setRecomendaciones(String recomendaciones) {
+        this.recomendaciones = recomendaciones;
     }
 
     public List<DiagnosticoDto> getDiagnosticos() {

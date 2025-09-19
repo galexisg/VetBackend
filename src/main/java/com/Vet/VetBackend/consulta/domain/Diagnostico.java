@@ -3,6 +3,7 @@ package com.Vet.VetBackend.consulta.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,6 +21,9 @@ public class Diagnostico {
 
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
+
+    @OneToMany(mappedBy = "diagnostico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ConsultaDiagnostico> consultaDiagnosticos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -43,5 +47,13 @@ public class Diagnostico {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public List<ConsultaDiagnostico> getConsultaDiagnosticos() {
+        return consultaDiagnosticos;
+    }
+
+    public void setConsultaDiagnosticos(List<ConsultaDiagnostico> consultaDiagnosticos) {
+        this.consultaDiagnosticos = consultaDiagnosticos;
     }
 }
