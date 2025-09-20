@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.clinica.web.dto;
 
+import com.Vet.VetBackend.consulta.web.dto.ConsultaDto;
 import com.Vet.VetBackend.tratamientos.web.dto.TratamientoAplicadoRes;
 
 import java.time.LocalDateTime;
@@ -10,9 +11,9 @@ public class HistorialDto {
     private Integer mascotaId;
     private Long citaId;
     private Integer veterinarioId;
-    private String diagnostico;
     private LocalDateTime creadoAt;
     private List<TratamientoAplicadoRes> tratamientosAplicados;
+    private List<ConsultaDto> consultas;
 
     public Long getId() {
         return id;
@@ -46,14 +47,6 @@ public class HistorialDto {
         this.veterinarioId = veterinarioId;
     }
 
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
-    }
-
     public LocalDateTime getCreadoAt() {
         return creadoAt;
     }
@@ -68,5 +61,13 @@ public class HistorialDto {
 
     public void setTratamientosAplicados(List<TratamientoAplicadoRes> tratamientosAplicados) {
         this.tratamientosAplicados = tratamientosAplicados;
+    }
+
+    public List<ConsultaDto> getConsultas() {
+        return consultas;
+    }
+
+    public void setConsultas(List<ConsultaDto> consultas) {
+        this.consultas = consultas;
     }
 }

@@ -21,9 +21,6 @@ public class Historial {
     @Column(name = "veterinario_id", nullable = false)
     private Integer veterinarioId;
 
-    @Column(name = "diagnostico", length = 500, nullable = false)
-    private String diagnostico;
-
     @Column(name = "creado_at", nullable = false, updatable = false, insertable = false)
     @org.hibernate.annotations.CreationTimestamp
     private LocalDateTime creadoAt;
@@ -58,14 +55,6 @@ public class Historial {
 
     public void setVeterinarioId(Integer veterinarioId) {
         this.veterinarioId = veterinarioId;
-    }
-
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
     }
 
     public LocalDateTime getCreadoAt() {
