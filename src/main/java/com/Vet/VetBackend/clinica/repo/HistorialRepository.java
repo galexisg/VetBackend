@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface HistorialRepository extends JpaRepository<Historial, Long> {
-    List<Historial> findByMascotaId(Long mascotaId);
+    List<Historial> findByMascotaId(Integer mascotaId);
 }

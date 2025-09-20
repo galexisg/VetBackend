@@ -46,6 +46,7 @@ public class VacunaController { // Cambié el nombre a PascalCase
         Vacuna actualizada = vacunaService.actualizar(id, vacuna);
         return ResponseEntity.ok(actualizada);
     }
+<<<<<<< HEAD
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar vacuna")
@@ -53,4 +54,6 @@ public class VacunaController { // Cambié el nombre a PascalCase
         vacunaService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
+=======
+>>>>>>> 47365c0346c830747f44f23869758f9200ebfd32
 }

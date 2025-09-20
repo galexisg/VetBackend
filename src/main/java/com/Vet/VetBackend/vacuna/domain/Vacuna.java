@@ -13,7 +13,11 @@ import lombok.*;
 public class Vacuna {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< HEAD
     @Column(name = "vacunaid")
+=======
+    @Column(name = "vacuna_id")
+>>>>>>> 47365c0346c830747f44f23869758f9200ebfd32
     @EqualsAndHashCode.Include
     private Integer vacunaId;
 

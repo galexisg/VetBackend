@@ -1,33 +1,29 @@
 package com.Vet.VetBackend.clinica.domain;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "historial")
 public class Historial {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "historial_id")
     private Long id;
 
-    // Relaciones (por ahora opcionales)
-    @Column(name = "mascota_id", nullable = true)
-    private Long mascotaId;
+    @Column(name = "mascota_id", nullable = false)
+    private Integer mascotaId;
 
-    @Column(name = "cita_id", nullable = true)
+    @Column(name = "cita_id", nullable = false)
     private Long citaId;
 
-    @Column(name = "veterinario_id", nullable = true)
-    private Long veterinarioId;
+    @Column(name = "veterinario_id", nullable = false)
+    private Integer veterinarioId;
 
-    // Datos propios del historial
-    @Column(name = "diagnostico", columnDefinition = "TEXT")
-    private String diagnostico;
-
-    @Column(name = "creado_at", nullable = false)
-    private LocalDateTime creadoAt = LocalDateTime.now();
+    @Column(name = "creado_at", nullable = false, updatable = false, insertable = false)
+    @org.hibernate.annotations.CreationTimestamp
+    private LocalDateTime creadoAt;
 
     public Long getId() {
         return id;
@@ -37,11 +33,11 @@ public class Historial {
         this.id = id;
     }
 
-    public Long getMascotaId() {
+    public Integer getMascotaId() {
         return mascotaId;
     }
 
-    public void setMascotaId(Long mascotaId) {
+    public void setMascotaId(Integer mascotaId) {
         this.mascotaId = mascotaId;
     }
 
@@ -53,20 +49,12 @@ public class Historial {
         this.citaId = citaId;
     }
 
-    public Long getVeterinarioId() {
+    public Integer getVeterinarioId() {
         return veterinarioId;
     }
 
-    public void setVeterinarioId(Long veterinarioId) {
+    public void setVeterinarioId(Integer veterinarioId) {
         this.veterinarioId = veterinarioId;
-    }
-
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
     }
 
     public LocalDateTime getCreadoAt() {
@@ -77,5 +65,3 @@ public class Historial {
         this.creadoAt = creadoAt;
     }
 }
-
-
