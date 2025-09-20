@@ -10,23 +10,27 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "Dispensa")
+@Table(name = "dispensa")
 public class Dispensa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer prescripcionDetalleId;
-
+    @Column(name = "almacen_id")
     private Integer almacenId;
-
-    private Integer loteId;
 
     @Column(precision = 12, scale = 2)
     private BigDecimal cantidad;
 
+    @Column(columnDefinition = "DATETIME(6)")
     private LocalDateTime fecha;
 
-    private Integer usuarioId;
+    @Column(name = "lote_id")
+    private Integer loteId;
+
+    @Column(name = "prescripcion_detalle_id")
+    private Integer prescripcionDetalleId;
+
+    // private Integer usuarioId;
 }

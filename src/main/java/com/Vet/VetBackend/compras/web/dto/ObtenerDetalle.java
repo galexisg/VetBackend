@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ObtenerDetalle implements Serializable {
-    private Long id;
-    private Long compraId;
-    private Long productoId;
+    private Integer id;
+    private Integer compraId;
+    private Integer productoId;
     private int cantidad;
     private double precio;
 }

@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CompraCrear implements Serializable {
-    private Long proveedorId;
-    private Long usuarioId;
+    private Integer proveedorId;
+//    private Integer usuarioId;
     private LocalDate fecha;
     private String descripcion;
     private double total;

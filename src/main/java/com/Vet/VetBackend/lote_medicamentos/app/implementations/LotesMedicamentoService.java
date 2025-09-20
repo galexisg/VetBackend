@@ -6,13 +6,13 @@ import com.Vet.VetBackend.lote_medicamentos.app.services.ILotesMedicamentoServic
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamento_Salida;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Actualizar;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Guardar;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,51 +23,50 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     @Autowired
     private ILotesMedicamentosRepository lotesMedicamentosRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @Override
     public List<LoteMedicamento_Salida> obtenerTodos() {
-        List<Lotes_medicamentos> loteMedicamentoSalidas = lotesMedicamentosRepository.findAll();
-
-        return loteMedicamentoSalidas.stream()
-                .map(lote -> modelMapper.map(lote, LoteMedicamento_Salida.class)) // ✅ corregido
+        return lotesMedicamentosRepository.findAll().stream()
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Page<LoteMedicamento_Salida> obtenerTodosPaginados(Pageable pageable) {
         Page<Lotes_medicamentos> page = lotesMedicamentosRepository.findAll(pageable);
-
-        List<LoteMedicamento_Salida> LoteMedicamentoDto = page.stream()
-                .map(lote -> modelMapper.map(lote, LoteMedicamento_Salida.class)) // ✅ corregido
+        List<LoteMedicamento_Salida> dtoList = page.stream()
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(LoteMedicamentoDto, page.getPageable(), page.getTotalElements());
+        return new PageImpl<>(dtoList, page.getPageable(), page.getTotalElements());
     }
 
     @Override
     public LoteMedicamento_Salida obtenerPorId(Integer id) {
         Lotes_medicamentos lote = lotesMedicamentosRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lote no encontrado")); // ✅ mejor manejo
-        return modelMapper.map(lote, LoteMedicamento_Salida.class);
+                .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
+        return convertirASalida(lote);
     }
 
     @Override
-    public LoteMedicamento_Salida crear(LoteMedicamentos_Guardar loteMedicamentosGuardar) {
-        Lotes_medicamentos lotesMedicamentos = modelMapper.map(loteMedicamentosGuardar, Lotes_medicamentos.class);
-        lotesMedicamentos = lotesMedicamentosRepository.save(lotesMedicamentos);
-        return modelMapper.map(lotesMedicamentos, LoteMedicamento_Salida.class);
+    public LoteMedicamento_Salida crear(LoteMedicamentos_Guardar dto) {
+        Lotes_medicamentos lote = new Lotes_medicamentos();
+        lote.setCodigoLote(dto.getCodigoLote());
+        lote.setFechaVencimiento(dto.getFechaVencimiento());
+        lote.setMedicamentoId(dto.getMedicamentoId());
+        lote.setProveedorId(dto.getProveedorId());
+        lote.setObservaciones(dto.getObservaciones());
+        return convertirASalida(lotesMedicamentosRepository.save(lote));
     }
 
     @Override
-    public LoteMedicamento_Salida editar(LoteMedicamentos_Actualizar loteMedicamentosActualizar) {
-        Lotes_medicamentos existente = lotesMedicamentosRepository.findById(loteMedicamentosActualizar.getId())
-                .orElseThrow(() -> new RuntimeException("Lote no encontrado")); // ✅ validación previa
-
-        modelMapper.map(loteMedicamentosActualizar, existente); // ✅ actualiza campos
-        Lotes_medicamentos actualizado = lotesMedicamentosRepository.save(existente);
-        return modelMapper.map(actualizado, LoteMedicamento_Salida.class);
+    public LoteMedicamento_Salida editar(LoteMedicamentos_Actualizar dto) {
+        Lotes_medicamentos existente = lotesMedicamentosRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
+        existente.setCodigoLote(dto.getCodigoLote());
+        existente.setFechaVencimiento(dto.getFechaVencimiento());
+        existente.setMedicamentoId(dto.getMedicamentoId());
+        existente.setProveedorId(dto.getProveedorId());
+        existente.setObservaciones(dto.getObservaciones());
+        return convertirASalida(lotesMedicamentosRepository.save(existente));
     }
 
     @Override
@@ -77,110 +76,38 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
 
     @Override
     public List<LoteMedicamento_Salida> obtenerPorMedicamentoId(Integer medicamentoId) {
-        return lotesMedicamentosRepository.findByMedicamentoId(medicamentoId).stream() // ✅ implementado
-                .map(lote -> modelMapper.map(lote, LoteMedicamento_Salida.class))
+        return lotesMedicamentosRepository.findByMedicamentoId(medicamentoId).stream()
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<LoteMedicamento_Salida> obtenerPorProveedorId(Integer proveedorId) {
-        return lotesMedicamentosRepository.findByProveedorId(proveedorId).stream() // ✅ implementado
-                .map(lote -> modelMapper.map(lote, LoteMedicamento_Salida.class))
+        return lotesMedicamentosRepository.findByProveedorId(proveedorId).stream()
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<LoteMedicamento_Salida> obtenerLotesProximosAVencer() {
         LocalDate hoy = LocalDate.now();
-        LocalDate limite = hoy.plusDays(30); // ✅ rango de vencimiento
-        return lotesMedicamentosRepository.findByFechaVencimientoBetween(hoy, limite).stream()
-                .map(lote -> modelMapper.map(lote, LoteMedicamento_Salida.class))
+        LocalDate limite = hoy.plusDays(30);
+        Date desde = Date.valueOf(hoy);
+        Date hasta = Date.valueOf(limite);
+        return lotesMedicamentosRepository.findByFechaVencimientoBetween(desde, hasta).stream()
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
+
+    // 🔄 Conversión manual de entidad a DTO
+    private LoteMedicamento_Salida convertirASalida(Lotes_medicamentos lote) {
+        LoteMedicamento_Salida salida = new LoteMedicamento_Salida();
+        salida.setId(lote.getId());
+        salida.setCodigoLote(lote.getCodigoLote());
+        salida.setFechaVencimiento(lote.getFechaVencimiento());
+        salida.setMedicamentoId(lote.getMedicamentoId());
+        salida.setProveedorId(lote.getProveedorId());
+        salida.setObservaciones(lote.getObservaciones());
+        return salida;
+    }
 }
-
-
-//package Servicios.implementaciones;
-//
-//import INVENTARIO.Modelos.Lotes_medicamentos;
-//import INVENTARIO.Repositorios.ILotesMedicamentosRepository;
-//import INVENTARIO.Servicios.interfaces.ILotesMedicamentoService;
-//import INVENTARIO.dtos.LotesMedicamentos.LoteMedicamento_Salida;
-//import INVENTARIO.dtos.LotesMedicamentos.LoteMedicamentos_Actualizar;
-//import INVENTARIO.dtos.LotesMedicamentos.LoteMedicamentos_Guardar;
-//import org.modelmapper.ModelMapper;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageImpl;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.List;
-//import java.util.stream.Collectors;
-//
-//@Service
-//public class LotesMedicamentoService implements ILotesMedicamentoService {
-//     @Autowired
-//     private ILotesMedicamentosRepository lotesMedicamentosRepository;
-//
-//     @Autowired
-//     private ModelMapper modelMapper;
-//
-//    @Override
-//    public List<LoteMedicamento_Salida> obtenerTodos() {
-//        List<Lotes_medicamentos> loteMedicamentoSalidas = lotesMedicamentosRepository.findAll();
-//
-//        return loteMedicamentoSalidas.stream()
-//                .map(loteMedicamentoSalida -> modelMapper.map(loteMedicamentoSalidas, LoteMedicamento_Salida.class))
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public Page<LoteMedicamento_Salida> obtenerTodosPaginados(Pageable pageable) {
-//        Page<Lotes_medicamentos> page = lotesMedicamentosRepository.findAll(pageable);
-//
-//        //LoteMedicamentoDto puede ser otro nombre tambien no afecta
-//        List<LoteMedicamento_Salida> LoteMedicamentoDto = page.stream()
-//                .map(lotesMedicamentos -> modelMapper.map(lotesMedicamentos, LoteMedicamento_Salida.class))
-//                .collect(Collectors.toList());
-//
-//        return new PageImpl<>(LoteMedicamentoDto, page.getPageable(), page.getTotalElements());
-//    }
-//
-//    @Override
-//    public LoteMedicamento_Salida obtenerPorId(Integer id) {
-//        return modelMapper.map(lotesMedicamentosRepository.findById(id).get(), LoteMedicamento_Salida.class);
-//    }
-//
-//    @Override
-//    public LoteMedicamento_Salida crear(LoteMedicamentos_Guardar loteMedicamentosGuardar) {
-//        Lotes_medicamentos lotesMedicamentos = lotesMedicamentosRepository.save(modelMapper.map(loteMedicamentosGuardar, Lotes_medicamentos.class));
-//        return modelMapper.map(lotesMedicamentos, LoteMedicamento_Salida.class);
-//    }
-//
-//    @Override
-//    public LoteMedicamento_Salida editar(LoteMedicamentos_Actualizar loteMedicamentosActualizar) {
-//        Lotes_medicamentos lotesMedicamentos = lotesMedicamentosRepository.save(modelMapper.map(loteMedicamentosActualizar, Lotes_medicamentos.class));
-//        return modelMapper.map(lotesMedicamentos, LoteMedicamento_Salida.class);
-//    }
-//
-//    @Override
-//    public void eliminarPorId(Integer id) {
-//        lotesMedicamentosRepository.deleteById(id);
-//    }
-//
-//    @Override
-//    public List<LoteMedicamento_Salida> obtenerPorMedicamentoId(Integer medicamentoId) {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public List<LoteMedicamento_Salida> obtenerPorProveedorId(Integer proveedorId) {
-//        return List.of();
-//    }
-//
-//    @Override
-//    public List<LoteMedicamento_Salida> obtenerLotesProximosAVencer() {
-//        return List.of();
-//    }
-//}
