@@ -42,7 +42,7 @@ public class CompraController {
         return compraRepository.findById(id)
                 .map(compra -> {
                     compra.setProveedorId(compraDetails.getProveedorId());
-                    compra.setUsuarioId(compraDetails.getUsuarioId());
+//                    compra.setUsuarioId(compraDetails.getUsuarioId());
                     compra.setFecha(compraDetails.getFecha());
                     compra.setDescripcion(compraDetails.getDescripcion());
                     compra.setTotal(compraDetails.getTotal());

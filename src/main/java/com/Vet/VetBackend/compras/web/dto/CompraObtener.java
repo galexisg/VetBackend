@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class CompraObtener implements Serializable {
     private Integer id;
-    private Long proveedorId;
-    private Long usuarioId;
+    private Integer proveedorId;
+//    private Integer usuarioId;
     private LocalDate fecha;
     private String descripcion;
     private double total;

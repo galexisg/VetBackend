@@ -22,13 +22,10 @@ public class DispensaService implements IDispensaService {
     @Autowired
     private IDispensaRepository repository;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @Override
     public List<Dispensa_Salida> obtenerTodas() {
         return repository.findAll().stream()
-                .map(d -> modelMapper.map(d, Dispensa_Salida.class))
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
@@ -36,7 +33,7 @@ public class DispensaService implements IDispensaService {
     public Page<Dispensa_Salida> obtenerTodasPaginadas(Pageable pageable) {
         Page<Dispensa> page = repository.findAll(pageable);
         List<Dispensa_Salida> dtoList = page.stream()
-                .map(d -> modelMapper.map(d, Dispensa_Salida.class))
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
         return new PageImpl<>(dtoList, page.getPageable(), page.getTotalElements());
     }
@@ -45,21 +42,28 @@ public class DispensaService implements IDispensaService {
     public Dispensa_Salida obtenerPorId(Integer id) {
         Dispensa entidad = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dispensa no encontrada"));
-        return modelMapper.map(entidad, Dispensa_Salida.class);
+        return convertirASalida(entidad);
     }
 
     @Override
     public Dispensa_Salida crear(Dispensa_Guardar dto) {
-        Dispensa entidad = modelMapper.map(dto, Dispensa.class);
-        return modelMapper.map(repository.save(entidad), Dispensa_Salida.class);
+        Dispensa entidad = new Dispensa();
+        entidad.setFecha(dto.getFecha());
+        entidad.setCantidad(dto.getCantidad());
+        entidad.setPrescripcionDetalleId(dto.getPrescripcionDetalleId());
+        entidad.setAlmacenId(dto.getAlmacenId());
+        return convertirASalida(repository.save(entidad));
     }
 
     @Override
     public Dispensa_Salida editar(Integer id, Dispensa_Actualizar dto) {
         Dispensa existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dispensa no encontrada"));
-        modelMapper.map(dto, existente);
-        return modelMapper.map(repository.save(existente), Dispensa_Salida.class);
+        existente.setFecha(dto.getFecha());
+        existente.setCantidad(dto.getCantidad());
+        existente.setPrescripcionDetalleId(dto.getPrescripcionDetalleId());
+        existente.setAlmacenId(dto.getAlmacenId());
+        return convertirASalida(repository.save(existente));
     }
 
     @Override
@@ -70,21 +74,32 @@ public class DispensaService implements IDispensaService {
     @Override
     public List<Dispensa_Salida> obtenerPorPrescripcion(Integer prescripcionDetalleId) {
         return repository.findByPrescripcionDetalleId(prescripcionDetalleId).stream()
-                .map(d -> modelMapper.map(d, Dispensa_Salida.class))
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Dispensa_Salida> obtenerPorAlmacen(Integer almacenId) {
         return repository.findByAlmacenId(almacenId).stream()
-                .map(d -> modelMapper.map(d, Dispensa_Salida.class))
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Dispensa_Salida> obtenerPorFecha(LocalDate fecha) {
         return repository.findByFecha(fecha).stream()
-                .map(d -> modelMapper.map(d, Dispensa_Salida.class))
+                .map(this::convertirASalida)
                 .collect(Collectors.toList());
+    }
+
+    // 🔄 Conversión manual de entidad a DTO
+    private Dispensa_Salida convertirASalida(Dispensa entidad) {
+        Dispensa_Salida salida = new Dispensa_Salida();
+        salida.setId(entidad.getId());
+        salida.setFecha(entidad.getFecha());
+        salida.setCantidad(entidad.getCantidad());
+        salida.setPrescripcionDetalleId(entidad.getPrescripcionDetalleId());
+        salida.setAlmacenId(entidad.getAlmacenId());
+        return salida;
     }
 }

@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CrearDetalle implements Serializable {
-    private Long compraId;
-    private Long productoId;
+    private Integer compraId;
+    private Integer productoId;
     private int cantidad;
     private double precio;
 }

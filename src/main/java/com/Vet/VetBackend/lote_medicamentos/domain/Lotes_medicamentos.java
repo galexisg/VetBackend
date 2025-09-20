@@ -4,25 +4,30 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "LoteMedicamento")
+@Table(name = "lote_medicamento")
 public class Lotes_medicamentos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "medicamento_id")
     private Integer medicamentoId;
 
+    @Column(name = "proveedor_id")
     private Integer proveedorId;
 
-    @Column(length = 60)
+    @Column(name = "codigo_lote", length = 60)
     private String codigoLote;
 
-    private java.sql.Date fechaVencimiento;
+    @Column(name = "fecha_vencimiento")
+    private Date fechaVencimiento;
 
-    @Column(length = 200)
+    @Column(name = "observaciones", length = 200)
     private String observaciones;
 }

@@ -6,10 +6,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
 @Getter
 @Entity
-@Table(name = "Almacen")
+@Table(name = "almacen")
 public class Almacen {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +23,10 @@ public class Almacen {
     @Column(length = 200)
     private String ubicacion;
 
+//    @Column(columnDefinition = "BIT(1)")
     private Boolean activo;
 
-    @OneToMany(mappedBy = "almacen")
-    private List<Inventario> inventario;
+//    @OneToMany(mappedBy = "almacen")
+//    private List<Inventario> inventario;
+
 }
