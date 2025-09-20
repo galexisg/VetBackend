@@ -1,40 +1,31 @@
-
 package com.Vet.VetBackend.estadocita.app.implementations;
 
 import com.Vet.VetBackend.estadocita.app.services.IEstadoService;
 import com.Vet.VetBackend.estadocita.domain.EstadoCita;
+import com.Vet.VetBackend.estadocita.repo.IEstadoRepository;
 import com.Vet.VetBackend.estadocita.web.dto.EstadoGuardar;
 import com.Vet.VetBackend.estadocita.web.dto.EstadoModificar;
 import com.Vet.VetBackend.estadocita.web.dto.EstadoSalida;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.Vet.VetBackend.estadocita.repo.IEstadoRepository;
-
-import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class EstadoCitaServiceImpl implements IEstadoService{
+@RequiredArgsConstructor
+public class EstadoCitaServiceImpl implements IEstadoService {
 
-    private static final Logger log = LoggerFactory.getLogger(EstadoCitaServiceImpl.class);
-    @Autowired
-    private IEstadoRepository estadoRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final IEstadoRepository estadoRepository;
 
     @Override
     public List<EstadoSalida> obtenerTodos() {
-        List<EstadoCita> estados = estadoRepository.findAll();
-        return estados.stream()
-                .map(estado -> modelMapper.map(estado,EstadoSalida.class))
+        return estadoRepository.findAll().stream()
+                .map(this::toSalidaDTO)
                 .collect(Collectors.toList());
     }
 
@@ -42,42 +33,46 @@ public class EstadoCitaServiceImpl implements IEstadoService{
     public Page<EstadoSalida> obtenerTodosPaginados(Pageable pageable) {
         Page<EstadoCita> page = estadoRepository.findAll(pageable);
 
-        List<EstadoSalida> estadoDto = page.stream()
-                .map(estado -> modelMapper.map(estado, EstadoSalida.class))
+        List<EstadoSalida> dtoList = page.stream()
+                .map(this::toSalidaDTO)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(estadoDto, page.getPageable(), page.getTotalElements());
+        return new PageImpl<>(dtoList, pageable, page.getTotalElements());
     }
 
     @Override
     public EstadoSalida obtenerPorId(Integer id) {
-        return modelMapper.map(estadoRepository.findById(id).get(), EstadoSalida.class);
+        EstadoCita estado = estadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("EstadoCita no encontrado con ID: " + id));
+        return toSalidaDTO(estado);
     }
 
     @Override
-    public EstadoSalida crear(EstadoGuardar estadoGuardar) {
-        EstadoCita estado =estadoRepository.save(modelMapper.map(estadoGuardar, EstadoCita.class));
-        return modelMapper.map(estado, EstadoSalida.class);
+    public EstadoSalida crear(EstadoGuardar dto) {
+        EstadoCita estado = EstadoCita.builder()
+                .nombre(dto.getNombre())
+                .build();
+
+        EstadoCita guardado = estadoRepository.save(estado);
+        return toSalidaDTO(guardado);
     }
 
     @Override
-    public EstadoSalida editar(EstadoModificar estadoModificar) {
-        EstadoCita estado =estadoRepository.save(modelMapper.map(estadoModificar, EstadoCita.class));
-        return modelMapper.map(estado, EstadoSalida.class);
+    public EstadoSalida editar(EstadoModificar dto) {
+        EstadoCita estado = estadoRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("EstadoCita no encontrado con ID: " + dto.getId()));
+
+        estado.setNombre(dto.getNombre());
+
+        EstadoCita actualizado = estadoRepository.save(estado);
+        return toSalidaDTO(actualizado);
     }
 
-
+    // 🔹 Método privado para convertir entidad -> DTO
+    private EstadoSalida toSalidaDTO(EstadoCita estado) {
+        EstadoSalida dto = new EstadoSalida();
+        dto.setId(estado.getId());
+        dto.setNombre(estado.getNombre());
+        return dto;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
