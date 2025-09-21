@@ -1,6 +1,6 @@
 package com.Vet.VetBackend.historialvacuna.util; // Ensure the package is correct
 
-import com.Vet.VetBackend.historialvacuna.reportes.dto.ReporteVacunasDTO; // Correct import
+import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO; // Correct import
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

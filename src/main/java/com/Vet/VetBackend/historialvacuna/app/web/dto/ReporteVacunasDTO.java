@@ -1,4 +1,4 @@
-package com.Vet.VetBackend.historialvacuna.reportes.dto; // Make sure this is correct
+package com.Vet.VetBackend.historialvacuna.app.web.dto; // Make sure this is correct
 
 import lombok.*;
 
