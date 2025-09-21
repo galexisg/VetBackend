@@ -2,8 +2,6 @@ package com.Vet.VetBackend.veterinario.web.dto;
 
 import lombok.*;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +10,7 @@ public class VeterinarioSalidaRes {
     private int id;
     private String numeroLicencia;
     private String estado;
-    private Set<String> especialidades;
-    private Set<String> servicios;
-
+    private String especialidad; // único
+    private String servicio;     // único
+    private String usuarioNombre;
 }

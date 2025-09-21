@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.vacuna.domain;
 
+import com.Vet.VetBackend.veterinario.domain.Veterinario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,4 +27,7 @@ public class Vacuna {
     private void normalize() {
         if (nombre != null) nombre = nombre.trim();
     }
+
+
+
 }

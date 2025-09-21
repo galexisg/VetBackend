@@ -29,15 +29,6 @@ public class Veterinario {
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
-    // 🔹 Relación muchos a muchos con especialidad
-    @ManyToMany
-    @JoinTable(
-            name = "veterinario_especialidad",
-            joinColumns = @JoinColumn(name = "veterinario_id"),
-            inverseJoinColumns = @JoinColumn(name = "especialidad_id")
-    )
-    private Set<Especialidad> especialidades = new HashSet<>();
-
     public enum Estado {
         Activo,
         Inactivo
@@ -48,24 +39,17 @@ public class Veterinario {
     @JoinColumn(name = "usuario_id", referencedColumnName = "usuarioId", nullable = false)
     private Usuario usuario;
 
-    // 🔹 Relación muchos a muchos con servicio
-    @ManyToMany
-    @JoinTable(
-            name = "veterinario_servicio",
-            joinColumns = @JoinColumn(name = "veterinario_id"),
-            inverseJoinColumns = @JoinColumn(name = "servicio_id")
-    )
-    private Set<Servicio> servicios = new HashSet<>();
-//
-//    // 🔹 Relación uno a muchos con emergencias
-//    @OneToMany(mappedBy = "veterinario")
-//    private Set<Emergencia> emergencias = new HashSet<>();
+    // 🔹 Relación muchos a uno con especialidad (una sola especialidad por veterinario)
+    @ManyToOne
+    @JoinColumn(name = "especialidad_id", nullable = false)
+    private Especialidad especialidad;
 
-//    // 🔹 Relación uno a muchos con prescripciones
-//    @OneToMany(mappedBy = "veterinario")
-//    private Set<Prescripcion> prescripciones = new HashSet<>();
+    // 🔹 Relación muchos a uno con servicio (un solo servicio por veterinario)
+    @ManyToOne
+    @JoinColumn(name = "servicio_id", nullable = false)
+    private Servicio servicios;
 
-    // 🔹 Relación uno a muchos con historial de vacunas
-    @OneToMany(mappedBy = "veterinario")
-    private Set<Vacuna> vacunasAplicadas = new HashSet<>();
+
 }
+
+
