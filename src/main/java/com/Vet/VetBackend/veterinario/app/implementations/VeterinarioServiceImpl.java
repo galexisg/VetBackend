@@ -33,25 +33,23 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
         Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Set<Especialidad> especialidades = especialidadRepo.findAllById(dto.getEspecialidadIds()).stream()
-                .filter(Especialidad::getActivo)
-                .collect(Collectors.toSet());
-
-        Set<Servicio> servicios = servicioRepo.findAllById(dto.getServicioIds()).stream()
+        Servicio servicio = servicioRepo.findById(dto.getServicioId())
                 .filter(Servicio::getActivo)
-                .collect(Collectors.toSet());
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
+
+        Especialidad especialidad = especialidadRepo.findById(dto.getEspecialidadId())
+                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
 
         Veterinario veterinario = Veterinario.builder()
                 .numeroLicencia(dto.getNumeroLicencia())
                 .estado(Veterinario.Estado.Activo)
                 .usuario(usuario)
-                .especialidades(especialidades)
-                .servicios(servicios)
+                .servicios(servicio)
+                .especialidad(especialidad)
                 .build();
 
         return toSalidaDTO(repositorio.save(veterinario));
     }
-
 
     @Override
     public List<VeterinarioSalidaRes> listar() {
@@ -82,6 +80,26 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
                 .orElseThrow(() -> new RuntimeException("Veterinario no encontrado"));
 
         veterinario.setNumeroLicencia(dto.getNumeroLicencia());
+
+        if (dto.getUsuarioId() != null) {
+            Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            veterinario.setUsuario(usuario);
+        }
+
+        if (dto.getServicioId() != null) {
+            Servicio servicio = servicioRepo.findById(dto.getServicioId())
+                    .filter(Servicio::getActivo)
+                    .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
+            veterinario.setServicios(servicio);
+        }
+
+        if (dto.getEspecialidadId() != null) {
+            Especialidad especialidad = especialidadRepo.findById(dto.getEspecialidadId())
+                    .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
+            veterinario.setEspecialidad(especialidad);
+        }
+
         if (dto.getEstado() != null) {
             veterinario.setEstado(Veterinario.Estado.valueOf(dto.getEstado()));
         }
@@ -106,21 +124,13 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
     }
 
     private VeterinarioSalidaRes toSalidaDTO(Veterinario v) {
-        Set<String> nombresEspecialidades = v.getEspecialidades().stream()
-                .map(Especialidad::getNombre)
-                .collect(Collectors.toSet());
-
-        Set<String> nombresServicios = v.getServicios().stream()
-                .map(Servicio::getNombre)
-                .collect(Collectors.toSet());
-
         return VeterinarioSalidaRes.builder()
                 .id(v.getId())
                 .numeroLicencia(v.getNumeroLicencia())
                 .estado(v.getEstado().name())
-                .especialidades(nombresEspecialidades)
-                .servicios(nombresServicios)
+                .servicio(v.getServicios().getNombre())        // único
+                .especialidad(v.getEspecialidad().getNombre()) // único
+                .usuarioNombre(v.getUsuario().getNombreCompleto())
                 .build();
     }
-
 }

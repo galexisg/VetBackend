@@ -51,6 +51,7 @@ public class Especialidad {
     @Column(name = "activo", nullable = false)
     private Boolean activo = true; // eliminación lógica
 
-    @ManyToMany(mappedBy = "especialidades")
+    @OneToMany(mappedBy = "especialidad")
     private Set<Veterinario> veterinarios = new HashSet<>();
+
 }
