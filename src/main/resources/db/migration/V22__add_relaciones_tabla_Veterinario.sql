@@ -11,7 +11,7 @@ ALTER TABLE veterinario
     ON UPDATE CASCADE;
 
 -- Relación muchos a uno con especialidad
-ALTER TABLE veterinario
+ALTER TABLE veterinari
     ADD CONSTRAINT fk_veterinario_especialidad
     FOREIGN KEY (especialidad_id) REFERENCES especialidad(especialidad_id)
     ON DELETE SET NULL
