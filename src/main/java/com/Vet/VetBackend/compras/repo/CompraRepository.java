@@ -8,9 +8,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface CompraRepository extends JpaRepository<Compra, Integer> {
-    // Métodos personalizados de búsqueda, si se necesitan.
+public interface CompraRepository extends JpaRepository<Compra, Long> { // corregido
+
     List<Compra> findByProveedorId(Integer proveedorId);
-    List<Compra> findByUsuarioId(Integer usuarioId);
+
     List<Compra> findByFecha(LocalDate fecha);
+
+    // ❌ Eliminado porque no existe en el modelo
+    // List<Compra> findByUsuarioId(Integer usuarioId);
 }

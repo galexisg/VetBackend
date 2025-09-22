@@ -1,13 +1,11 @@
 package com.Vet.VetBackend.compras.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Table(name = "compra_detalle")
 @Getter
 @Setter
 public class CompraDetalle {
@@ -16,8 +14,15 @@ public class CompraDetalle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long compraId;      // ID de la compra asociada
-    private Long productoId;    // ID del producto
+    @Column(name = "compra_id")
+    private Long compraId;
+
+    @Column(name = "producto_id")
+    private Long productoId;
+
+    @Column(name = "cantidad", nullable = false)
     private int cantidad;
+
+    @Column(name = "precio", nullable = false)
     private double precio;
 }

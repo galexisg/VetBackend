@@ -32,7 +32,7 @@ public class CompraServiceImpl implements CompraService {
     }
 
     @Override
-    public CompraObtener obtenerPorId(Integer id) {
+    public CompraObtener obtenerPorId(Long id) {
         Compra compra = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
         return modelMapper.map(compra, CompraObtener.class);
@@ -45,7 +45,7 @@ public class CompraServiceImpl implements CompraService {
     }
 
     @Override
-    public CompraObtener actualizar(Integer id, CompraActualizar dto) {
+    public CompraObtener actualizar(Long id, CompraActualizar dto) {
         Compra existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
         modelMapper.map(dto, existente);
@@ -53,12 +53,10 @@ public class CompraServiceImpl implements CompraService {
     }
 
     @Override
-    public void cancelar(Integer id, CompraCancelar dto) {
-        // En este método, podrías usar el 'motivoCancelacion' del DTO
+    public void cancelar(Long id, CompraCancelar dto) {
         Compra compra = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
-        // Aquí puedes actualizar el estado de la compra a 'CANCELADA' en lugar de eliminarla
-        repository.deleteById(id);
+        repository.deleteById(id); // temporal, hasta que agregues campo estado
     }
 
     @Override
@@ -71,13 +69,6 @@ public class CompraServiceImpl implements CompraService {
     @Override
     public List<CompraObtener> obtenerPorFecha(LocalDate fecha) {
         return repository.findByFecha(fecha).stream()
-                .map(compra -> modelMapper.map(compra, CompraObtener.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CompraObtener> obtenerPorUsuario(Integer usuarioId) {
-        return repository.findByUsuarioId(usuarioId).stream()
                 .map(compra -> modelMapper.map(compra, CompraObtener.class))
                 .collect(Collectors.toList());
     }
