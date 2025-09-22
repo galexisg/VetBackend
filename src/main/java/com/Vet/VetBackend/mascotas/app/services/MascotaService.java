@@ -8,5 +8,5 @@ public interface MascotaService {
     Mascota actualizar(Integer id, Mascota mascota);
     Mascota obtenerPorId(Integer id);
     List<Mascota> listarTodos();
+    void eliminar(Integer id);
 }
-

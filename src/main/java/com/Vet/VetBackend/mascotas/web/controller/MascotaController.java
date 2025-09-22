@@ -49,6 +49,13 @@ public class MascotaController {
         return ResponseEntity.ok(lista);
     }
 
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        mascotaService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+
     // Métodos de mapeo
     private Mascota mapToEntity(MascotaReq request) {
         Mascota mascota = new Mascota();
@@ -71,8 +78,6 @@ public class MascotaController {
         response.setNacimiento(mascota.getNacimiento());
         response.setSexo(mascota.getSexo());
         response.setPeso(mascota.getPeso());
-        // if (mascota.getUsuario() != null) response.setUsuarioId(mascota.getUsuario().getId());
-        // if (mascota.getRaza() != null) response.setRazaId(mascota.getRaza().getId());
         return response;
     }
 }
