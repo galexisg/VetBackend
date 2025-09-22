@@ -22,13 +22,13 @@ public class EstadoDiaServiceImpl implements IEstadoDiaService {
     @Override
     public List<EstadoDiaSalidaRes> findAll() {
         return estadoDiaRepository.findAll().stream()
-                .map(this::toSalidaDTO) // Esta línea ya funcionará
+                .map(this::toSalidaDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public EstadoDiaSalidaRes findById(int estadoDiaId) {
-        EstadoDia estado = (EstadoDia) estadoDiaRepository.findById(estadoDiaId)
+        EstadoDia estado = estadoDiaRepository.findById(estadoDiaId)
                 .orElseThrow(() -> new EntityNotFoundException("Estado no encontrado con ID: " + estadoDiaId));
         return toSalidaDTO(estado);
     }
@@ -36,7 +36,7 @@ public class EstadoDiaServiceImpl implements IEstadoDiaService {
     @Override
     public EstadoDiaSalidaRes save(EstadoDiaGuardarReq estadoDiaDTO) {
         EstadoDia estado = EstadoDia.builder()
-                .nombre(estadoDiaDTO.getNombre())
+                .estado(estadoDiaDTO.getEstado())
                 .build();
 
         return toSalidaDTO(estadoDiaRepository.save(estado));
@@ -44,10 +44,10 @@ public class EstadoDiaServiceImpl implements IEstadoDiaService {
 
     @Override
     public EstadoDiaSalidaRes update(int estadoDiaId, EstadoDiaModificarReq estadoDiaDTO) {
-        EstadoDia estadoExistente = (EstadoDia) estadoDiaRepository.findById(estadoDiaId)
+        EstadoDia estadoExistente = estadoDiaRepository.findById(estadoDiaId)
                 .orElseThrow(() -> new EntityNotFoundException("Estado no encontrado con ID: " + estadoDiaId));
 
-        estadoExistente.setNombre(estadoDiaDTO.getNombre());
+        estadoExistente.setEstado(estadoDiaDTO.getEstado());
 
         return toSalidaDTO(estadoDiaRepository.save(estadoExistente));
     }
@@ -63,7 +63,7 @@ public class EstadoDiaServiceImpl implements IEstadoDiaService {
     private EstadoDiaSalidaRes toSalidaDTO(EstadoDia estado) {
         return EstadoDiaSalidaRes.builder()
                 .estadoDiaId(estado.getEstadoDiaId())
-                .nombre(estado.getNombre())
+                .estado(estado.getEstado())
                 .build();
     }
 }

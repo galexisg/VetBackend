@@ -5,7 +5,10 @@ import com.Vet.VetBackend.agenda.domain.Dia;
 import com.Vet.VetBackend.agenda.domain.EstadoDia;
 import com.Vet.VetBackend.agenda.repo.DiaRepository;
 import com.Vet.VetBackend.agenda.repo.EstadoDiaRepository;
-import com.Vet.VetBackend.agenda.web.dto.*;
+import com.Vet.VetBackend.agenda.web.dto.DiaGuardarReq;
+import com.Vet.VetBackend.agenda.web.dto.DiaModificarReq;
+import com.Vet.VetBackend.agenda.web.dto.DiaSalidaRes;
+import com.Vet.VetBackend.agenda.web.dto.EstadoDiaSalidaRes;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +38,7 @@ public class DiaServiceImpl implements IDiaService {
 
     @Override
     public DiaSalidaRes save(DiaGuardarReq diaDTO) {
-        EstadoDia estado = (EstadoDia) estadoDiaRepository.findById(diaDTO.getEstadoDiaId())
+        EstadoDia estado = estadoDiaRepository.findById(diaDTO.getEstadoDiaId())
                 .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado con ID: " + diaDTO.getEstadoDiaId()));
 
         Dia dia = Dia.builder()
@@ -51,7 +54,7 @@ public class DiaServiceImpl implements IDiaService {
         Dia diaExistente = diaRepository.findById(diaId)
                 .orElseThrow(() -> new EntityNotFoundException("Día no encontrado con ID: " + diaId));
 
-        EstadoDia estado = (EstadoDia) estadoDiaRepository.findById(diaDTO.getEstadoDiaId())
+        EstadoDia estado = estadoDiaRepository.findById(diaDTO.getEstadoDiaId())
                 .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado con ID: " + diaDTO.getEstadoDiaId()));
 
         diaExistente.setNombre(diaDTO.getNombre());
@@ -71,7 +74,7 @@ public class DiaServiceImpl implements IDiaService {
     private DiaSalidaRes toSalidaDTO(Dia dia) {
         EstadoDiaSalidaRes estadoDto = EstadoDiaSalidaRes.builder()
                 .estadoDiaId(dia.getEstadoDia().getEstadoDiaId())
-                .nombre(dia.getEstadoDia().getNombre())
+                .estado(dia.getEstadoDia().getEstado()) // ⚠️ Aquí se corrigió
                 .build();
 
         return DiaSalidaRes.builder()

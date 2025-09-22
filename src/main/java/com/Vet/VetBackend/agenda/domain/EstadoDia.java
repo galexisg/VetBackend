@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "estado")
+@Table(name = "estadodia") // ⚠️ Nombre de la tabla corregido
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,9 +14,16 @@ public class EstadoDia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EstadoDiaId")
+    @Column(name = "estado_dia_id")
     private Integer estadoDiaId;
 
-    @Column(name = "Nombre", length = 45, nullable = false)
-    private String nombre;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", length = 45, nullable = false)
+    private Estado estado;
+
+
+    public enum Estado {
+        Activo,
+        Inactivo
+    }
 }
