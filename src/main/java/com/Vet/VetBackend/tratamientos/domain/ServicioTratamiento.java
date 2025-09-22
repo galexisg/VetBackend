@@ -19,6 +19,9 @@ public class ServicioTratamiento {
 
     @Column(name = "tratamiento_id", nullable = false)  // ← doc
     private Long tratamientoId;
+
+    @Column(nullable = false)
+    private boolean activo = true;  // por defecto activo
 }
 
 
