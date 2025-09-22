@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,9 +15,13 @@ public class MovimientoDetalle_Modificar implements Serializable {
 
     private double costoUnitario;
 
+    private LocalDateTime fecha;
+
     private Integer movimientoInventarioId;
 
     private Integer medicamentoId;
 
-    private Integer lotes_medicamentosId;
+    private Integer loteMedicamentoId;
+
+    private Integer almacenId;
 }

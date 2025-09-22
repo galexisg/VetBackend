@@ -17,6 +17,5 @@ public class MovimientoDetalle_Guardar implements Serializable {
     private Integer loteMedicamentoId; // corregido nombre
 
     private Integer almacenId;         //  faltaba
-    private LocalDateTime fecha;       //  faltaba
-    private Integer usuarioId;         // faltaba
+    private LocalDateTime fecha;      // faltaba
 }
