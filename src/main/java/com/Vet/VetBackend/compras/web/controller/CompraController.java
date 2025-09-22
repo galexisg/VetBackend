@@ -24,7 +24,7 @@ public class CompraController {
 
     // GET /api/compras/{id} - Obtener compra por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Compra> obtenerCompraPorId(@PathVariable Integer id) {
+    public ResponseEntity<Compra> obtenerCompraPorId(@PathVariable Long id) {
         return compraRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -38,11 +38,10 @@ public class CompraController {
 
     // PUT /api/compras/{id} - Actualizar compra
     @PutMapping("/{id}")
-    public ResponseEntity<Compra> actualizarCompra(@PathVariable Integer id, @RequestBody Compra compraDetails) {
+    public ResponseEntity<Compra> actualizarCompra(@PathVariable Long id, @RequestBody Compra compraDetails) {
         return compraRepository.findById(id)
                 .map(compra -> {
                     compra.setProveedorId(compraDetails.getProveedorId());
-                    compra.setUsuarioId(compraDetails.getUsuarioId());
                     compra.setFecha(compraDetails.getFecha());
                     compra.setDescripcion(compraDetails.getDescripcion());
                     compra.setTotal(compraDetails.getTotal());
@@ -54,7 +53,7 @@ public class CompraController {
 
     // DELETE /api/compras/{id} - Cancelar compra
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelarCompra(@PathVariable Integer id) {
+    public ResponseEntity<Void> cancelarCompra(@PathVariable Long id) {
         return compraRepository.findById(id)
                 .map(compra -> {
                     compraRepository.delete(compra);
@@ -74,11 +73,5 @@ public class CompraController {
     public List<Compra> comprasPorFecha(@PathVariable String fecha) {
         LocalDate date = LocalDate.parse(fecha);
         return compraRepository.findByFecha(date);
-    }
-
-    // GET /api/compras/usuario/{usuarioId} - Compras por usuario
-    @GetMapping("/usuario/{usuarioId}")
-    public List<Compra> comprasPorUsuario(@PathVariable Integer usuarioId) {
-        return compraRepository.findByUsuarioId(usuarioId);
     }
 }
