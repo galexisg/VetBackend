@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Setter
@@ -13,11 +14,11 @@ public class MovimientoInventario_Modificar implements Serializable {
 
     private String tipo;
 
-    private Date fecha;
+    private LocalDateTime fecha;
 
     private String observacion;
 
     private Integer almacenId;
 
-    private Integer usuarioId;
+    //private Integer usuarioId;
 }
