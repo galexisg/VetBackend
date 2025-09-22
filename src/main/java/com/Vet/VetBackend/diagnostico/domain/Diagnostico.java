@@ -24,8 +24,8 @@ public class Diagnostico {
     @Column(name = "descripcion", columnDefinition = "TEXT", nullable = false)
     private String descripcion;
 
-    @Column(name = "activo", nullable = false)
-    private boolean activo = true;
+    @Column(name = "activo", nullable = false)  // 👈 columna en BD se sigue llamando 'activo'
+    private boolean estadoDiagnostico = true;
 
     @Column(name = "creado_at", nullable = false, updatable = false, insertable = false)
     @org.hibernate.annotations.CreationTimestamp
@@ -63,12 +63,12 @@ public class Diagnostico {
         this.descripcion = descripcion;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public boolean isEstadoDiagnostico() {
+        return estadoDiagnostico;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setEstadoDiagnostico(boolean estadoDiagnostico) {
+        this.estadoDiagnostico = estadoDiagnostico;
     }
 
     public LocalDateTime getCreadoAt() {

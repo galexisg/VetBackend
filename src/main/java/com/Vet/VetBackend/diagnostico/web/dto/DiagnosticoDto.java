@@ -1,5 +1,7 @@
 package com.Vet.VetBackend.diagnostico.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class DiagnosticoDto {
@@ -7,7 +9,8 @@ public class DiagnosticoDto {
     private Long citaId;
     private String nombre;
     private String descripcion;
-    private boolean activo;
+    @JsonProperty("estadoDiagnostico")   // 👈 así tu API expone 'estadoDiagnostico'
+    private boolean estadoDiagnostico;
     private LocalDateTime creadoAt;
 
     public Long getId() {
@@ -42,12 +45,12 @@ public class DiagnosticoDto {
         this.descripcion = descripcion;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public boolean isEstadoDiagnostico() {
+        return estadoDiagnostico;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setEstadoDiagnostico(boolean estadoDiagnostico) {
+        this.estadoDiagnostico = estadoDiagnostico;
     }
 
     public LocalDateTime getCreadoAt() {

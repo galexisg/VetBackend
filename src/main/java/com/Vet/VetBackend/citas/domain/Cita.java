@@ -25,7 +25,7 @@ public class Cita {
     private int motivoId;
 
     @Column(name = "cita_estado_id", nullable = true)
-    private int citaEstadoId;
+    private Integer citaEstadoId;
 
 
     @Column(name = "factura_id", nullable = true)

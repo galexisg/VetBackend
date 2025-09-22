@@ -9,6 +9,7 @@ import com.Vet.VetBackend.diagnostico.web.dto.DiagnosticoDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +24,25 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
         this.diagnosticoRepository = diagnosticoRepository;
         this.citaRepository = citaRepository;
         this.modelMapper = modelMapper;
+
+        // DTO → Entidad (crear map vacío para evitar conflictos)
+        modelMapper.emptyTypeMap(DiagnosticoDto.class, Diagnostico.class)
+                .addMappings(m -> m.skip(Diagnostico::setCita)) // evitamos map automático
+                .setPostConverter(ctx -> {
+                    DiagnosticoDto src = ctx.getSource();
+                    Diagnostico dest = ctx.getDestination();
+                    if (src.getCitaId() != null) {
+                        dest.setCita(
+                                citaRepository.findById(src.getCitaId())
+                                        .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada"))
+                        );
+                    }
+                    return dest;
+                });
+
+        // Entidad → DTO
+        modelMapper.emptyTypeMap(Diagnostico.class, DiagnosticoDto.class)
+                .addMapping(d -> d.getCita().getCitaId(), DiagnosticoDto::setCitaId);
     }
 
     @Override
@@ -41,9 +61,11 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
         diagnostico.setCita(cita);
         diagnostico.setNombre(dto.getNombre());
         diagnostico.setDescripcion(dto.getDescripcion());
-        diagnostico.setActivo(true);
+        diagnostico.setEstadoDiagnostico(true); // siempre activo al crear
+        diagnostico.setCreadoAt(LocalDateTime.now());
 
-        return modelMapper.map(diagnosticoRepository.save(diagnostico), DiagnosticoDto.class);
+        Diagnostico guardado = diagnosticoRepository.save(diagnostico);
+        return modelMapper.map(guardado, DiagnosticoDto.class);
     }
 
     @Override
@@ -62,12 +84,14 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
     }
 
     @Override
-    public DiagnosticoDto cambiarEstado(Long id, boolean activo) {
+    public DiagnosticoDto cambiarEstado(Long id, boolean estadoDiagnostico) {
         Diagnostico diagnostico = diagnosticoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Diagnóstico no encontrado"));
 
-        diagnostico.setActivo(activo);
-        return modelMapper.map(diagnosticoRepository.save(diagnostico), DiagnosticoDto.class);
+        diagnostico.setEstadoDiagnostico(estadoDiagnostico);
+
+        Diagnostico actualizado = diagnosticoRepository.save(diagnostico);
+        return modelMapper.map(actualizado, DiagnosticoDto.class);
     }
 }
 
