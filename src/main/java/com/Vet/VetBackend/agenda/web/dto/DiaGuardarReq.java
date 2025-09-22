@@ -2,7 +2,10 @@ package com.Vet.VetBackend.agenda.web.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +17,6 @@ public class DiaGuardarReq {
     @Size(max = 20, message = "El nombre no puede exceder los 20 caracteres")
     private String nombre;
 
-    @NotNull(message = "El ID del estado del día no puede ser nulo")
-    private Integer estadoDiaId;
+    @NotNull(message = "El estado del día no puede ser nulo")
+    private String estadoDia; // Ahora corresponde al ENUM: "Activo" o "Inactivo"
 }

@@ -8,7 +8,6 @@ import com.Vet.VetBackend.agenda.repo.EstadoDiaRepository;
 import com.Vet.VetBackend.agenda.web.dto.DiaGuardarReq;
 import com.Vet.VetBackend.agenda.web.dto.DiaModificarReq;
 import com.Vet.VetBackend.agenda.web.dto.DiaSalidaRes;
-import com.Vet.VetBackend.agenda.web.dto.EstadoDiaSalidaRes;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,12 +37,20 @@ public class DiaServiceImpl implements IDiaService {
 
     @Override
     public DiaSalidaRes save(DiaGuardarReq diaDTO) {
-        EstadoDia estado = estadoDiaRepository.findById(diaDTO.getEstadoDiaId())
-                .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado con ID: " + diaDTO.getEstadoDiaId()));
+        // Convertir String a Enum de forma segura
+        EstadoDia.Estado estadoEnum;
+        try {
+            estadoEnum = EstadoDia.Estado.valueOf(diaDTO.getEstadoDia());
+        } catch (IllegalArgumentException e) {
+            throw new EntityNotFoundException("Estado inválido: " + diaDTO.getEstadoDia());
+        }
+
+        EstadoDia estadoDia = estadoDiaRepository.findByEstado(estadoEnum)
+                .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado: " + estadoEnum));
 
         Dia dia = Dia.builder()
                 .nombre(diaDTO.getNombre())
-                .estadoDia(estado)
+                .estadoDia(estadoDia)
                 .build();
 
         return toSalidaDTO(diaRepository.save(dia));
@@ -54,11 +61,19 @@ public class DiaServiceImpl implements IDiaService {
         Dia diaExistente = diaRepository.findById(diaId)
                 .orElseThrow(() -> new EntityNotFoundException("Día no encontrado con ID: " + diaId));
 
-        EstadoDia estado = estadoDiaRepository.findById(diaDTO.getEstadoDiaId())
-                .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado con ID: " + diaDTO.getEstadoDiaId()));
+        // Convertir String a Enum
+        EstadoDia.Estado estadoEnum;
+        try {
+            estadoEnum = EstadoDia.Estado.valueOf(diaDTO.getEstadoDia());
+        } catch (IllegalArgumentException e) {
+            throw new EntityNotFoundException("Estado inválido: " + diaDTO.getEstadoDia());
+        }
+
+        EstadoDia estadoDia = estadoDiaRepository.findByEstado(estadoEnum)
+                .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado: " + estadoEnum));
 
         diaExistente.setNombre(diaDTO.getNombre());
-        diaExistente.setEstadoDia(estado);
+        diaExistente.setEstadoDia(estadoDia);
 
         return toSalidaDTO(diaRepository.save(diaExistente));
     }
@@ -71,16 +86,12 @@ public class DiaServiceImpl implements IDiaService {
         diaRepository.deleteById(diaId);
     }
 
+    // DTO de salida simplificado: devuelve solo el nombre del día y el estado
     private DiaSalidaRes toSalidaDTO(Dia dia) {
-        EstadoDiaSalidaRes estadoDto = EstadoDiaSalidaRes.builder()
-                .estadoDiaId(dia.getEstadoDia().getEstadoDiaId())
-                .estado(dia.getEstadoDia().getEstado()) // ⚠️ Aquí se corrigió
-                .build();
-
         return DiaSalidaRes.builder()
                 .diaId(dia.getDiaId())
                 .nombre(dia.getNombre())
-                .estadoDia(estadoDto)
+                .estado(dia.getEstadoDia().getEstado().name()) // Solo el nombre del enum como String
                 .build();
     }
 }

@@ -2,8 +2,9 @@ package com.Vet.VetBackend.agenda.web.controller;
 
 import com.Vet.VetBackend.agenda.app.services.IDetalleHorarioVeterinarioService;
 import com.Vet.VetBackend.agenda.web.dto.DetalleHorarioVeterinarioGuardarReq;
+import com.Vet.VetBackend.agenda.web.dto.DetalleHorarioVeterinarioModificarReq;
 import com.Vet.VetBackend.agenda.web.dto.DetalleHorarioVeterinarioSalidaRes;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/detallehorarioveterinario")
+@RequiredArgsConstructor
 public class DetalleHorarioVeterinarioController {
 
-    @Autowired
-    private IDetalleHorarioVeterinarioService detalleHorarioVeterinarioService;
+    private final IDetalleHorarioVeterinarioService detalleHorarioVeterinarioService;
 
     @GetMapping
     public ResponseEntity<List<DetalleHorarioVeterinarioSalidaRes>> listarTodos() {
@@ -33,7 +34,9 @@ public class DetalleHorarioVeterinarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DetalleHorarioVeterinarioSalidaRes> actualizar(@PathVariable Integer id, @RequestBody DetalleHorarioVeterinarioGuardarReq detalleDTO) {
+    public ResponseEntity<DetalleHorarioVeterinarioSalidaRes> actualizar(
+            @PathVariable Integer id,
+            @RequestBody DetalleHorarioVeterinarioModificarReq detalleDTO) {
         return ResponseEntity.ok(detalleHorarioVeterinarioService.update(id, detalleDTO));
     }
 

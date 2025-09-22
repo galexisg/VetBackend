@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.agenda.domain;
 
+import com.Vet.VetBackend.veterinario.domain.Veterinario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,23 +9,23 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "detalle_horario_veterinario") // Nombre de la tabla
+@Table(name = "detalle_horario_veterinario")
 public class DetalleHorarioVeterinario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "detalle_horario_veterinario_id") // Nombre de la columna
+    @Column(name = "detalle_horario_veterinario_id")
     private Integer detalleHorarioVeterinarioId;
 
-//    @ManyToOne
-//    @JoinColumn(name = "veterinario_id", referencedColumnName = "veterinario_id") // Clave foránea
-//    private Veterinario veterinario;
+    @ManyToOne
+    @JoinColumn(name = "veterinario_id", referencedColumnName = "veterinario_id")
+    private Veterinario veterinario;
 
     @ManyToOne
-    @JoinColumn(name = "dia_id", referencedColumnName = "dia_id") // Clave foránea
+    @JoinColumn(name = "dia_id", referencedColumnName = "dia_id")
     private Dia dia;
 
     @ManyToOne
-    @JoinColumn(name = "bloque_horario_id", referencedColumnName = "bloque_horario_id") // Clave foránea
+    @JoinColumn(name = "bloque_horario_id", referencedColumnName = "bloque_horario_id")
     private BloqueHorario bloqueHorario;
 }

@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class DetalleHorarioVeterinarioModificarReq {
     private int veterinarioId;
     private int diaId;
-    private Byte bloqueHorarioId;
+    private int bloqueHorarioId;
 }

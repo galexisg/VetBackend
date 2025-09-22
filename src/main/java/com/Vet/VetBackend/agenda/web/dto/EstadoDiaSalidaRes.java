@@ -1,6 +1,5 @@
 package com.Vet.VetBackend.agenda.web.dto;
 
-import com.Vet.VetBackend.agenda.domain.EstadoDia;
 import lombok.*;
 
 @Data
@@ -8,8 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class EstadoDiaSalidaRes {
-
     private Integer estadoDiaId;
-
-    private EstadoDia.Estado estado;
+    private String estado; // ⚠️ solo String
 }
