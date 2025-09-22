@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.vacuna.domain;
 
+import com.Vet.VetBackend.veterinario.domain.Veterinario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -22,8 +23,14 @@ public class Vacuna {
     @Column(name = "nombre", nullable = false, length = 80)
     private String nombre;
 
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = true;  // true = habilitado, false = deshabilitado
+
     @PrePersist @PreUpdate
     private void normalize() {
         if (nombre != null) nombre = nombre.trim();
     }
+
+
+
 }
