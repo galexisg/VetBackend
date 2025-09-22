@@ -60,10 +60,11 @@ public class EstadoDiaServiceImpl implements IEstadoDiaService {
         estadoDiaRepository.deleteById(estadoDiaId);
     }
 
-    private EstadoDiaSalidaRes toSalidaDTO(EstadoDia estado) {
+    private EstadoDiaSalidaRes toSalidaDTO(EstadoDia estadoDia) {
         return EstadoDiaSalidaRes.builder()
-                .estadoDiaId(estado.getEstadoDiaId())
-                .estado(estado.getEstado())
+                .estadoDiaId(estadoDia.getEstadoDiaId())
+                .estado(estadoDia.getEstado().name()) // ⚠️ aquí usamos .name() para convertir enum a String
                 .build();
     }
+
 }
