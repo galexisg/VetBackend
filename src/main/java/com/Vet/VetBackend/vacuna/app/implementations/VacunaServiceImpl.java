@@ -42,6 +42,7 @@ public class VacunaServiceImpl implements VacunaService {
         return repo.save(v);
     }
 
+
     @Override
     public Vacuna actualizar(Integer id, Vacuna v) {
         var actual = obtener(id);
@@ -55,7 +56,14 @@ public class VacunaServiceImpl implements VacunaService {
         actual.setNombre(v.getNombre());
 
         return repo.save(actual);
+
     }
 
+    @Override
+    public Vacuna estado(Integer id, boolean habilitar) {
+        Vacuna vacuna = obtener(id); // reutilizamos método existente
+        vacuna.setEstado(habilitar);
+        return repo.save(vacuna);
+    }
 }
 
