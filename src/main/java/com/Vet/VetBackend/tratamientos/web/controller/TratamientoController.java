@@ -5,8 +5,6 @@ import com.Vet.VetBackend.tratamientos.app.services.TratamientoService;
 import com.Vet.VetBackend.tratamientos.web.dto.TratamientoReq;
 import com.Vet.VetBackend.tratamientos.web.dto.TratamientoRes;
 import org.springframework.web.bind.annotation.*;
-
-
 import java.util.List;
 
 @RestController
