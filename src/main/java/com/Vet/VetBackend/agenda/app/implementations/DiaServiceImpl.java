@@ -74,7 +74,7 @@ public class DiaServiceImpl implements IDiaService {
     private DiaSalidaRes toSalidaDTO(Dia dia) {
         EstadoDiaSalidaRes estadoDto = EstadoDiaSalidaRes.builder()
                 .estadoDiaId(dia.getEstadoDia().getEstadoDiaId())
-                .estado(dia.getEstadoDia().getEstado()) // ⚠️ Aquí se corrigió
+                .estado(dia.getEstadoDia().getEstado())
                 .build();
 
         return DiaSalidaRes.builder()

@@ -13,13 +13,13 @@ public class Dia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dia_id") // ⚠️ El nombre de la columna es "dia_id"
+    @Column(name = "dia_id")
     private int diaId;
 
-    @Column(name = "nombre", length = 20, nullable = false) // ⚠️ El nombre de la columna es "nombre"
+    @Column(name = "nombre", length = 20, nullable = false)
     private String nombre;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "estado_dia_id", nullable = false) // ⚠️ El nombre de la columna es "estado_dia_id"
+    @JoinColumn(name = "estado_dia_id", nullable = false)
     private EstadoDia estadoDia;
 }
