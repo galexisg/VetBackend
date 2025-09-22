@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.clinica.web.dto;
 
+import com.Vet.VetBackend.consulta.web.dto.ConsultaDto;
 import com.Vet.VetBackend.tratamientos.web.dto.TratamientoAplicadoRes;
 
 import java.time.LocalDateTime;
@@ -7,13 +8,12 @@ import java.util.List;
 
 public class HistorialDto {
     private Long id;
-    private Long mascotaId;
+    private Integer mascotaId;
     private Long citaId;
-    private Long veterinarioId;
-    private String diagnostico;
+    private Integer veterinarioId;
     private LocalDateTime creadoAt;
-    // Aquí integramos la lista de tratamientos aplicados
     private List<TratamientoAplicadoRes> tratamientosAplicados;
+    private List<ConsultaDto> consultas;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class HistorialDto {
         this.id = id;
     }
 
-    public Long getMascotaId() {
+    public Integer getMascotaId() {
         return mascotaId;
     }
 
-    public void setMascotaId(Long mascotaId) {
+    public void setMascotaId(Integer mascotaId) {
         this.mascotaId = mascotaId;
     }
 
@@ -39,20 +39,12 @@ public class HistorialDto {
         this.citaId = citaId;
     }
 
-    public Long getVeterinarioId() {
+    public Integer getVeterinarioId() {
         return veterinarioId;
     }
 
-    public void setVeterinarioId(Long veterinarioId) {
+    public void setVeterinarioId(Integer veterinarioId) {
         this.veterinarioId = veterinarioId;
-    }
-
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
     }
 
     public LocalDateTime getCreadoAt() {
@@ -69,5 +61,13 @@ public class HistorialDto {
 
     public void setTratamientosAplicados(List<TratamientoAplicadoRes> tratamientosAplicados) {
         this.tratamientosAplicados = tratamientosAplicados;
+    }
+
+    public List<ConsultaDto> getConsultas() {
+        return consultas;
+    }
+
+    public void setConsultas(List<ConsultaDto> consultas) {
+        this.consultas = consultas;
     }
 }

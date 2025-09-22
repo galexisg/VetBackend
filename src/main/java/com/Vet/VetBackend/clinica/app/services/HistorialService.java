@@ -8,9 +8,8 @@ import java.util.concurrent.CompletableFuture;
 
 public interface HistorialService {
     CompletableFuture<HistorialDto> crearHistorial(HistorialDto historialDTO);
-    CompletableFuture<HistorialDto> actualizarHistorial(Long id, HistorialDto historialDTO);
     CompletableFuture<List<HistorialDto>> obtenerTodos();
     CompletableFuture<HistorialDto> obtenerPorId(Long id);
-    CompletableFuture<List<HistorialDto>> obtenerHistorialesPorMascota(Long mascotaId);
+    CompletableFuture<List<HistorialDto>> obtenerHistorialesPorMascota(Integer mascotaId);
 }
 
