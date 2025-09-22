@@ -55,7 +55,7 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
     public void eliminar_detalle(Long id, CancelarDetalle dto) {
         CompraDetalle detalle = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Detalle de compra no encontrado"));
-        repository.delete(detalle);
+        repository.delete(detalle); // temporal, hasta que agregues campo estado
     }
 
     @Override

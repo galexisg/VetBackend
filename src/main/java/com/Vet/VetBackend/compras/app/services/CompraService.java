@@ -1,6 +1,5 @@
 package com.Vet.VetBackend.compras.app.services;
 
-
 import com.Vet.VetBackend.compras.web.dto.CompraActualizar;
 import com.Vet.VetBackend.compras.web.dto.CompraCancelar;
 import com.Vet.VetBackend.compras.web.dto.CompraCrear;
@@ -11,25 +10,20 @@ import java.util.List;
 
 public interface CompraService {
 
-    // Crear una nueva compra
     CompraObtener crear(CompraCrear compraCrear);
 
-    // Obtener una compra específica por ID
-    CompraObtener obtenerPorId(Integer id);
+    CompraObtener obtenerPorId(Long id); // corregido
 
-    // Listar todas las compras
     List<CompraObtener> obtenerTodos();
 
-    // Actualizar una compra existente
-    CompraObtener actualizar(Integer id, CompraActualizar compraActualizar);
+    CompraObtener actualizar(Long id, CompraActualizar compraActualizar); // corregido
 
-    // Cancelar una compra por ID
-    void cancelar(Integer id, CompraCancelar dto);
+    void cancelar(Long id, CompraCancelar dto); // corregido
 
-    // ✅ Métodos adicionales que ya tienes implementados
     List<CompraObtener> obtenerPorProveedor(Integer proveedorId);
 
     List<CompraObtener> obtenerPorFecha(LocalDate fecha);
 
-    List<CompraObtener> obtenerPorUsuario(Integer usuarioId);
+    // ❌ Eliminado porque no existe en el modelo
+    // List<CompraObtener> obtenerPorUsuario(Integer usuarioId);
 }
