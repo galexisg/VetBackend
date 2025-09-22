@@ -1,6 +1,5 @@
 package com.Vet.VetBackend.raza.domain;
 
-//import com.Vet.VetBackend.especie.domain.Especie;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,17 +12,13 @@ public class Raza {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RazaId")
-    private Integer id; // Usamos Integer para mayor compatibilidad con Hibernate
-// Cuando la charon termine sus clases correspondientes la michel va a descomentar este codigo que esta comentado y va a eliminar el no lleva manytoone
+    @Column(name = "raza_id") // <-- igual que en la BD
+    private  Byte id;
 
-    //    @ManyToOne
-//    @JoinColumn(name = "EspecieId", nullable = false, foreignKey = @ForeignKey(name = "fk_raza__especie"))
-//    private Especie especie;
-    // Dejamos la relación como simple columna, sin @ManyToOne por ahora
-    @Column(name = "EspecieId", nullable = false)
-    private Integer especieId;
+    // por ahora lo dejamos como columna simple
+    @Column(name = "especie_id", nullable = false) // <-- igual que en la BD
+    private  Byte especieId;
 
-    @Column(name = "Nombre", length = 60, nullable = false)
+    @Column(name = "nombre", length = 60, nullable = false) // <-- igual que en la BD
     private String nombre;
 }

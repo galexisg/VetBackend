@@ -9,5 +9,6 @@ import java.io.Serializable;
 @Setter
 public class RazaGuardar implements Serializable{
     private String nombre;
+    private  Byte especieId;
 
 }

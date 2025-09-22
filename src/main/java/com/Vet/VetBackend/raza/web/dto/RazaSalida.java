@@ -11,5 +11,6 @@ import java.io.Serializable;
 public class RazaSalida implements Serializable {
     private Integer id;
     private String nombre;
+    private Byte especieId;
 
 }

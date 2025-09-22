@@ -57,9 +57,13 @@ public class RazaServiceImpl implements IRazaService{
     }
 
     @Override
-    public RazaSalida crear(RazaGuardar razaGuardar) {
-        Raza raza =razaRepository.save(modelMapper.map(razaGuardar, Raza.class));
-        return modelMapper.map(raza, RazaSalida.class);
+    public RazaSalida crear(RazaGuardar dto) {
+        Raza r = new Raza();
+        r.setNombre(dto.getNombre());
+        r.setEspecieId(dto.getEspecieId());   // <-- ahora sí llega desde el DTO
+
+        Raza saved = razaRepository.save(r);
+        return toSalida(saved);               // <-- mapeo manual
     }
 
     @Override
@@ -72,5 +76,9 @@ public class RazaServiceImpl implements IRazaService{
     public void eliminarPorId(Integer id) {
         razaRepository.deleteById(id);
 
+    }
+
+    private RazaSalida toSalida(Raza r) {
+        return new RazaSalida();
     }
 }
