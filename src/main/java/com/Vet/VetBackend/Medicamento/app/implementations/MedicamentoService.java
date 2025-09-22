@@ -6,6 +6,7 @@ import com.Vet.VetBackend.Medicamento.web.dto.MedicamentoSalida;
 import com.Vet.VetBackend.Medicamento.domain.Medicamento;
 import com.Vet.VetBackend.Medicamento.repo.IMedicamentoRepository;
 import com.Vet.VetBackend.Medicamento.app.services.IMedicamentoService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,15 @@ import java.util.stream.Collectors;
 public class MedicamentoService implements IMedicamentoService {
 
     private static final Logger log = LoggerFactory.getLogger(MedicamentoService.class);
-    @Autowired
-    private IMedicamentoRepository medicamentoRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private IMedicamentoRepository medicamentoRepository;
 
     @Override
     public List<MedicamentoSalida> obtenerTodos() {
         List<Medicamento> medicamentos = medicamentoRepository.findAll();
         return medicamentos.stream()
-                .map(medicamento -> modelMapper.map(medicamento, MedicamentoSalida.class))
+                .map(MedicamentoSalida::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +39,7 @@ public class MedicamentoService implements IMedicamentoService {
         Page<Medicamento> page = medicamentoRepository.findAll(pageable);
 
         List<MedicamentoSalida> medicamentoDto = page.stream()
-                .map(medicamento -> modelMapper.map(medicamento, MedicamentoSalida.class))
+                .map(MedicamentoSalida::fromEntity)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(medicamentoDto, page.getPageable(), page.getTotalElements());
@@ -48,25 +47,58 @@ public class MedicamentoService implements IMedicamentoService {
 
     @Override
     public MedicamentoSalida obtenerPorId(Integer id) {
-        return modelMapper.map(medicamentoRepository.findById(id).get(), MedicamentoSalida.class);
+        Medicamento medicamento = medicamentoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+        return MedicamentoSalida.fromEntity(medicamento);
     }
 
     @Override
-    public MedicamentoSalida crear(MedicamentoGuardar medicamentoGuardar) {
-        Medicamento medicamento =medicamentoRepository.save(modelMapper.map(medicamentoGuardar, Medicamento.class));
-        return modelMapper.map(medicamento, MedicamentoSalida.class);
+    public MedicamentoSalida crear(MedicamentoGuardar dto) {
+        Medicamento medicamento = toEntity(dto);
+        medicamento = medicamentoRepository.save(medicamento);
+        return MedicamentoSalida.fromEntity(medicamento);
     }
 
     @Override
-    public MedicamentoSalida editar(MedicamentoModificar medicamentoSalida) {
-        Medicamento medicamento =medicamentoRepository.save(modelMapper.map(medicamentoSalida, Medicamento.class));
-        return modelMapper.map(medicamento, MedicamentoSalida.class);
+    public MedicamentoSalida editar(MedicamentoModificar dto) {
+        Medicamento medicamento = toEntity(dto);
+        medicamento = medicamentoRepository.save(medicamento);
+        return MedicamentoSalida.fromEntity(medicamento);
     }
 
     @Override
     public void eliminarPorId(Integer id) {
         medicamentoRepository.deleteById(id);
+    }
 
+    // --- Métodos auxiliares para convertir DTOs a Entity ---
+
+    private Medicamento toEntity(MedicamentoGuardar dto) {
+        Medicamento m = new Medicamento();
+        m.setNombre(dto.getNombre());
+        m.setFormafarmacautica(dto.getFormafarmacautica());
+        m.setConcentracion(dto.getConcentracion());
+        m.setUnidad(dto.getUnidad());
+        m.setVia(dto.getVia());
+        m.setRequiereReceta(dto.getRequiereReceta());
+        m.setActivo(dto.getActivo());
+        m.setTemperaturaalm(dto.getTemperaturaalm());
+        m.setVidautilmeses(dto.getVidautilmeses());
+        return m;
+    }
+
+    private Medicamento toEntity(MedicamentoModificar dto) {
+        Medicamento m = new Medicamento();
+        m.setId(dto.getId());
+        m.setNombre(dto.getNombre());
+        m.setFormafarmacautica(dto.getFormafarmacautica());
+        m.setConcentracion(dto.getConcentracion());
+        m.setUnidad(dto.getUnidad());
+        m.setVia(dto.getVia());
+        m.setRequiereReceta(dto.getRequiereReceta());
+        m.setActivo(dto.getActivo());
+        m.setTemperaturaalm(dto.getTemperaturaalm());
+        m.setVidautilmeses(dto.getVidautilmeses());
+        return m;
     }
 }
-
