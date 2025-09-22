@@ -4,6 +4,7 @@ import com.Vet.VetBackend.agenda.app.services.IEstadoDiaService;
 import com.Vet.VetBackend.agenda.web.dto.EstadoDiaGuardarReq;
 import com.Vet.VetBackend.agenda.web.dto.EstadoDiaModificarReq;
 import com.Vet.VetBackend.agenda.web.dto.EstadoDiaSalidaRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,12 @@ public class EstadoDiaController {
     }
 
     @PostMapping
-    public ResponseEntity<EstadoDiaSalidaRes> crearEstado(@RequestBody EstadoDiaGuardarReq estadoDTO) {
+    public ResponseEntity<EstadoDiaSalidaRes> crearEstado(@Valid @RequestBody EstadoDiaGuardarReq estadoDTO) {
         return new ResponseEntity<>(estadoDiaService.save(estadoDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EstadoDiaSalidaRes> actualizarEstado(@PathVariable int id, @RequestBody EstadoDiaModificarReq estadoDTO) {
+    public ResponseEntity<EstadoDiaSalidaRes> actualizarEstado(@PathVariable int id, @Valid @RequestBody EstadoDiaModificarReq estadoDTO) {
         return ResponseEntity.ok(estadoDiaService.update(id, estadoDTO));
     }
 

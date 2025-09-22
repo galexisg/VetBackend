@@ -6,9 +6,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class DiaSalidaRes {
-    private int diaId;
+
+    private Integer diaId; // ⚠️ Se cambió a Integer para consistencia
     private String nombre;
     private EstadoDiaSalidaRes estadoDia;
 }
