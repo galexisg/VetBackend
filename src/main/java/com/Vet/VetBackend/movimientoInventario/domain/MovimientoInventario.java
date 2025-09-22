@@ -1,10 +1,11 @@
 package com.Vet.VetBackend.movimientoInventario.domain;
 
+import com.Vet.VetBackend.almacen.domain.Almacen;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,14 +20,14 @@ public class MovimientoInventario {
     @Enumerated(EnumType.STRING)
     private Status tipo;
 
-    private Date fecha;
+    private LocalDateTime fecha;
+
+    @ManyToOne
+    @JoinColumn(name = "almacen_id")
+    private Almacen almacen;
 
     //@ManyToOne
-    //@JoinColumn(name = "almacenId")
-    //private Almacen almacen;
-
-    //@ManyToOne
-    //@JoinColumn(name = "usuarioId")
+    //@JoinColumn(name = "usuario_id")
     //private Usuario usuario;
 
     private String observacion;

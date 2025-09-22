@@ -1,9 +1,15 @@
 package com.Vet.VetBackend.movimientoDetalle.web.dto;
 
+import com.Vet.VetBackend.Medicamento.web.dto.MedicamentoSalida;
+import com.Vet.VetBackend.almacen.domain.Almacen;
+import com.Vet.VetBackend.almacen.web.dto.Almacen_Salida;
+import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamento_Salida;
+import com.Vet.VetBackend.movimientoInventario.web.dto.MovimientoInventario_Salida;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,9 +20,13 @@ public class MovimientoDetalle_Salida implements Serializable {
 
     private double costoUnitario;
 
-    //private MovimientoInventario_Salida movimientoInventario;
+    private LocalDateTime fecha;
 
-    //private MedicamentoSalida medicamento;
+    private MovimientoInventario_Salida movimientoInventario;
 
-    //private LoteMedicamento_Salida loteMedicamento;
+    private MedicamentoSalida medicamento;
+
+    private LoteMedicamento_Salida loteMedicamento;
+
+    private Almacen_Salida almacen;
 }

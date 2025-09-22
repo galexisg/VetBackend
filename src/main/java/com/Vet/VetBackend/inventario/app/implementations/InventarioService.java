@@ -1,4 +1,4 @@
-/*package com.Vet.VetBackend.inventario.app.implementations;
+package com.Vet.VetBackend.inventario.app.implementations;
 
 import com.Vet.VetBackend.inventario.app.services.IInventarioService;
 import com.Vet.VetBackend.inventario.repo.IInventarioRepository;
@@ -6,8 +6,8 @@ import com.Vet.VetBackend.inventario.domain.Inventario;
 import com.Vet.VetBackend.inventario.web.dto.Inventario_Guardar;
 import com.Vet.VetBackend.inventario.web.dto.Inventario_Modificar;
 import com.Vet.VetBackend.inventario.web.dto.Inventario_Salida;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.Vet.VetBackend.almacen.domain.Almacen;
+import com.Vet.VetBackend.Medicamento.domain.Medicamento;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,72 +19,135 @@ import java.util.stream.Collectors;
 
 @Service
 public class InventarioService implements IInventarioService {
-    @Autowired
-    private IInventarioRepository inventarioRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final IInventarioRepository inventarioRepository;
+    // private final IAlmacenRepository almacenRepository;
+    // private final IMedicamentoRepository medicamentoRepository;
+
+    public InventarioService(IInventarioRepository inventarioRepository) {
+        this.inventarioRepository = inventarioRepository;
+    }
+
+    private Inventario_Salida toDto(Inventario inventario) {
+        Inventario_Salida dto = new Inventario_Salida();
+        dto.setId(inventario.getId());
+        dto.setStockActual(inventario.getStockActual());
+        dto.setStockMinimo(inventario.getStockMinimo());
+        dto.setStockMaximo(inventario.getStockMaximo());
+        /*
+        dto.setAlmacen(inventario.getAlmacen());
+        dto.setMedicamento(inventario.getMedicamento());
+        */
+        return dto;
+    }
+
+    // Método para convertir de DTO de guardar a la entidad
+    private Inventario toEntity(Inventario_Guardar dto) {
+        Inventario inventario = new Inventario();
+        inventario.setStockActual(dto.getStockActual());
+        inventario.setStockMinimo(dto.getStockMinimo());
+        inventario.setStockMaximo(dto.getStockMaximo());
+
+        /*
+        Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
+                                        .orElseThrow(() -> new RuntimeException("Almacen no encontrado"));
+        inventario.setAlmacen(almacen);
+        Medicamento medicamento = medicamentoRepository.findById(dto.getMedicamentoId())
+                                            .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+        inventario.setMedicamento(medicamento);
+        */
+        return inventario;
+    }
+
+    // Método para convertir de DTO de modificar a la entidad
+    private Inventario toEntity(Inventario_Modificar dto) {
+        Inventario inventario = new Inventario();
+        inventario.setId(dto.getId());
+        inventario.setStockActual(dto.getStockActual());
+        inventario.setStockMinimo(dto.getStockMinimo());
+        inventario.setStockMaximo(dto.getStockMaximo());
+
+        /*
+        Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
+                                        .orElseThrow(() -> new RuntimeException("Almacen no encontrado"));
+        inventario.setAlmacen(almacen);
+        Medicamento medicamento = medicamentoRepository.findById(dto.getMedicamentoId())
+                                            .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+        inventario.setMedicamento(medicamento);
+        */
+        return inventario;
+    }
 
     @Override
     public List<Inventario_Salida> obtenerTodos() {
-        List<Inventario> inventarios = inventarioRepository.findAll();
-        return inventarios.stream()
-                .map(inventario -> modelMapper.map(inventario, Inventario_Salida.class))
+        return inventarioRepository.findAll().stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Page<Inventario_Salida> obtenerTodosPaginados(Pageable pageable) {
         Page<Inventario> page = inventarioRepository.findAll(pageable);
-
-        List<Inventario_Salida> inventariosDto = page.stream()
-                .map(inventario -> modelMapper.map(inventario, Inventario_Salida.class))
+        List<Inventario_Salida> inventariosDto = page.getContent().stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
         return new PageImpl<>(inventariosDto, page.getPageable(), page.getTotalElements());
     }
 
     @Override
     public Inventario_Salida obtenerPorId(Integer id) {
-        Optional<Inventario> inventario = inventarioRepository.findById(id);
-
-        if(inventario.isPresent()){
-            return modelMapper.map(inventario.get(), Inventario_Salida.class);
-        }
-        return null;
+        return inventarioRepository.findById(id)
+                .map(this::toDto)
+                .orElse(null);
     }
 
     @Override
     public List<Inventario_Salida> obtenerPorAlmacenId(Integer id) {
-        List<Inventario> inventarios = inventarioRepository.findByAlmacenId(id);
-        return inventarios.stream()
-                .map(inventario -> modelMapper.map(inventario, Inventario_Salida.class))
+        return inventarioRepository.findByAlmacenId(id).stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Inventario_Salida> obtenerPorMedicamentoId(Integer id) {
-        List<Inventario> inventarios = inventarioRepository.findByMedicamentoId(id);
-        return inventarios.stream()
-                .map(inventario -> modelMapper.map(inventario, Inventario_Salida.class))
+        return inventarioRepository.findByMedicamentoId(id).stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Inventario_Salida crear(Inventario_Guardar inventarioGuardar) {
-        Inventario inventario = modelMapper.map(inventarioGuardar, Inventario.class);
-        inventario.setId(null);
-
-        return modelMapper.map(inventarioRepository.save(inventario), Inventario_Salida.class);
+        Inventario nuevoInventario = toEntity(inventarioGuardar);
+        Inventario guardado = inventarioRepository.save(nuevoInventario);
+        return toDto(guardado);
     }
 
     @Override
     public Inventario_Salida editar(Inventario_Modificar inventarioModificar) {
-        Inventario inventario = inventarioRepository.save(modelMapper.map(inventarioModificar, Inventario.class));
-        return modelMapper.map(inventario, Inventario_Salida.class);
+        Optional<Inventario> inventarioExistente = inventarioRepository.findById(inventarioModificar.getId());
+        if (inventarioExistente.isPresent()) {
+            Inventario inventario = inventarioExistente.get();
+            inventario.setStockActual(inventarioModificar.getStockActual());
+            inventario.setStockMinimo(inventarioModificar.getStockMinimo());
+            inventario.setStockMaximo(inventarioModificar.getStockMaximo());
+
+            /*
+            Almacen almacen = almacenRepository.findById(inventarioModificar.getAlmacenId())
+                                            .orElseThrow(() -> new RuntimeException("Almacen no encontrado"));
+            inventario.setAlmacen(almacen);
+            Medicamento medicamento = medicamentoRepository.findById(inventarioModificar.getMedicamentoId())
+                                                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+            inventario.setMedicamento(medicamento);
+            */
+
+            Inventario actualizado = inventarioRepository.save(inventario);
+            return toDto(actualizado);
+        }
+        return null;
     }
 
     @Override
     public void eliminarPorId(Integer id) {
         inventarioRepository.deleteById(id);
     }
-}*/
+}
