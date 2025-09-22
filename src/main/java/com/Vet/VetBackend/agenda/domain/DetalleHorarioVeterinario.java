@@ -8,26 +8,23 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "DetalleHorarioVeterinario")
+@Table(name = "detalle_horario_veterinario") // Nombre de la tabla
 public class DetalleHorarioVeterinario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DetalleHorarioVeterinarioId")
+    @Column(name = "detalle_horario_veterinario_id") // Nombre de la columna
     private Integer detalleHorarioVeterinarioId;
 
-
 //    @ManyToOne
-//    @JoinColumn(name = "VeterinarioId", referencedColumnName = "VeterinarioId")
+//    @JoinColumn(name = "veterinario_id", referencedColumnName = "veterinario_id") // Clave foránea
 //    private Veterinario veterinario;
-//
-//
-//    @ManyToOne
-//    @JoinColumn(name = "DiaId", referencedColumnName = "DiaId")
-//    private Dia dia;
 
-    // Relación con BloqueHorario
     @ManyToOne
-    @JoinColumn(name = "BloqueHorarioId", referencedColumnName = "BloqueHorarioId")
+    @JoinColumn(name = "dia_id", referencedColumnName = "dia_id") // Clave foránea
+    private Dia dia;
+
+    @ManyToOne
+    @JoinColumn(name = "bloque_horario_id", referencedColumnName = "bloque_horario_id") // Clave foránea
     private BloqueHorario bloqueHorario;
 }

@@ -1,7 +1,6 @@
 package com.Vet.VetBackend.agenda.web.dto;
 
 import lombok.*;
-
 import java.time.LocalTime;
 
 @Data
@@ -10,11 +9,11 @@ import java.time.LocalTime;
 @Builder
 public class DetalleHorarioVeterinarioSalidaRes {
     private Integer detalleHorarioVeterinarioId;
-    private int veterinarioId;
+    private Integer veterinarioId;
     private String nombreVeterinario;
     private Integer diaId;
-    private String nombre;
-    private Byte bloqueHorarioId;
+    private String nombreDia;
+    private Integer bloqueHorarioId;
     private LocalTime horaInicio;
     private LocalTime horaFin;
 }
