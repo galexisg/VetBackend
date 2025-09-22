@@ -22,6 +22,9 @@ public class Vacuna {
     @Column(name = "nombre", nullable = false, length = 80)
     private String nombre;
 
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = true;  // true = habilitado, false = deshabilitado
+
     @PrePersist @PreUpdate
     private void normalize() {
         if (nombre != null) nombre = nombre.trim();
