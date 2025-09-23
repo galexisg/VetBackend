@@ -9,6 +9,5 @@ import java.io.Serializable;
 @Setter
 public class MovimientoInventarioCambiarTipo implements Serializable {
     private Integer id;
-
     private String tipo;
 }

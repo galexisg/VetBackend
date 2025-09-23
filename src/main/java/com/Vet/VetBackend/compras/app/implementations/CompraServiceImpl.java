@@ -41,7 +41,6 @@ public class CompraServiceImpl implements CompraService {
     @Override
     public CompraObtener crear(CompraCrear dto) {
         Compra compra = new Compra();
-        compra.setProveedorId(dto.getProveedorId().intValue());
         compra.setFecha(dto.getFecha());
         compra.setDescripcion(dto.getDescripcion());
         compra.setTotal(dto.getTotal());
@@ -53,7 +52,6 @@ public class CompraServiceImpl implements CompraService {
     public CompraObtener actualizar(Long id, CompraActualizar dto) {
         Compra existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
-        existente.setProveedorId(dto.getProveedorId().intValue());
         existente.setFecha(dto.getFecha());
         existente.setDescripcion(dto.getDescripcion());
         existente.setTotal(dto.getTotal());
