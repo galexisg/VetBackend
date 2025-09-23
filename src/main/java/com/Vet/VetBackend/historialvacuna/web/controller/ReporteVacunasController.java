@@ -1,8 +1,7 @@
-package com.Vet.VetBackend.historialvacuna.app.web.controller;
+package com.Vet.VetBackend.historialvacuna.web.controller;
 
-import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.ReporteVacunasDTO;
 import com.Vet.VetBackend.historialvacuna.reportes.services.ReporteVacunasService;
-import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

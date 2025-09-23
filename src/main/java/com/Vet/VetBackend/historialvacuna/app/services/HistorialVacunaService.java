@@ -1,7 +1,7 @@
 package com.Vet.VetBackend.historialvacuna.app.services;
 
-import com.Vet.VetBackend.historialvacuna.app.web.dto.CreateHistorialVacunaDTO;
-import com.Vet.VetBackend.historialvacuna.app.web.dto.HistorialVacunaDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.CreateHistorialVacunaDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.HistorialVacunaDTO;
 
 import java.util.List;
 

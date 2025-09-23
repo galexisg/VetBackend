@@ -1,6 +1,6 @@
 package com.Vet.VetBackend.historialvacuna.util;
 
-import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.ReporteVacunasDTO;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 

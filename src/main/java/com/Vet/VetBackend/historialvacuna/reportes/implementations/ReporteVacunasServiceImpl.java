@@ -1,6 +1,6 @@
 package com.Vet.VetBackend.historialvacuna.reportes.implementations;
 
-import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.ReporteVacunasDTO;
 import com.Vet.VetBackend.historialvacuna.reportes.services.ReporteVacunasService;
 import org.springframework.stereotype.Service;
 

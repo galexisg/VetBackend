@@ -1,6 +1,6 @@
 package com.Vet.VetBackend.historialvacuna.reportes.services;
 
-import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.ReporteVacunasDTO;
 
 import java.time.LocalDate;
 import java.util.List;

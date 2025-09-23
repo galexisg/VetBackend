@@ -1,8 +1,8 @@
-package com.Vet.VetBackend.historialvacuna.app.web.controller;
+package com.Vet.VetBackend.historialvacuna.web.controller;
 
 import com.Vet.VetBackend.historialvacuna.app.services.HistorialVacunaService;
-import com.Vet.VetBackend.historialvacuna.app.web.dto.CreateHistorialVacunaDTO;
-import com.Vet.VetBackend.historialvacuna.app.web.dto.HistorialVacunaDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.CreateHistorialVacunaDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.HistorialVacunaDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

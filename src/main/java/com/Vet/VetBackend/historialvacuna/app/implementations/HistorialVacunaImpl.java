@@ -3,8 +3,8 @@ package com.Vet.VetBackend.historialvacuna.app.implementations;
 import com.Vet.VetBackend.historialvacuna.app.domain.HistorialVacuna;
 import com.Vet.VetBackend.historialvacuna.app.repo.HistorialVacunaRepository;
 import com.Vet.VetBackend.historialvacuna.app.services.HistorialVacunaService;
-import com.Vet.VetBackend.historialvacuna.app.web.dto.CreateHistorialVacunaDTO;
-import com.Vet.VetBackend.historialvacuna.app.web.dto.HistorialVacunaDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.CreateHistorialVacunaDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.HistorialVacunaDTO;
 import com.Vet.VetBackend.vacuna.repo.VacunaRepository; // Suponemos que este repositorio existe
 import com.Vet.VetBackend.vacuna.domain.Vacuna; // Suponemos que esta entidad existe
 import lombok.RequiredArgsConstructor;
