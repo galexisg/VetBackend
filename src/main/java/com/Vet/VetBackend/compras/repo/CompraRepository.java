@@ -15,4 +15,4 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
     // List<Compra> findByUsuarioId(Integer usuarioId); // 🔜 Se activará tras migración
 }
 
-}
+

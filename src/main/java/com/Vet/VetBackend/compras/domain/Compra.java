@@ -1,5 +1,8 @@
 package com.Vet.VetBackend.compras.domain;
 
+
+import com.Vet.VetBackend.proveedores.domain.Proveedor;
+import com.Vet.VetBackend.usuarios.domain.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,9 +20,6 @@ public class Compra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "proveedor_id")
-    private Integer proveedorId;
-
     @Column(name = "fecha")
     private LocalDate fecha;
 
@@ -29,7 +29,11 @@ public class Compra {
     @Column(name = "total", nullable = false)
     private double total;
 
-    // 🔜 Campo pendiente de migración
-    // @Column(name = "usuario_id")
-    // private Long usuarioId;
+    @ManyToOne
+    @JoinColumn(name = "proveedor_id", foreignKey = @ForeignKey(name = "fk_compra__proveedor"))
+    private Proveedor proveedor;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", foreignKey = @ForeignKey(name = "fk_compra_usuario"))
+    private Usuario usuario;
 }
