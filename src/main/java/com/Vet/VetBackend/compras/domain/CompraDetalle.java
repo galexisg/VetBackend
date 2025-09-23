@@ -17,12 +17,14 @@ public class CompraDetalle {
     @Column(name = "compra_id")
     private Long compraId;
 
-    @Column(name = "producto_id")
-    private Long productoId;
-
     @Column(name = "cantidad", nullable = false)
     private int cantidad;
 
     @Column(name = "precio", nullable = false)
     private double precio;
+
+    // 🔴 Campo eliminado: productoId
+    // Si decides agregarlo más adelante, puedes descomentar:
+    // @Column(name = "producto_id")
+    // private Long productoId;
 }

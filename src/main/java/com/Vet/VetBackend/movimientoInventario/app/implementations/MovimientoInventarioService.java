@@ -1,7 +1,5 @@
 package com.Vet.VetBackend.movimientoInventario.app.implementations;
 
-import com.Vet.VetBackend.almacen.domain.Almacen;
-import com.Vet.VetBackend.almacen.repo.IAlmacenRepository;
 import com.Vet.VetBackend.movimientoInventario.app.services.IMovimientoInventarioService;
 import com.Vet.VetBackend.movimientoInventario.domain.MovimientoInventario;
 import com.Vet.VetBackend.movimientoInventario.repo.IMovimientoInventarioRepository;
@@ -22,34 +20,20 @@ import java.util.stream.Collectors;
 public class MovimientoInventarioService implements IMovimientoInventarioService {
 
     private final IMovimientoInventarioRepository movimientoInventarioRepository;
-    private final IAlmacenRepository almacenRepository;
-    // Agrega el repositorio de Usuario si lo necesitas
-    // private final IUsuarioRepository usuarioRepository;
 
-    // Inyección de dependencias a través del constructor
-    public MovimientoInventarioService(
-            IMovimientoInventarioRepository movimientoInventarioRepository,
-            IAlmacenRepository almacenRepository
-    ) {
+    public MovimientoInventarioService(IMovimientoInventarioRepository movimientoInventarioRepository) {
         this.movimientoInventarioRepository = movimientoInventarioRepository;
-        this.almacenRepository = almacenRepository;
     }
 
-    private MovimientoInventario_Salida toDto(MovimientoInventario movimientoInventario) {
-        if (movimientoInventario == null) return null;
+    private MovimientoInventario_Salida toDto(MovimientoInventario movimiento) {
+        if (movimiento == null) return null;
         MovimientoInventario_Salida dto = new MovimientoInventario_Salida();
-        dto.setId(movimientoInventario.getId());
-        // Conversión del Enum a String
-        dto.setTipo(movimientoInventario.getTipo().name());
-        dto.setFecha(movimientoInventario.getFecha());
-        dto.setObservacion(movimientoInventario.getObservacion());
-
-        // Relación de Almacen (descomentada porque existe en la BD)
-        //dto.setAlmacen(movimientoInventario.getAlmacen());
-
-        // Relación de Usuario (comentada porque no existe en la BD)
-        // dto.setUsuario(movimientoInventario.getUsuario());
-
+        dto.setId(movimiento.getId());
+        dto.setTipo(movimiento.getTipo().name());
+        dto.setFecha(movimiento.getFecha());
+        dto.setObservacion(movimiento.getObservacion());
+        dto.setAlmacenId(movimiento.getAlmacenId());
+        dto.setUsuarioId(movimiento.getUsuarioId());
         return dto;
     }
 
@@ -92,46 +76,26 @@ public class MovimientoInventarioService implements IMovimientoInventarioService
 
     @Override
     public MovimientoInventario_Salida crear(MovimientoInventario_Guardar dto) {
-        MovimientoInventario nuevoMovimiento = new MovimientoInventario();
-        nuevoMovimiento.setFecha(dto.getFecha());
-        nuevoMovimiento.setObservacion(dto.getObservacion());
-        nuevoMovimiento.setTipo(MovimientoInventario.Status.ENTRADA);
-
-        // Manejo de la relación con Almacen
-        Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
-                .orElseThrow(() -> new RuntimeException("Almacén no encontrado"));
-        nuevoMovimiento.setAlmacen(almacen);
-
-        // Relación con Usuario
-        // Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
-        //         .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        // nuevoMovimiento.setUsuario(usuario);
-
-        MovimientoInventario guardado = movimientoInventarioRepository.save(nuevoMovimiento);
-        return toDto(guardado);
+        MovimientoInventario nuevo = new MovimientoInventario();
+        nuevo.setFecha(dto.getFecha());
+        nuevo.setObservacion(dto.getObservacion());
+        nuevo.setTipo(MovimientoInventario.Status.ENTRADA);
+        nuevo.setAlmacenId(dto.getAlmacenId());
+        nuevo.setUsuarioId(dto.getUsuarioId());
+        return toDto(movimientoInventarioRepository.save(nuevo));
     }
 
     @Override
     public MovimientoInventario_Salida editar(MovimientoInventario_Modificar dto) {
-        Optional<MovimientoInventario> movimientoExistente = movimientoInventarioRepository.findById(dto.getId());
-        if (movimientoExistente.isPresent()) {
-            MovimientoInventario entidad = movimientoExistente.get();
+        Optional<MovimientoInventario> existente = movimientoInventarioRepository.findById(dto.getId());
+        if (existente.isPresent()) {
+            MovimientoInventario entidad = existente.get();
             entidad.setFecha(dto.getFecha());
             entidad.setObservacion(dto.getObservacion());
             entidad.setTipo(MovimientoInventario.Status.valueOf(dto.getTipo()));
-
-            // Manejo de la relación con Almacen
-            Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
-                    .orElseThrow(() -> new RuntimeException("Almacén no encontrado"));
-            entidad.setAlmacen(almacen);
-
-            // Relación con Usuario
-            // Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
-            //         .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            // entidad.setUsuario(usuario);
-
-            MovimientoInventario actualizado = movimientoInventarioRepository.save(entidad);
-            return toDto(actualizado);
+            entidad.setAlmacenId(dto.getAlmacenId());
+            entidad.setUsuarioId(dto.getUsuarioId());
+            return toDto(movimientoInventarioRepository.save(entidad));
         }
         return null;
     }
@@ -140,7 +104,6 @@ public class MovimientoInventarioService implements IMovimientoInventarioService
     public MovimientoInventario_Salida cambiarTipo(MovimientoInventarioCambiarTipo dto) {
         MovimientoInventario movimiento = movimientoInventarioRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Movimiento no encontrado"));
-
         movimiento.setTipo(MovimientoInventario.Status.valueOf(dto.getTipo()));
         return toDto(movimientoInventarioRepository.save(movimiento));
     }

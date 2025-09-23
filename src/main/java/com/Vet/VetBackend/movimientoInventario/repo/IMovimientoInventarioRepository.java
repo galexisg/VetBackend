@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface IMovimientoInventarioRepository extends JpaRepository<MovimientoInventario, Integer> {
     List<MovimientoInventario> findByAlmacenId(Integer id);
-    List<MovimientoInventario> findByUsuarioId(Integer id);;
+    List<MovimientoInventario> findByUsuarioId(Integer id); // ✅ Campo plano
 }
