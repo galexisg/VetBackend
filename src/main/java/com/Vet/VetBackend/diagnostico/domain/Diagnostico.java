@@ -27,9 +27,9 @@ public class Diagnostico {
     @Column(name = "activo", nullable = false)  // 👈 columna en BD se sigue llamando 'activo'
     private boolean estadoDiagnostico = true;
 
-    @Column(name = "creado_at", nullable = false, updatable = false, insertable = false)
+    @Column(name = "creado_at", nullable = false, updatable = false)
     @org.hibernate.annotations.CreationTimestamp
-    private LocalDateTime creadoAt = LocalDateTime.now();
+    private LocalDateTime creadoAt;
 
     public Long getId() {
         return id;

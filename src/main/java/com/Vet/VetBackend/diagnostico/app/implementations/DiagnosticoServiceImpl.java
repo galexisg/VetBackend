@@ -47,25 +47,46 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
 
     @Override
     public List<DiagnosticoDto> listarPorCita(Long citaId) {
-        return diagnosticoRepository.findByCita_CitaId(citaId).stream()
-                .map(d -> modelMapper.map(d, DiagnosticoDto.class))
-                .toList();
+        List<Diagnostico> diagnosticos = diagnosticoRepository.findByCita_CitaId(citaId);
+
+        return diagnosticos.stream().map(d -> {
+            DiagnosticoDto dto = new DiagnosticoDto();
+            dto.setId(d.getId());
+            dto.setCitaId(d.getCita().getCitaId());
+            dto.setNombre(d.getNombre());
+            dto.setDescripcion(d.getDescripcion());
+            dto.setEstadoDiagnostico(d.isEstadoDiagnostico());
+            dto.setCreadoAt(d.getCreadoAt());
+            return dto;
+        }).toList();
     }
 
     @Override
     public DiagnosticoDto crear(Long citaId, DiagnosticoDto dto) {
+        // 1. Buscar cita existente
         Cita cita = citaRepository.findById(citaId)
                 .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada"));
 
+        // 2. Construir entidad Diagnostico
         Diagnostico diagnostico = new Diagnostico();
         diagnostico.setCita(cita);
         diagnostico.setNombre(dto.getNombre());
         diagnostico.setDescripcion(dto.getDescripcion());
         diagnostico.setEstadoDiagnostico(true); // siempre activo al crear
-        diagnostico.setCreadoAt(LocalDateTime.now());
 
+        // 3. Guardar en BD
         Diagnostico guardado = diagnosticoRepository.save(diagnostico);
-        return modelMapper.map(guardado, DiagnosticoDto.class);
+
+        // 4. Armar respuesta DTO
+        DiagnosticoDto response = new DiagnosticoDto();
+        response.setId(guardado.getId());
+        response.setCitaId(guardado.getCita().getCitaId());
+        response.setNombre(guardado.getNombre());
+        response.setDescripcion(guardado.getDescripcion());
+        response.setEstadoDiagnostico(guardado.isEstadoDiagnostico());
+        response.setCreadoAt(guardado.getCreadoAt());
+
+        return response;
     }
 
     @Override
@@ -73,6 +94,7 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
         Diagnostico diagnostico = diagnosticoRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Diagnóstico no encontrado"));
 
+        // Solo actualizar nombre y descripcion si vienen en el DTO
         if (dto.getNombre() != null) {
             diagnostico.setNombre(dto.getNombre());
         }
@@ -80,7 +102,18 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
             diagnostico.setDescripcion(dto.getDescripcion());
         }
 
-        return modelMapper.map(diagnosticoRepository.save(diagnostico), DiagnosticoDto.class);
+        Diagnostico actualizado = diagnosticoRepository.save(diagnostico);
+
+        // Construcción manual del DTO
+        DiagnosticoDto respuesta = new DiagnosticoDto();
+        respuesta.setId(actualizado.getId());
+        respuesta.setCitaId(actualizado.getCita().getCitaId());
+        respuesta.setNombre(actualizado.getNombre());
+        respuesta.setDescripcion(actualizado.getDescripcion());
+        respuesta.setEstadoDiagnostico(actualizado.isEstadoDiagnostico());
+        respuesta.setCreadoAt(actualizado.getCreadoAt());
+
+        return respuesta;
     }
 
     @Override
@@ -91,7 +124,17 @@ public class DiagnosticoServiceImpl implements DiagnosticoService {
         diagnostico.setEstadoDiagnostico(estadoDiagnostico);
 
         Diagnostico actualizado = diagnosticoRepository.save(diagnostico);
-        return modelMapper.map(actualizado, DiagnosticoDto.class);
+
+        DiagnosticoDto respuesta = new DiagnosticoDto();
+        respuesta.setId(actualizado.getId());
+        respuesta.setCitaId(actualizado.getCita().getCitaId());
+        respuesta.setNombre(actualizado.getNombre());
+        respuesta.setDescripcion(actualizado.getDescripcion());
+        respuesta.setEstadoDiagnostico(actualizado.isEstadoDiagnostico());
+        respuesta.setCreadoAt(actualizado.getCreadoAt());
+
+        return respuesta;
     }
+
 }
 
