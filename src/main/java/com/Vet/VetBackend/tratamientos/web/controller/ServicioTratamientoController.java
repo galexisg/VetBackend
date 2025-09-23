@@ -40,4 +40,15 @@ public class ServicioTratamientoController {
     public void eliminar(@PathVariable Long id) {
         service.eliminarAsociacion(id);
     }
+
+
+    @PatchMapping("/{id}/activar")
+    public void activar(@PathVariable Long id) {
+        service.activar(id);
+    }
+
+    @PatchMapping("/{id}/inactivar")
+    public void inactivar(@PathVariable Long id) {
+        service.inactivar(id);
+    }
 }
