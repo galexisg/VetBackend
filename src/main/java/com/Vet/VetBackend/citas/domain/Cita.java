@@ -25,14 +25,11 @@ public class Cita {
     private int motivoId;
 
     @Column(name = "cita_estado_id", nullable = true)
-    private int citaEstadoId;
+    private Integer citaEstadoId;
 
 
     @Column(name = "factura_id", nullable = true)
     private Long facturaId;
-
-    @Column(name = "consulta_id", nullable = true)
-    private Long consultaId;
 
     public enum Tipo {
         Normal, Emergencia, Control
@@ -104,14 +101,6 @@ public class Cita {
 
     public void setFacturaId(Long facturaId) {
         this.facturaId = facturaId;
-    }
-
-    public Long getConsultaId() {
-        return consultaId;
-    }
-
-    public void setConsultaId(Long consultaId) {
-        this.consultaId = consultaId;
     }
 
     public Tipo getTipo() {
