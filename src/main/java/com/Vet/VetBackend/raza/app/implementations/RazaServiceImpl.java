@@ -67,9 +67,17 @@ public class RazaServiceImpl implements IRazaService{
     }
 
     @Override
-    public RazaSalida editar(RazaModificar razaModificar) {
-        Raza raza =razaRepository.save(modelMapper.map(razaModificar, Raza.class));
-        return modelMapper.map(raza, RazaSalida.class);
+    public RazaSalida editar(RazaModificar dto) {
+        Raza raza = razaRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Raza no encontrada"));
+
+        raza.setNombre(dto.getNombre());
+        if (dto.getEspecieId() != null) {
+            raza.setEspecieId(dto.getEspecieId());
+        }
+
+        Raza updated = razaRepository.save(raza);
+        return toSalida(updated);
     }
 
     @Override
@@ -79,6 +87,10 @@ public class RazaServiceImpl implements IRazaService{
     }
 
     private RazaSalida toSalida(Raza r) {
-        return new RazaSalida();
+        RazaSalida dto = new RazaSalida();
+        dto.setId(r.getId() != null ? r.getId().intValue() : null);  // convertir Byte → Integer
+        dto.setNombre(r.getNombre());
+        dto.setEspecieId(r.getEspecieId());
+        return dto;
     }
 }

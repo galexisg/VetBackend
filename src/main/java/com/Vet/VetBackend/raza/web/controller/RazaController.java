@@ -20,12 +20,12 @@ public class RazaController {
     @Autowired
     private IRazaService razaService;
 
-    @GetMapping
-    public ResponseEntity<Page<RazaSalida>> mostrarTodosPaginados(Pageable pageable) {
-        Page<RazaSalida> raza = razaService.obtenerTodosPaginados(pageable);
+   @GetMapping
+   public ResponseEntity<Page<RazaSalida>> mostrarTodosPaginados(Pageable pageable) {
+       Page<RazaSalida> raza = razaService.obtenerTodosPaginados(pageable);
         if (raza.hasContent()) {
-            return ResponseEntity.ok(raza);
-        }
+         return ResponseEntity.ok(raza);
+       }
         return ResponseEntity.notFound().build();
     }
 
@@ -62,7 +62,7 @@ public class RazaController {
     @DeleteMapping("/{id}")
     public ResponseEntity eliminar(@PathVariable Integer id){
         razaService.eliminarPorId(id);
-        return ResponseEntity.ok().body("Medicamento eliminado correctamente");
+        return ResponseEntity.ok().body("raza eliminada");
     }
 
 
