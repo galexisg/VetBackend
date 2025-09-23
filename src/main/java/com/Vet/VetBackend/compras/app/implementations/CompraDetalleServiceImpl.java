@@ -39,7 +39,10 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
 
     @Override
     public ObtenerDetalle agregar_detalle(CrearDetalle dto) {
-        CompraDetalle detalle = modelMapper.map(dto, CompraDetalle.class);
+        CompraDetalle detalle = new CompraDetalle();
+        detalle.setCompraId(dto.getCompraId());
+        detalle.setCantidad(dto.getCantidad());
+        detalle.setPrecio(dto.getPrecio());
         return modelMapper.map(repository.save(detalle), ObtenerDetalle.class);
     }
 
@@ -47,7 +50,8 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
     public ObtenerDetalle actualizar_detalle(Long id, ActualizarDetalle dto) {
         CompraDetalle existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Detalle de compra no encontrado"));
-        modelMapper.map(dto, existente);
+        existente.setCantidad(dto.getCantidad());
+        existente.setPrecio(dto.getPrecio());
         return modelMapper.map(repository.save(existente), ObtenerDetalle.class);
     }
 
@@ -55,7 +59,7 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
     public void eliminar_detalle(Long id, CancelarDetalle dto) {
         CompraDetalle detalle = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Detalle de compra no encontrado"));
-        repository.delete(detalle); // temporal, hasta que agregues campo estado
+        repository.delete(detalle); // 🔧 Temporal: se actualizará cuando se agregue campo estado
     }
 
     @Override

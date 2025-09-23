@@ -22,38 +22,40 @@ public class MovimientoInventarioService implements IMovimientoInventarioService
         this.movimientoInventarioRepository = movimientoInventarioRepository;
     }
 
-    private MovimientoInventario_Salida toDto(MovimientoInventario movimientoInventario) {
-        if (movimientoInventario == null) return null;
-
+    private MovimientoInventario_Salida toDto(MovimientoInventario movimiento) {
+        if (movimiento == null) return null;
         MovimientoInventario_Salida dto = new MovimientoInventario_Salida();
-        dto.setId(movimientoInventario.getId());
-        dto.setTipo(movimientoInventario.getTipo().name());
-        dto.setFecha(movimientoInventario.getFecha());
-        dto.setObservacion(movimientoInventario.getObservacion());
-
+        dto.setId(movimiento.getId());
+        dto.setTipo(movimiento.getTipo().name());
+        dto.setFecha(movimiento.getFecha());
+        dto.setObservacion(movimiento.getObservacion());
+        dto.setAlmacenId(movimiento.getAlmacenId());
+        dto.setUsuarioId(movimiento.getUsuarioId());
         return dto;
     }
 
     @Override
     public MovimientoInventario_Salida crear(MovimientoInventario_Guardar dto) {
-        MovimientoInventario entidad = new MovimientoInventario();
-        entidad.setFecha(dto.getFecha());
-        entidad.setObservacion(dto.getObservacion());
-        entidad.setTipo(MovimientoInventario.Status.valueOf(dto.getTipo()));
-        MovimientoInventario guardado = movimientoInventarioRepository.save(entidad);
-        return toDto(guardado);
+        MovimientoInventario nuevo = new MovimientoInventario();
+        nuevo.setFecha(dto.getFecha());
+        nuevo.setObservacion(dto.getObservacion());
+        nuevo.setTipo(MovimientoInventario.Status.ENTRADA);
+        nuevo.setAlmacenId(dto.getAlmacenId());
+        nuevo.setUsuarioId(dto.getUsuarioId());
+        return toDto(movimientoInventarioRepository.save(nuevo));
     }
 
     @Override
     public MovimientoInventario_Salida editar(MovimientoInventario_Modificar dto) {
-        Optional<MovimientoInventario> movimientoExistente = movimientoInventarioRepository.findById(dto.getId());
-        if (movimientoExistente.isPresent()) {
-            MovimientoInventario entidad = movimientoExistente.get();
+        Optional<MovimientoInventario> existente = movimientoInventarioRepository.findById(dto.getId());
+        if (existente.isPresent()) {
+            MovimientoInventario entidad = existente.get();
             entidad.setFecha(dto.getFecha());
             entidad.setObservacion(dto.getObservacion());
             entidad.setTipo(MovimientoInventario.Status.valueOf(dto.getTipo()));
-            MovimientoInventario actualizado = movimientoInventarioRepository.save(entidad);
-            return toDto(actualizado);
+            entidad.setAlmacenId(dto.getAlmacenId());
+            entidad.setUsuarioId(dto.getUsuarioId());
+            return toDto(movimientoInventarioRepository.save(entidad));
         }
         return null;
     }
@@ -97,11 +99,11 @@ public class MovimientoInventarioService implements IMovimientoInventarioService
 
     @Override
     public List<MovimientoInventario_Salida> obtenerPorAlmacenId(Integer id) {
-        return List.of(); // Eliminado: lógica de Almacén
+        return List.of(); // Placeholder para lógica futura
     }
 
     @Override
     public List<MovimientoInventario_Salida> obtenerPorUsuarioId(Integer id) {
-        return List.of(); // Placeholder si decides agregar Usuario luego
+        return List.of(); // Placeholder para lógica futura
     }
 }

@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface IMovimientoInventarioRepository extends JpaRepository<MovimientoInventario, Integer> {
 
+    List<MovimientoInventario> findByAlmacenId(Integer almacenId);
+
+    List<MovimientoInventario> findByUsuarioId(Integer usuarioId);
 }

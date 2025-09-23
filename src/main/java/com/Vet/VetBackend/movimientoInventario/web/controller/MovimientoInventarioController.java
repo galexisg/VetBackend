@@ -16,84 +16,77 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/movimientoInventario")
 public class MovimientoInventarioController {
+
     @Autowired
     private IMovimientoInventarioService movimientoInventarioService;
 
     @GetMapping
-    public ResponseEntity<Page<MovimientoInventario_Salida>> mostrarTodosPaginados(Pageable pageable){
+    public ResponseEntity<Page<MovimientoInventario_Salida>> mostrarTodosPaginados(Pageable pageable) {
         Page<MovimientoInventario_Salida> movimientoInventarios = movimientoInventarioService.obtenerTodosPaginados(pageable);
-        if(movimientoInventarios.hasContent()){
-            return ResponseEntity.ok(movimientoInventarios);
-        }
-        return ResponseEntity.noContent().build();
+        return movimientoInventarios.hasContent()
+                ? ResponseEntity.ok(movimientoInventarios)
+                : ResponseEntity.noContent().build();
     }
 
     @GetMapping("/lista")
-    public ResponseEntity<List<MovimientoInventario_Salida>> mostrarTodos(){
+    public ResponseEntity<List<MovimientoInventario_Salida>> mostrarTodos() {
         List<MovimientoInventario_Salida> movimientoInventarios = movimientoInventarioService.obtenerTodos();
-        if(!movimientoInventarios.isEmpty()){
-            return ResponseEntity.ok(movimientoInventarios);
-        }
-        return ResponseEntity.noContent().build();
+        return movimientoInventarios.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(movimientoInventarios);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MovimientoInventario_Salida> mostrarPorId(@PathVariable Integer id){
+    public ResponseEntity<MovimientoInventario_Salida> mostrarPorId(@PathVariable Integer id) {
         MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.obtenerPorId(id);
-        if(movimientoInventario != null){
-            return ResponseEntity.ok(movimientoInventario);
-        }
-        return ResponseEntity.noContent().build();
+        return movimientoInventario != null
+                ? ResponseEntity.ok(movimientoInventario)
+                : ResponseEntity.noContent().build();
     }
 
     @GetMapping("/almacen/{id}")
-    public ResponseEntity<List<MovimientoInventario_Salida>> mostrarPorAlmacen(@PathVariable Integer id){
+    public ResponseEntity<List<MovimientoInventario_Salida>> mostrarPorAlmacen(@PathVariable Integer id) {
         List<MovimientoInventario_Salida> movimientoInventarios = movimientoInventarioService.obtenerPorAlmacenId(id);
-        if(!movimientoInventarios.isEmpty()){
-            return ResponseEntity.ok(movimientoInventarios);
-        }
-        return ResponseEntity.noContent().build();
+        return movimientoInventarios.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(movimientoInventarios);
     }
 
     @GetMapping("/usuario/{id}")
-    public ResponseEntity<List<MovimientoInventario_Salida>> mostrarPorUsuario(@PathVariable Integer id){
+    public ResponseEntity<List<MovimientoInventario_Salida>> mostrarPorUsuario(@PathVariable Integer id) {
         List<MovimientoInventario_Salida> movimientoInventarios = movimientoInventarioService.obtenerPorUsuarioId(id);
-        if(!movimientoInventarios.isEmpty()){
-            return ResponseEntity.ok(movimientoInventarios);
-        }
-        return ResponseEntity.noContent().build();
+        return movimientoInventarios.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(movimientoInventarios);
     }
 
     @PostMapping
-    public ResponseEntity<MovimientoInventario_Salida> crear(@RequestBody MovimientoInventario_Guardar movimientoInventarioGuardar){
-        MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.crear(movimientoInventarioGuardar);
-        if(movimientoInventario != null){
-            return ResponseEntity.ok(movimientoInventario);
-        }
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<MovimientoInventario_Salida> crear(@RequestBody MovimientoInventario_Guardar dto) {
+        MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.crear(dto);
+        return movimientoInventario != null
+                ? ResponseEntity.ok(movimientoInventario)
+                : ResponseEntity.internalServerError().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MovimientoInventario_Salida> editar(@PathVariable Long id, @RequestBody MovimientoInventario_Modificar movimientoInventarioModificar){
-        MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.editar(movimientoInventarioModificar);
-        if(movimientoInventario != null){
-            return ResponseEntity.ok(movimientoInventario);
-        }
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<MovimientoInventario_Salida> editar(@PathVariable Integer id, @RequestBody MovimientoInventario_Modificar dto) {
+        dto.setId(id); // Asegura que el ID se propague correctamente
+        MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.editar(dto);
+        return movimientoInventario != null
+                ? ResponseEntity.ok(movimientoInventario)
+                : ResponseEntity.internalServerError().build();
     }
 
     @PatchMapping
-    public ResponseEntity<MovimientoInventario_Salida> cambiarTipo(@RequestBody MovimientoInventarioCambiarTipo movimientoInventarioCambiarTipo){
-        MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.cambiarTipo(movimientoInventarioCambiarTipo);
-
-        if(movimientoInventario != null){
-            return ResponseEntity.ok(movimientoInventario);
-        }
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<MovimientoInventario_Salida> cambiarTipo(@RequestBody MovimientoInventarioCambiarTipo dto) {
+        MovimientoInventario_Salida movimientoInventario = movimientoInventarioService.cambiarTipo(dto);
+        return movimientoInventario != null
+                ? ResponseEntity.ok(movimientoInventario)
+                : ResponseEntity.internalServerError().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity eliminar(@PathVariable Integer id){
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         movimientoInventarioService.eliminarPorId(id);
         return ResponseEntity.ok("Movimiento de inventario eliminado correctamente");
     }

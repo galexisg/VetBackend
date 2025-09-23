@@ -11,5 +11,7 @@ import java.time.LocalDateTime;
 public class MovimientoInventario_Guardar implements Serializable {
     private LocalDateTime fecha;
     private String observacion;
-    private String tipo; // agregado para que el usuario pueda definir ENTRADA o SALIDA
+    private String tipo;
+    private Integer almacenId;
+    private Integer usuarioId;
 }

@@ -13,4 +13,6 @@ public class MovimientoInventario_Modificar implements Serializable {
     private String tipo;
     private LocalDateTime fecha;
     private String observacion;
+    private Integer almacenId;
+    private Integer usuarioId;
 }
