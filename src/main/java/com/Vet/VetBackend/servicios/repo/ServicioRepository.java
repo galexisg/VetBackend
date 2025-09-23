@@ -11,5 +11,5 @@ import java.util.Optional;
 
 public interface ServicioRepository extends JpaRepository<Servicio, Long>, JpaSpecificationExecutor<Servicio> {
     Optional<Servicio> findByNombreIgnoreCase(String nombre);
-    Page<Servicio> findByActivo(Boolean activo, Pageable pageable);
+    // Elimina la línea Page<Servicio> findByActivo(Boolean activo, Pageable pageable);
 }
