@@ -20,51 +20,45 @@ public class MedicamentoController {
     private IMedicamentoService medicamentoService;
 
     @GetMapping
-    public ResponseEntity<Page<MedicamentoSalida>> mostrarTodosPaginados(Pageable pageable) {
+    public ResponseEntity<Page<MedicamentoSalida>> obtenerTodosPaginados(Pageable pageable) {
         Page<MedicamentoSalida> medicamentos = medicamentoService.obtenerTodosPaginados(pageable);
-        if (medicamentos.hasContent()) {
-            return ResponseEntity.ok(medicamentos);
-        }
-        return ResponseEntity.notFound().build();
+        return medicamentos.hasContent()
+                ? ResponseEntity.ok(medicamentos)
+                : ResponseEntity.noContent().build();
     }
 
     @GetMapping("/lista")
-    public ResponseEntity<List<MedicamentoSalida>> mostrarTodos(){
-        List<MedicamentoSalida> Medicamento = medicamentoService.obtenerTodos();
-        if (!Medicamento.isEmpty()){
-            return ResponseEntity.ok(Medicamento);
-        }
-        return  ResponseEntity.notFound().build();
+    public ResponseEntity<List<MedicamentoSalida>> obtenerTodos() {
+        List<MedicamentoSalida> medicamentos = medicamentoService.obtenerTodos();
+        return medicamentos.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(medicamentos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MedicamentoSalida> buscarPorId(@PathVariable Integer id){
-        MedicamentoSalida Medicamento= medicamentoService.obtenerPorId(id);
-        if(Medicamento != null){
-            return ResponseEntity.ok(Medicamento);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<MedicamentoSalida> obtenerPorId(@PathVariable Integer id) {
+        MedicamentoSalida salida = medicamentoService.obtenerPorId(id);
+        return salida != null
+                ? ResponseEntity.ok(salida)
+                : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<MedicamentoSalida> crear(@RequestBody MedicamentoGuardar medicamentoGuardar){
-        MedicamentoSalida Medicamento = medicamentoService.crear(medicamentoGuardar);
-        return ResponseEntity.ok(Medicamento);
+    public ResponseEntity<MedicamentoSalida> crear(@RequestBody MedicamentoGuardar dto) {
+        MedicamentoSalida salida = medicamentoService.crear(dto);
+        return ResponseEntity.ok(salida);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MedicamentoSalida> editar(@PathVariable Integer id, @RequestBody MedicamentoModificar medicamentoModificar){
-        MedicamentoSalida Medicamento = medicamentoService.editar(medicamentoModificar);
-        return ResponseEntity.ok(Medicamento);
+    public ResponseEntity<MedicamentoSalida> editar(@PathVariable Integer id, @RequestBody MedicamentoModificar dto) {
+        dto.setId(id); // Asegura que el ID del path se use
+        MedicamentoSalida salida = medicamentoService.editar(dto);
+        return ResponseEntity.ok(salida);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity eliminar(@PathVariable Integer id){
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         medicamentoService.eliminarPorId(id);
-        return ResponseEntity.ok().body("Medicamento eliminado correctamente");
+        return ResponseEntity.ok("Medicamento eliminado correctamente");
     }
-
-
 }
-
-

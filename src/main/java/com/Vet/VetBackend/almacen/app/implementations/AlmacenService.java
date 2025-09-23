@@ -50,7 +50,7 @@ public class AlmacenService implements IAlmacenService {
         Almacen almacen = new Almacen();
         almacen.setNombre(dto.getNombre());
         almacen.setUbicacion(dto.getUbicacion());
-        almacen.setActivo(true); // o como lo manejes por defecto
+        almacen.setActivo(dto.getActivo());// o como lo manejes por defecto
         return convertirASalida(repository.save(almacen));
     }
 

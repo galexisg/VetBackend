@@ -40,7 +40,12 @@ public class CompraServiceImpl implements CompraService {
 
     @Override
     public CompraObtener crear(CompraCrear dto) {
-        Compra compra = modelMapper.map(dto, Compra.class);
+        Compra compra = new Compra();
+        compra.setProveedorId(dto.getProveedorId().intValue());
+        compra.setFecha(dto.getFecha());
+        compra.setDescripcion(dto.getDescripcion());
+        compra.setTotal(dto.getTotal());
+        // compra.setUsuarioId(dto.getUsuarioId()); // 🔜 Se activará tras migración
         return modelMapper.map(repository.save(compra), CompraObtener.class);
     }
 
@@ -48,7 +53,11 @@ public class CompraServiceImpl implements CompraService {
     public CompraObtener actualizar(Long id, CompraActualizar dto) {
         Compra existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
-        modelMapper.map(dto, existente);
+        existente.setProveedorId(dto.getProveedorId().intValue());
+        existente.setFecha(dto.getFecha());
+        existente.setDescripcion(dto.getDescripcion());
+        existente.setTotal(dto.getTotal());
+        // existente.setUsuarioId(dto.getUsuarioId()); // 🔜 Se activará tras migración
         return modelMapper.map(repository.save(existente), CompraObtener.class);
     }
 
@@ -56,7 +65,7 @@ public class CompraServiceImpl implements CompraService {
     public void cancelar(Long id, CompraCancelar dto) {
         Compra compra = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
-        repository.deleteById(id); // temporal, hasta que agregues campo estado
+        repository.deleteById(id); // 🔧 Temporal: se actualizará cuando se agregue campo estado
     }
 
     @Override
@@ -72,4 +81,11 @@ public class CompraServiceImpl implements CompraService {
                 .map(compra -> modelMapper.map(compra, CompraObtener.class))
                 .collect(Collectors.toList());
     }
+
+    // @Override
+    // public List<CompraObtener> obtenerPorUsuario(Long usuarioId) {
+    //     return repository.findByUsuarioId(usuarioId).stream()
+    //             .map(compra -> modelMapper.map(compra, CompraObtener.class))
+    //             .collect(Collectors.toList());
+    // }
 }

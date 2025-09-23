@@ -54,7 +54,7 @@ public class InventarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/Medicamento/{id}")
+    @GetMapping("/medicamento/{id}")
     public ResponseEntity<List<Inventario_Salida>> mostrarPorMedicamento(@PathVariable Integer id){
         List<Inventario_Salida> inventarios = inventarioService.obtenerPorMedicamentoId(id);
         if(!inventarios.isEmpty()){
