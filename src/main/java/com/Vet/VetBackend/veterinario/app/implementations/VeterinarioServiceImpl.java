@@ -1,7 +1,8 @@
+// src/main/java/com/Vet/VetBackend/veterinario/app/implementations/VeterinarioServiceImpl.java
 package com.Vet.VetBackend.veterinario.app.implementations;
 
+import com.Vet.VetBackend.servicios.domain.EstadoServicio;
 import com.Vet.VetBackend.servicios.domain.Servicio;
-import com.Vet.VetBackend.servicios.domain.Servicio.EstadoServicio; // <-- importa el enum
 import com.Vet.VetBackend.servicios.repo.ServicioRepository;
 import com.Vet.VetBackend.usuarios.domain.Usuario;
 import com.Vet.VetBackend.usuarios.repo.UsuarioRepository;
@@ -32,9 +33,8 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
         Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Antes: .filter(Servicio::getActivo)
         Servicio servicio = servicioRepo.findById(dto.getServicioId())
-                .filter(s -> s.getEstado() == EstadoServicio.ACTIVO)
+                .filter(s -> s.getEstado() == EstadoServicio.ACTIVO) // Corregido: Usa el enum
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
 
         Especialidad especialidad = especialidadRepo.findById(dto.getEspecialidadId())
@@ -88,9 +88,8 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
         }
 
         if (dto.getServicioId() != null) {
-            // Antes: .filter(Servicio::getActivo)
             Servicio servicio = servicioRepo.findById(dto.getServicioId())
-                    .filter(s -> s.getEstado() == EstadoServicio.ACTIVO)
+                    .filter(s -> s.getEstado() == EstadoServicio.ACTIVO) // Corregido: Usa el enum
                     .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
             veterinario.setServicios(servicio);
         }

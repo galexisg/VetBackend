@@ -2,11 +2,12 @@
 package com.Vet.VetBackend.servicios.app.implementations;
 
 import com.Vet.VetBackend.servicios.app.services.ServicioService;
+import com.Vet.VetBackend.servicios.domain.EstadoServicio;
 import com.Vet.VetBackend.servicios.domain.Servicio;
-import com.Vet.VetBackend.servicios.domain.Servicio.EstadoServicio;
 import com.Vet.VetBackend.servicios.repo.ServicioRepository;
 import com.Vet.VetBackend.servicios.web.dto.ServicioReq;
 import com.Vet.VetBackend.servicios.web.dto.ServicioRes;
+import com.Vet.VetBackend.servicios.web.dto.ServicioEstadoReq;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,17 @@ public class ServicioServiceImpl implements ServicioService {
 
     private final ServicioRepository repo;
 
-    public ServicioServiceImpl(ServicioRepository repo) { this.repo = repo; }
+    public ServicioServiceImpl(ServicioRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
     public ServicioRes crear(ServicioReq req) {
         validar(req);
         repo.findByNombreIgnoreCase(req.getNombre().trim())
-                .ifPresent(s -> { throw new IllegalArgumentException("nombre ya existe"); });
+                .ifPresent(s -> {
+                    throw new IllegalArgumentException("nombre ya existe");
+                });
 
         Servicio s = aplicar(req, new Servicio());
         return map(repo.save(s));
@@ -46,13 +51,6 @@ public class ServicioServiceImpl implements ServicioService {
         }
 
         s = aplicar(req, s);
-        return map(repo.save(s));
-    }
-
-    @Override
-    public ServicioRes activar(Long id, boolean activo) {
-        Servicio s = repo.findById(id).orElseThrow(() -> new NoSuchElementException("no encontrado"));
-        s.setEstado(activo ? EstadoServicio.ACTIVO : EstadoServicio.INACTIVO);
         return map(repo.save(s));
     }
 
@@ -82,6 +80,14 @@ public class ServicioServiceImpl implements ServicioService {
         return repo.findAll(spec, pageable).map(this::map);
     }
 
+    // Nuevo método para cambiar de estado
+    @Override
+    public ServicioRes cambiarEstado(Long id, ServicioEstadoReq req) {
+        Servicio s = repo.findById(id).orElseThrow(() -> new NoSuchElementException("no encontrado"));
+        s.setEstado(req.getEstado());
+        return map(repo.save(s));
+    }
+
     private void validar(ServicioReq r) {
         if (r.getNombre() == null || r.getNombre().isBlank())
             throw new IllegalArgumentException("nombre requerido");
@@ -93,9 +99,7 @@ public class ServicioServiceImpl implements ServicioService {
         s.setNombre(r.getNombre().trim());
         s.setDescripcion(r.getDescripcion());
         s.setPrecioBase(r.getPrecioBase());
-        if (r.getActivo() != null) {
-            s.setEstado(r.getActivo() ? EstadoServicio.ACTIVO : EstadoServicio.INACTIVO);
-        }
+        if (r.getEstado() != null) s.setEstado(r.getEstado());
         return s;
     }
 
@@ -105,8 +109,7 @@ public class ServicioServiceImpl implements ServicioService {
                 .nombre(s.getNombre())
                 .descripcion(s.getDescripcion())
                 .precioBase(s.getPrecioBase())
-                // Exponemos boolean en el response para compatibilidad
-                .activo(s.getEstado() == EstadoServicio.ACTIVO)
+                .estado(s.getEstado())
                 .createdAt(s.getCreatedAt())
                 .updatedAt(s.getUpdatedAt())
                 .build();
