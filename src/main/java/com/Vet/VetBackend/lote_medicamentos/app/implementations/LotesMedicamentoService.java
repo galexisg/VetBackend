@@ -1,11 +1,16 @@
 package com.Vet.VetBackend.lote_medicamentos.app.implementations;
 
+
+import com.Vet.VetBackend.Medicamento.domain.Medicamento;
+import com.Vet.VetBackend.Medicamento.repo.IMedicamentoRepository;
 import com.Vet.VetBackend.lote_medicamentos.domain.Lotes_medicamentos;
 import com.Vet.VetBackend.lote_medicamentos.repo.ILotesMedicamentosRepository;
 import com.Vet.VetBackend.lote_medicamentos.app.services.ILotesMedicamentoService;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamento_Salida;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Actualizar;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Guardar;
+import com.Vet.VetBackend.proveedores.domain.Proveedor;
+import com.Vet.VetBackend.proveedores.repo.IProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +27,12 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
 
     @Autowired
     private ILotesMedicamentosRepository lotesMedicamentosRepository;
+
+    @Autowired
+    private IMedicamentoRepository medicamentoRepository;
+
+    @Autowired
+    private IProveedorRepository proveedorRepository;
 
     @Override
     public List<LoteMedicamento_Salida> obtenerTodos() {
@@ -48,12 +59,18 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
 
     @Override
     public LoteMedicamento_Salida crear(LoteMedicamentos_Guardar dto) {
+        Medicamento medicamento = medicamentoRepository.findById(dto.getMedicamentoId())
+                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+        Proveedor proveedor = proveedorRepository.findById(dto.getProveedorId())
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+
         Lotes_medicamentos lote = new Lotes_medicamentos();
         lote.setCodigoLote(dto.getCodigoLote());
         lote.setFechaVencimiento(dto.getFechaVencimiento());
-        lote.setMedicamentoId(dto.getMedicamentoId());
-        lote.setProveedorId(dto.getProveedorId());
+        lote.setMedicamento(medicamento);
+        lote.setProveedor(proveedor);
         lote.setObservaciones(dto.getObservaciones());
+
         return convertirASalida(lotesMedicamentosRepository.save(lote));
     }
 
@@ -61,11 +78,18 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     public LoteMedicamento_Salida editar(LoteMedicamentos_Actualizar dto) {
         Lotes_medicamentos existente = lotesMedicamentosRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
+
+        Medicamento medicamento = medicamentoRepository.findById(dto.getMedicamentoId())
+                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+        Proveedor proveedor = proveedorRepository.findById(dto.getProveedorId())
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+
         existente.setCodigoLote(dto.getCodigoLote());
         existente.setFechaVencimiento(dto.getFechaVencimiento());
-        existente.setMedicamentoId(dto.getMedicamentoId());
-        existente.setProveedorId(dto.getProveedorId());
+        existente.setMedicamento(medicamento);
+        existente.setProveedor(proveedor);
         existente.setObservaciones(dto.getObservaciones());
+
         return convertirASalida(lotesMedicamentosRepository.save(existente));
     }
 
@@ -76,14 +100,14 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
 
     @Override
     public List<LoteMedicamento_Salida> obtenerPorMedicamentoId(Integer medicamentoId) {
-        return lotesMedicamentosRepository.findByMedicamentoId(medicamentoId).stream()
+        return lotesMedicamentosRepository.findByMedicamento_Id(medicamentoId).stream()
                 .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<LoteMedicamento_Salida> obtenerPorProveedorId(Integer proveedorId) {
-        return lotesMedicamentosRepository.findByProveedorId(proveedorId).stream()
+        return lotesMedicamentosRepository.findByProveedor_Id(proveedorId).stream()
                 .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
@@ -94,20 +118,34 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
         LocalDate limite = hoy.plusDays(30);
         Date desde = Date.valueOf(hoy);
         Date hasta = Date.valueOf(limite);
+
         return lotesMedicamentosRepository.findByFechaVencimientoBetween(desde, hasta).stream()
                 .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
-    // 🔄 Conversión manual de entidad a DTO
     private LoteMedicamento_Salida convertirASalida(Lotes_medicamentos lote) {
         LoteMedicamento_Salida salida = new LoteMedicamento_Salida();
         salida.setId(lote.getId());
         salida.setCodigoLote(lote.getCodigoLote());
-        salida.setFechaVencimiento(lote.getFechaVencimiento());
-        salida.setMedicamentoId(lote.getMedicamentoId());
-        salida.setProveedorId(lote.getProveedorId());
+
+        // 🔹 Conversión correcta
+        if (lote.getFechaVencimiento() != null) {
+            salida.setFechaVencimiento(new java.sql.Date(lote.getFechaVencimiento().getTime()));
+        }
+
         salida.setObservaciones(lote.getObservaciones());
+
+        if (lote.getMedicamento() != null) {
+            salida.setMedicamentoId(lote.getMedicamento().getId());
+            salida.setMedicamentoNombre(lote.getMedicamento().getNombre());
+        }
+        if (lote.getProveedor() != null) {
+            salida.setProveedorId(lote.getProveedor().getId());
+            salida.setProveedorNombre(lote.getProveedor().getNombre());
+        }
+
         return salida;
     }
+
 }

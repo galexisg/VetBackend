@@ -1,5 +1,6 @@
 package com.Vet.VetBackend.lote_medicamentos.app.services;
 
+import com.Vet.VetBackend.lote_medicamentos.domain.Lotes_medicamentos;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamento_Salida;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Actualizar;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Guardar;
@@ -19,6 +20,7 @@ public interface ILotesMedicamentoService {
     LoteMedicamento_Salida editar(LoteMedicamentos_Actualizar loteMedicamentosActualizar);
 
     void eliminarPorId(Integer id);
+
 
     List<LoteMedicamento_Salida> obtenerPorMedicamentoId(Integer medicamentoId);
 

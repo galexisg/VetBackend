@@ -1,14 +1,12 @@
 package com.Vet.VetBackend.dispensa.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "dispensa")
 public class Dispensa {
@@ -32,5 +30,6 @@ public class Dispensa {
     @Column(name = "prescripcion_detalle_id")
     private Integer prescripcionDetalleId;
 
-    // private Integer usuarioId;
+    @Column(name = "usuario_id")
+    private Integer usuarioId;  //  Nuevo campo para la relación con Usuario
 }

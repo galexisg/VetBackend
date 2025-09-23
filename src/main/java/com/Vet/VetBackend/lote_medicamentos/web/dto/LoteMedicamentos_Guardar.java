@@ -1,19 +1,20 @@
 package com.Vet.VetBackend.lote_medicamentos.web.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.sql.Date;
 
-@Getter
-@Setter
-public class LoteMedicamentos_Guardar implements Serializable {
-    private Integer medicamentoId;
-    private Integer proveedorId;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class LoteMedicamentos_Guardar {
     private String codigoLote;
     private Date fechaVencimiento;
     private String observaciones;
-
+    private Integer medicamentoId;
+    private Integer proveedorId;
 }
+
 
