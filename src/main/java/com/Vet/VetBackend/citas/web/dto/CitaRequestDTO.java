@@ -15,7 +15,6 @@ public class CitaRequestDTO {
     private int citaEstadoId;
     private Long historialId;
     private Long facturaId;
-    private Long consultaId;
 
     private Cita.Tipo tipo = Cita.Tipo.Normal;
 
@@ -66,28 +65,12 @@ public class CitaRequestDTO {
         this.citaEstadoId = citaEstadoId;
     }
 
-    public Long getHistorialId() {
-        return historialId;
-    }
-
-    public void setHistorialId(Long historialId) {
-        this.historialId = historialId;
-    }
-
     public Long getFacturaId() {
         return facturaId;
     }
 
     public void setFacturaId(Long facturaId) {
         this.facturaId = facturaId;
-    }
-
-    public Long getConsultaId() {
-        return consultaId;
-    }
-
-    public void setConsultaId(Long consultaId) {
-        this.consultaId = consultaId;
     }
 
     public Cita.Tipo getTipo() {
