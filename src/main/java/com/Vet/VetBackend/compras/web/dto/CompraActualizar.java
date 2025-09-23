@@ -1,16 +1,17 @@
 package com.Vet.VetBackend.compras.web.dto;
 
-import java.io.Serializable;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
+import java.io.Serializable;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class CompraActualizar implements Serializable {
-    private Long proveedorId;
-    // private Long usuarioId; // 🔜 Se usará cuando exista en la tabla
+    private Integer proveedorId;
+    private Integer usuarioId;
     private LocalDate fecha;
     private String descripcion;
     private double total;
 }
+

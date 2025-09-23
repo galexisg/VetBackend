@@ -7,7 +7,10 @@ import com.Vet.VetBackend.compras.web.dto.CompraActualizar;
 import com.Vet.VetBackend.compras.web.dto.CompraCancelar;
 import com.Vet.VetBackend.compras.web.dto.CompraCrear;
 import com.Vet.VetBackend.compras.web.dto.CompraObtener;
-import org.modelmapper.ModelMapper;
+import com.Vet.VetBackend.proveedores.domain.Proveedor;
+import com.Vet.VetBackend.proveedores.repo.IProveedorRepository;
+import com.Vet.VetBackend.usuarios.domain.Usuario;
+import com.Vet.VetBackend.usuarios.repo.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +25,16 @@ public class CompraServiceImpl implements CompraService {
     private CompraRepository repository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private IProveedorRepository proveedorRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
     public List<CompraObtener> obtenerTodos() {
-        return repository.findAll().stream()
-                .map(compra -> modelMapper.map(compra, CompraObtener.class))
+        return repository.findAll()
+                .stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -35,7 +42,7 @@ public class CompraServiceImpl implements CompraService {
     public CompraObtener obtenerPorId(Long id) {
         Compra compra = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
-        return modelMapper.map(compra, CompraObtener.class);
+        return toDto(compra);
     }
 
     @Override
@@ -44,46 +51,81 @@ public class CompraServiceImpl implements CompraService {
         compra.setFecha(dto.getFecha());
         compra.setDescripcion(dto.getDescripcion());
         compra.setTotal(dto.getTotal());
-        // compra.setUsuarioId(dto.getUsuarioId()); // 🔜 Se activará tras migración
-        return modelMapper.map(repository.save(compra), CompraObtener.class);
+
+        Proveedor proveedor = proveedorRepository
+                .findById(dto.getProveedorId())
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        compra.setProveedor(proveedor);
+
+        Usuario usuario = usuarioRepository
+                .findById(dto.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        compra.setUsuario(usuario);
+
+        return toDto(repository.save(compra));
     }
 
     @Override
     public CompraObtener actualizar(Long id, CompraActualizar dto) {
         Compra existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
+
         existente.setFecha(dto.getFecha());
         existente.setDescripcion(dto.getDescripcion());
         existente.setTotal(dto.getTotal());
-        // existente.setUsuarioId(dto.getUsuarioId()); // 🔜 Se activará tras migración
-        return modelMapper.map(repository.save(existente), CompraObtener.class);
+
+        Proveedor proveedor = proveedorRepository
+                .findById(dto.getProveedorId())
+                .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+        existente.setProveedor(proveedor);
+
+        Usuario usuario = usuarioRepository
+                .findById(dto.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        existente.setUsuario(usuario);
+
+        return toDto(repository.save(existente));
     }
 
     @Override
     public void cancelar(Long id, CompraCancelar dto) {
-        Compra compra = repository.findById(id)
+        repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Compra no encontrada"));
-        repository.deleteById(id); // 🔧 Temporal: se actualizará cuando se agregue campo estado
+        repository.deleteById(id);
     }
 
     @Override
     public List<CompraObtener> obtenerPorProveedor(Integer proveedorId) {
-        return repository.findByProveedorId(proveedorId).stream()
-                .map(compra -> modelMapper.map(compra, CompraObtener.class))
+        return repository.findByProveedor_Id(proveedorId)
+                .stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<CompraObtener> obtenerPorFecha(LocalDate fecha) {
-        return repository.findByFecha(fecha).stream()
-                .map(compra -> modelMapper.map(compra, CompraObtener.class))
+        return repository.findByFecha(fecha)
+                .stream()
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    // @Override
-    // public List<CompraObtener> obtenerPorUsuario(Long usuarioId) {
-    //     return repository.findByUsuarioId(usuarioId).stream()
-    //             .map(compra -> modelMapper.map(compra, CompraObtener.class))
-    //             .collect(Collectors.toList());
-    // }
+    @Override
+    public List<CompraObtener> obtenerPorUsuario(Integer usuarioId) {
+        return repository.findByUsuario_Id(usuarioId)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private CompraObtener toDto(Compra compra) {
+        CompraObtener dto = new CompraObtener();
+        dto.setId(compra.getId().intValue());
+        dto.setFecha(compra.getFecha());
+        dto.setDescripcion(compra.getDescripcion());
+        dto.setTotal(compra.getTotal());
+        dto.setProveedorId(compra.getProveedor().getId());
+        dto.setUsuarioId(compra.getUsuario().getId());
+        return dto;
+    }
 }
