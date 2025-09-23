@@ -1,7 +1,10 @@
 package com.Vet.VetBackend.compras.web.controller;
 
-import com.Vet.VetBackend.compras.domain.Compra;
-import com.Vet.VetBackend.compras.repo.CompraRepository;
+import com.Vet.VetBackend.compras.app.services.CompraService;
+import com.Vet.VetBackend.compras.web.dto.CompraActualizar;
+import com.Vet.VetBackend.compras.web.dto.CompraCancelar;
+import com.Vet.VetBackend.compras.web.dto.CompraCrear;
+import com.Vet.VetBackend.compras.web.dto.CompraObtener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,64 +17,59 @@ import java.util.List;
 public class CompraController {
 
     @Autowired
-    private CompraRepository compraRepository;
+    private CompraService compraService;
 
-    // GET /api/compras - Listar todas las compras
     @GetMapping
-    public List<Compra> listarCompras() {
-        return compraRepository.findAll();
+    public ResponseEntity<List<CompraObtener>> obtenerTodas() {
+        List<CompraObtener> compras = compraService.obtenerTodos();
+        return compras.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(compras);
     }
 
-    // GET /api/compras/{id} - Obtener compra por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Compra> obtenerCompraPorId(@PathVariable Long id) {
-        return compraRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<CompraObtener> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(compraService.obtenerPorId(id));
     }
 
-    // POST /api/compras - Crear compra
     @PostMapping
-    public Compra crearCompra(@RequestBody Compra compra) {
-        return compraRepository.save(compra);
+    public ResponseEntity<CompraObtener> crear(@RequestBody CompraCrear dto) {
+        return ResponseEntity.ok(compraService.crear(dto));
     }
 
-    // PUT /api/compras/{id} - Actualizar compra
     @PutMapping("/{id}")
-    public ResponseEntity<Compra> actualizarCompra(@PathVariable Long id, @RequestBody Compra compraDetails) {
-        return compraRepository.findById(id)
-                .map(compra -> {
-                    compra.setProveedorId(compraDetails.getProveedorId());
-                    compra.setFecha(compraDetails.getFecha());
-                    compra.setDescripcion(compraDetails.getDescripcion());
-                    compra.setTotal(compraDetails.getTotal());
-                    Compra updatedCompra = compraRepository.save(compra);
-                    return ResponseEntity.ok(updatedCompra);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<CompraObtener> actualizar(@PathVariable Long id, @RequestBody CompraActualizar dto) {
+        return ResponseEntity.ok(compraService.actualizar(id, dto));
     }
 
-    // DELETE /api/compras/{id} - Cancelar compra
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelarCompra(@PathVariable Long id) {
-        return compraRepository.findById(id)
-                .map(compra -> {
-                    compraRepository.delete(compra);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> cancelar(@PathVariable Long id, @RequestBody CompraCancelar dto) {
+        compraService.cancelar(id, dto);
+        return ResponseEntity.ok().build();
     }
 
-    // GET /api/compras/proveedor/{proveedorId} - Compras por proveedor
     @GetMapping("/proveedor/{proveedorId}")
-    public List<Compra> comprasPorProveedor(@PathVariable Integer proveedorId) {
-        return compraRepository.findByProveedorId(proveedorId);
+    public ResponseEntity<List<CompraObtener>> obtenerPorProveedor(@PathVariable Integer proveedorId) {
+        List<CompraObtener> compras = compraService.obtenerPorProveedor(proveedorId);
+        return compras.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(compras);
     }
 
-    // GET /api/compras/fecha/{fecha} - Compras por fecha
     @GetMapping("/fecha/{fecha}")
-    public List<Compra> comprasPorFecha(@PathVariable String fecha) {
+    public ResponseEntity<List<CompraObtener>> obtenerPorFecha(@PathVariable String fecha) {
         LocalDate date = LocalDate.parse(fecha);
-        return compraRepository.findByFecha(date);
+        List<CompraObtener> compras = compraService.obtenerPorFecha(date);
+        return compras.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(compras);
     }
+
+    // @GetMapping("/usuario/{usuarioId}") // 🔜 Se activará tras migración
+    // public ResponseEntity<List<CompraObtener>> obtenerPorUsuario(@PathVariable Long usuarioId) {
+    //     List<CompraObtener> compras = compraService.obtenerPorUsuario(usuarioId);
+    //     return compras.isEmpty()
+    //             ? ResponseEntity.noContent().build()
+    //             : ResponseEntity.ok(compras);
+    // }
 }

@@ -81,7 +81,7 @@ public class MedicamentoService implements IMedicamentoService {
         m.setUnidad(dto.getUnidad());
         m.setVia(dto.getVia());
         m.setRequiereReceta(dto.getRequiereReceta());
-        m.setActivo(dto.getActivo());
+        m.setActivo(dto.isActivo());
         m.setTemperaturaalm(dto.getTemperaturaalm());
         m.setVidautilmeses(dto.getVidautilmeses());
         return m;

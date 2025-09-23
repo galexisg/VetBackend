@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @Entity
@@ -19,7 +18,7 @@ public class Compra {
     private Long id;
 
     @Column(name = "proveedor_id")
-    private Integer proveedorId; // SQL usa INT
+    private Integer proveedorId;
 
     @Column(name = "fecha")
     private LocalDate fecha;
@@ -29,4 +28,8 @@ public class Compra {
 
     @Column(name = "total", nullable = false)
     private double total;
+
+    // 🔜 Campo pendiente de migración
+    // @Column(name = "usuario_id")
+    // private Long usuarioId;
 }

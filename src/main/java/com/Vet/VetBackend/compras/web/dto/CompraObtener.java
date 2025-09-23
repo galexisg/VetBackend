@@ -11,7 +11,7 @@ import lombok.Setter;
 public class CompraObtener implements Serializable {
     private Integer id;
     private Long proveedorId;
-    private Long usuarioId;
+    // private Long usuarioId; // 🔜 Se mostrará cuando esté disponible
     private LocalDate fecha;
     private String descripcion;
     private double total;

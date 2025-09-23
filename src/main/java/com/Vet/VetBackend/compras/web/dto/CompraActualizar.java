@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class CompraActualizar implements Serializable {
     private Long proveedorId;
-    private Long usuarioId;
+    // private Long usuarioId; // 🔜 Se usará cuando exista en la tabla
     private LocalDate fecha;
     private String descripcion;
     private double total;

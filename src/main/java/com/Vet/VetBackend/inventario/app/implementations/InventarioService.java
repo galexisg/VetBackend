@@ -34,6 +34,9 @@ public class InventarioService implements IInventarioService {
         dto.setStockActual(inventario.getStockActual());
         dto.setStockMinimo(inventario.getStockMinimo());
         dto.setStockMaximo(inventario.getStockMaximo());
+        dto.setAlmacenId(inventario.getAlmacenId());
+        dto.setMedicamentoId(inventario.getMedicamentoId());
+
         /*
         dto.setAlmacen(inventario.getAlmacen());
         dto.setMedicamento(inventario.getMedicamento());
@@ -47,6 +50,9 @@ public class InventarioService implements IInventarioService {
         inventario.setStockActual(dto.getStockActual());
         inventario.setStockMinimo(dto.getStockMinimo());
         inventario.setStockMaximo(dto.getStockMaximo());
+        inventario.setAlmacenId(dto.getAlmacenId());
+        inventario.setMedicamentoId(dto.getMedicamentoId());
+
 
         /*
         Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
@@ -66,6 +72,9 @@ public class InventarioService implements IInventarioService {
         inventario.setStockActual(dto.getStockActual());
         inventario.setStockMinimo(dto.getStockMinimo());
         inventario.setStockMaximo(dto.getStockMaximo());
+        inventario.setAlmacenId(dto.getAlmacenId());
+        inventario.setMedicamentoId(dto.getMedicamentoId());
+
 
         /*
         Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
@@ -130,6 +139,7 @@ public class InventarioService implements IInventarioService {
             inventario.setStockActual(inventarioModificar.getStockActual());
             inventario.setStockMinimo(inventarioModificar.getStockMinimo());
             inventario.setStockMaximo(inventarioModificar.getStockMaximo());
+
 
             /*
             Almacen almacen = almacenRepository.findById(inventarioModificar.getAlmacenId())
