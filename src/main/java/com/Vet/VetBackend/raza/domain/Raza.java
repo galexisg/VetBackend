@@ -12,13 +12,12 @@ public class Raza {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "raza_id") // <-- igual que en la BD
-    private  Byte id;
+    @Column(name = "raza_id")
+    private Byte id; // 👈 usar Integer para ser consistente con el repo y DTOs
 
-    // por ahora lo dejamos como columna simple
-    @Column(name = "especie_id", nullable = false) // <-- igual que en la BD
-    private  Byte especieId;
+    @Column(name = "especie_id", nullable = false)
+    private Byte especieId;
 
-    @Column(name = "nombre", length = 60, nullable = false) // <-- igual que en la BD
+    @Column(name = "nombre", length = 60, nullable = false)
     private String nombre;
 }
