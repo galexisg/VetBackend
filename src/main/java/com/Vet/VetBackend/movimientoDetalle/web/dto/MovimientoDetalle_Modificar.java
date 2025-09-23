@@ -10,18 +10,13 @@ import java.time.LocalDateTime;
 @Setter
 public class MovimientoDetalle_Modificar implements Serializable {
     private Integer id;
-
     private double cantidad;
-
     private double costoUnitario;
-
     private LocalDateTime fecha;
 
     private Integer movimientoInventarioId;
-
     private Integer medicamentoId;
-
     private Integer loteMedicamentoId;
-
     private Integer almacenId;
+    private Integer usuarioId; // Nuevo campo
 }
