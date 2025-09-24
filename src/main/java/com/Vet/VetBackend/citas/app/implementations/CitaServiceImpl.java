@@ -41,7 +41,6 @@ public class CitaServiceImpl implements CitaService {
         existing.setMotivoId(dto.getMotivoId());
         existing.setCitaEstadoId(dto.getCitaEstadoId());
         existing.setFacturaId(dto.getFacturaId());
-        existing.setConsultaId(dto.getConsultaId());
         existing.setTipo(dto.getTipo() == null ? existing.getTipo() : dto.getTipo());
         existing.setFechaHora(dto.getFechaHora());
         existing.setObservaciones(dto.getObservaciones());
@@ -75,7 +74,6 @@ public class CitaServiceImpl implements CitaService {
         c.setMotivoId(dto.getMotivoId());
         c.setCitaEstadoId(dto.getCitaEstadoId());
         c.setFacturaId(dto.getFacturaId());
-        c.setConsultaId(dto.getConsultaId());
         c.setTipo(dto.getTipo() == null ? Cita.Tipo.Normal : dto.getTipo());
         c.setFechaHora(dto.getFechaHora());
         c.setObservaciones(dto.getObservaciones());
@@ -91,7 +89,6 @@ public class CitaServiceImpl implements CitaService {
         r.setMotivoId(c.getMotivoId());
         r.setCitaEstadoId(c.getCitaEstadoId());
         r.setFacturaId(c.getFacturaId());
-        r.setConsultaId(c.getConsultaId());
         r.setTipo(c.getTipo());
         r.setFechaHora(c.getFechaHora());
         r.setObservaciones(c.getObservaciones());

@@ -1,6 +1,7 @@
 package com.Vet.VetBackend.tratamientos.web.dto;
 
 
+
 import com.Vet.VetBackend.tratamientos.domain.ServicioTratamiento;
 import lombok.Data;
 
