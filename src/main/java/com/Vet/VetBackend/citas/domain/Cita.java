@@ -12,23 +12,23 @@ public class Cita {
     @Column(name = "cita_id")
     private Long citaId;
 
-    @Column(name = "mascota_id", nullable = false)
+    @Column(name = "mascota_id", nullable = true)
     private int mascotaId;
 
-    @Column(name = "usuario_id", nullable = false)
+    @Column(name = "usuario_id", nullable = true)
     private int usuarioId;
 
-    @Column(name = "veterinario_id", nullable = false)
+    @Column(name = "veterinario_id", nullable = true)
     private int veterinarioId;
 
-    @Column(name = "motivo_id", nullable = false)
+    @Column(name = "motivo_id", nullable = true)
     private int motivoId;
 
-    @Column(name = "cita_estado_id", nullable = false)
+    @Column(name = "cita_estado_id", nullable = true)
     private Integer citaEstadoId;
 
 
-    @Column(name = "factura_id", nullable = false)
+    @Column(name = "factura_id", nullable = true)
     private Long facturaId;
 
     public enum Tipo {
