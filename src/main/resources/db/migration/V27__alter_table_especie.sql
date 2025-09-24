@@ -1,0 +1,5 @@
+
+ALTER TABLE especie CHANGE EspecieId especie_id TINYINT NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE especie DROP PRIMARY KEY, ADD PRIMARY KEY (especie_id);
+

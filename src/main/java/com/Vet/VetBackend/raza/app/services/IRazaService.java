@@ -14,11 +14,10 @@ public interface IRazaService {
 
     Page<RazaSalida> obtenerTodosPaginados(Pageable pageable);
 
-    RazaSalida obtenerPorId(Integer id);
+    RazaSalida obtenerPorId(Byte id);
 
     RazaSalida crear(RazaGuardar razaGuardar);
 
     RazaSalida editar(RazaModificar razaModificar);
-
-    void eliminarPorId(Integer id);
+    void eliminarPorId(Byte id); // ← nuevo método agregado
 }

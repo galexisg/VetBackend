@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Setter
 
 public class RazaSalida implements Serializable {
-    private Integer id;
+    private Byte id;
     private String nombre;
     private Byte especieId;
 

@@ -1,23 +1,27 @@
 package com.Vet.VetBackend.raza.domain;
 
+import com.Vet.VetBackend.especie.domain.Especie;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "raza")
 public class Raza {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "raza_id")
-    private Byte id; // 👈 usar Integer para ser consistente con el repo y DTOs
+    @Column(name = "RazaId")
+    private Byte id;
 
-    @Column(name = "especie_id", nullable = false)
-    private Byte especieId;
-
-    @Column(name = "nombre", length = 60, nullable = false)
+    @Column(name = "Nombre", length = 60, nullable = false)
     private String nombre;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "EspecieId", nullable = false) // FK
+    private Especie especie;
 }

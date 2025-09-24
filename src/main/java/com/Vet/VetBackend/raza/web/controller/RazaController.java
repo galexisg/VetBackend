@@ -39,7 +39,7 @@ public class RazaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RazaSalida> buscarPorId(@PathVariable Integer id){
+    public ResponseEntity<RazaSalida> buscarPorId(@PathVariable Byte id){
         RazaSalida Medicamento= razaService.obtenerPorId(id);
         if(Medicamento != null){
             return ResponseEntity.ok(Medicamento);
@@ -60,7 +60,7 @@ public class RazaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity eliminar(@PathVariable Integer id){
+    public ResponseEntity eliminar(@PathVariable Byte id){
         razaService.eliminarPorId(id);
         return ResponseEntity.ok().body("raza eliminada");
     }
