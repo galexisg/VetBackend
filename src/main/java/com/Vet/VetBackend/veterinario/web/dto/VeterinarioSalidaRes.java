@@ -12,5 +12,5 @@ public class VeterinarioSalidaRes {
     private String estado;
     private String especialidad; // único
     private String servicio;     // único
-    private String usuarioNombre;
+    private UsuarioSalidaRes usuario; // 🔹 ahora incluye todos los datos del usuario
 }
