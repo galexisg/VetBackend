@@ -2,25 +2,28 @@ package com.Vet.VetBackend.compras.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
+@Getter
 @Entity
 @Table(name = "compra_detalle")
-@Getter
-@Setter
 public class CompraDetalle {
 
+    // Getters y setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "compra_id", foreignKey = @ForeignKey(name = "fk_compra_det__compra"))
-    private Compra compra;
+    @Column(name = "compra_id")  // mapea la columna compra_id de la tabla
+    private Long compraId;
 
-    @Column(name = "cantidad", nullable = false)
-    private int cantidad;
+    private Integer cantidad;
+    private Double precio;
 
-    @Column(name = "precio", nullable = false)
-    private double precio;
+    public void setId(Long id) { this.id = id; }
+
+    public void setCompraId(Long compraId) { this.compraId = compraId; }
+
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+
+    public void setPrecio(Double precio) { this.precio = precio; }
 }

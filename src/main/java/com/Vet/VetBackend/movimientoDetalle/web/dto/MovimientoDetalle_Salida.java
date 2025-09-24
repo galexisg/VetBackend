@@ -4,7 +4,7 @@ import com.Vet.VetBackend.Medicamento.web.dto.MedicamentoSalida;
 import com.Vet.VetBackend.almacen.web.dto.Almacen_Salida;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamento_Salida;
 import com.Vet.VetBackend.movimientoInventario.web.dto.MovimientoInventario_Salida;
-import com.Vet.VetBackend.usuarios.web.dto.Usuario_Salida; // DTO de salida de usuario
+import com.Vet.VetBackend.usuarios.web.dto.UsuarioRes; // Importa el DTO correcto
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,5 +23,5 @@ public class MovimientoDetalle_Salida implements Serializable {
     private MedicamentoSalida medicamento;
     private LoteMedicamento_Salida loteMedicamento;
     private Almacen_Salida almacen;
-    private Usuario_Salida usuario; // Nuevo campo
+    private UsuarioRes usuario; // Usa el tipo de DTO correcto
 }

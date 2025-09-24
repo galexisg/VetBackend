@@ -40,11 +40,23 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
     @Override
     public ObtenerDetalle agregar_detalle(CrearDetalle dto) {
         CompraDetalle detalle = new CompraDetalle();
-        detalle.setId(dto.getCompraId());
+        detalle.setCompraId(dto.getCompraId()); // ✅ aquí asignas correctamente
         detalle.setCantidad(dto.getCantidad());
         detalle.setPrecio(dto.getPrecio());
-        return modelMapper.map(repository.save(detalle), ObtenerDetalle.class);
+
+        CompraDetalle saved = repository.save(detalle);
+        return mapToDto(saved); // mapeo manual a DTO
     }
+
+    private ObtenerDetalle mapToDto(CompraDetalle detalle) {
+        ObtenerDetalle dto = new ObtenerDetalle();
+        dto.setId(detalle.getId());
+        dto.setCompraId(detalle.getCompraId());
+        dto.setCantidad(detalle.getCantidad());
+        dto.setPrecio(detalle.getPrecio());
+        return dto;
+    }
+
 
     @Override
     public ObtenerDetalle actualizar_detalle(Long id, ActualizarDetalle dto) {
