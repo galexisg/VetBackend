@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     private IProveedorRepository proveedorRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<LoteMedicamento_Salida> obtenerTodos() {
         return lotesMedicamentosRepository.findAll().stream()
                 .map(this::convertirASalida)
@@ -42,6 +44,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<LoteMedicamento_Salida> obtenerTodosPaginados(Pageable pageable) {
         Page<Lotes_medicamentos> page = lotesMedicamentosRepository.findAll(pageable);
         List<LoteMedicamento_Salida> dtoList = page.stream()
@@ -51,6 +54,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public LoteMedicamento_Salida obtenerPorId(Integer id) {
         Lotes_medicamentos lote = lotesMedicamentosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
@@ -58,6 +62,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional
     public LoteMedicamento_Salida crear(LoteMedicamentos_Guardar dto) {
         Medicamento medicamento = medicamentoRepository.findById(dto.getMedicamentoId())
                 .orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
@@ -75,6 +80,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional
     public LoteMedicamento_Salida editar(LoteMedicamentos_Actualizar dto) {
         Lotes_medicamentos existente = lotesMedicamentosRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
@@ -94,11 +100,13 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional
     public void eliminarPorId(Integer id) {
         lotesMedicamentosRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<LoteMedicamento_Salida> obtenerPorMedicamentoId(Integer medicamentoId) {
         return lotesMedicamentosRepository.findByMedicamento_Id(medicamentoId).stream()
                 .map(this::convertirASalida)
@@ -106,6 +114,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<LoteMedicamento_Salida> obtenerPorProveedorId(Integer proveedorId) {
         return lotesMedicamentosRepository.findByProveedor_Id(proveedorId).stream()
                 .map(this::convertirASalida)
@@ -113,6 +122,7 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<LoteMedicamento_Salida> obtenerLotesProximosAVencer() {
         LocalDate hoy = LocalDate.now();
         LocalDate limite = hoy.plusDays(30);
@@ -129,17 +139,19 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
         salida.setId(lote.getId());
         salida.setCodigoLote(lote.getCodigoLote());
 
-        // 🔹 Conversión correcta
+        // Manejo seguro para la fecha de vencimiento
         if (lote.getFechaVencimiento() != null) {
-            salida.setFechaVencimiento(new java.sql.Date(lote.getFechaVencimiento().getTime()));
+            salida.setFechaVencimiento((Date) lote.getFechaVencimiento());
         }
 
         salida.setObservaciones(lote.getObservaciones());
 
+        // Manejo seguro para evitar NullPointerException en relaciones
         if (lote.getMedicamento() != null) {
             salida.setMedicamentoId(lote.getMedicamento().getId());
             salida.setMedicamentoNombre(lote.getMedicamento().getNombre());
         }
+
         if (lote.getProveedor() != null) {
             salida.setProveedorId(lote.getProveedor().getId());
             salida.setProveedorNombre(lote.getProveedor().getNombre());

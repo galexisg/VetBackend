@@ -43,7 +43,18 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
         detalle.setCompraId(dto.getCompraId());
         detalle.setCantidad(dto.getCantidad());
         detalle.setPrecio(dto.getPrecio());
-        return modelMapper.map(repository.save(detalle), ObtenerDetalle.class);
+
+        CompraDetalle saved = repository.save(detalle);
+        return mapToDto(saved);
+    }
+
+    private ObtenerDetalle mapToDto(CompraDetalle detalle) {
+        ObtenerDetalle dto = new ObtenerDetalle();
+        dto.setId(detalle.getId());
+        dto.setCompraId(detalle.getCompraId());
+        dto.setCantidad(detalle.getCantidad());
+        dto.setPrecio(detalle.getPrecio());
+        return dto;
     }
 
     @Override
@@ -59,7 +70,7 @@ public class CompraDetalleServiceImpl implements CompraDetalleService {
     public void eliminar_detalle(Long id, CancelarDetalle dto) {
         CompraDetalle detalle = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Detalle de compra no encontrado"));
-        repository.delete(detalle); // 🔧 Temporal: se actualizará cuando se agregue campo estado
+        repository.delete(detalle);
     }
 
     @Override
