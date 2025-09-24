@@ -3,10 +3,7 @@ package com.Vet.VetBackend.almacen.app.implementations;
 import com.Vet.VetBackend.almacen.domain.Almacen;
 import com.Vet.VetBackend.almacen.repo.IAlmacenRepository;
 import com.Vet.VetBackend.almacen.app.services.IAlmacenService;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_CambiarEstado;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_Guardar;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_Actualizar;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_Salida;
+import com.Vet.VetBackend.almacen.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -50,7 +47,8 @@ public class AlmacenService implements IAlmacenService {
         Almacen almacen = new Almacen();
         almacen.setNombre(dto.getNombre());
         almacen.setUbicacion(dto.getUbicacion());
-        almacen.setActivo(dto.getActivo());// o como lo manejes por defecto
+        // Si no envías activo, se puede establecer por defecto true
+        almacen.setActivo(dto.getActivo() != null ? dto.getActivo() : true);
         return convertirASalida(repository.save(almacen));
     }
 
@@ -58,8 +56,9 @@ public class AlmacenService implements IAlmacenService {
     public Almacen_Salida editar(Integer id, Almacen_Actualizar dto) {
         Almacen existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Almacén no encontrado"));
-        existente.setNombre(dto.getNombre());
-        existente.setUbicacion(dto.getUbicacion());
+        existente.setNombre(dto.getNombre() != null ? dto.getNombre() : existente.getNombre());
+        existente.setUbicacion(dto.getUbicacion() != null ? dto.getUbicacion() : existente.getUbicacion());
+        // No cambiamos activo aquí para que no se quede null
         return convertirASalida(repository.save(existente));
     }
 
@@ -76,7 +75,7 @@ public class AlmacenService implements IAlmacenService {
         return convertirASalida(repository.save(almacen));
     }
 
-    // 🔄 Métodos de conversión manual
+    // 🔄 Método de conversión de entidad a DTO
     private Almacen_Salida convertirASalida(Almacen almacen) {
         Almacen_Salida salida = new Almacen_Salida();
         salida.setId(almacen.getId());
