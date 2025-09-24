@@ -23,7 +23,7 @@ public class Lotes_medicamentos {
     @Column(name = "codigo_lote", length = 60)
     private String codigoLote;
 
-    @Column(name = "fecha_vencimiento")
+    @Column(name = "fecha_vencimiento", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date fechaVencimiento;
 
