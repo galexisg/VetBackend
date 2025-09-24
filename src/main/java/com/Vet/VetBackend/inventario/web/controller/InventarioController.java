@@ -74,6 +74,7 @@ public class InventarioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Inventario_Salida> editar(@PathVariable Integer id, @RequestBody Inventario_Modificar inventarioModificar){
+        inventarioModificar.setId(id); // ← Esto sincroniza el ID del path con el DTO
         Inventario_Salida inventario = inventarioService.editar(inventarioModificar);
         if(inventario != null){
             return ResponseEntity.ok(inventario);

@@ -60,6 +60,7 @@ public class AlmacenService implements IAlmacenService {
                 .orElseThrow(() -> new RuntimeException("Almacén no encontrado"));
         existente.setNombre(dto.getNombre());
         existente.setUbicacion(dto.getUbicacion());
+        existente.setActivo(dto.getActivo());
         return convertirASalida(repository.save(existente));
     }
 
