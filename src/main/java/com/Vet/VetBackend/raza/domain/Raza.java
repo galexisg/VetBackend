@@ -22,6 +22,6 @@ public class Raza {
     private String nombre;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "EspecieId", nullable = false) // FK
+    @JoinColumn(name = "especie_id", nullable = false) // FK
     private Especie especie;
 }

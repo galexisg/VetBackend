@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,11 +86,19 @@ public class RazaServiceImpl implements IRazaService {
         razaRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     private RazaSalida toSalida(Raza r) {
         RazaSalida dto = new RazaSalida();
         dto.setId(r.getId());
         dto.setNombre(r.getNombre());
-        dto.setEspecieId(r.getEspecie() != null ? r.getEspecie().getEspecieId() : null);
+
+        if (r.getEspecie() != null) {
+            dto.setEspecieId(r.getEspecie().getEspecieId());
+            dto.setEspecieNombre(r.getEspecie().getNombre());
+        }
+
         return dto;
     }
+
+
 }

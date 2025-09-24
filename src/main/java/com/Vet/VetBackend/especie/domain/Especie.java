@@ -16,7 +16,7 @@ public class Especie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EspecieId", nullable = false)
+    @Column(name = "especie_id", nullable = false)
     private Byte especieId;
 
     @Column(name = "Nombre", length = 60, nullable = false, unique = true)
