@@ -9,7 +9,9 @@ import lombok.Setter;
 public class ObtenerDetalle implements Serializable {
     private Long id;
     private Long compraId;
-    private Long productoId;
     private int cantidad;
     private double precio;
+
+    // 🔴 productoId eliminado
 }
+

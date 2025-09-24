@@ -8,12 +8,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface CompraRepository extends JpaRepository<Compra, Long> { // corregido
+public interface CompraRepository extends JpaRepository<Compra, Long> {
 
-    List<Compra> findByProveedorId(Integer proveedorId);
+    List<Compra> findByProveedor_Id(Integer proveedorId);
 
     List<Compra> findByFecha(LocalDate fecha);
 
-    // ❌ Eliminado porque no existe en el modelo
-    // List<Compra> findByUsuarioId(Integer usuarioId);
+    // Métodos que usan la propiedad 'id' de la entidad Usuario
+    List<Compra> findByUsuario_Id(Integer usuarioId);
 }

@@ -22,14 +22,6 @@ public class MovimientoInventario {
 
     private LocalDateTime fecha;
 
-    @ManyToOne
-    @JoinColumn(name = "almacen_id")
-    private Almacen almacen;
-
-    //@ManyToOne
-    //@JoinColumn(name = "usuario_id")
-    //private Usuario usuario;
-
     private String observacion;
 
     public static enum Status {

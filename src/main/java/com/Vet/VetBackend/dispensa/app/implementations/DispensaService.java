@@ -52,6 +52,8 @@ public class DispensaService implements IDispensaService {
         entidad.setCantidad(dto.getCantidad());
         entidad.setPrescripcionDetalleId(dto.getPrescripcionDetalleId());
         entidad.setAlmacenId(dto.getAlmacenId());
+        entidad.setLoteId(dto.getLoteId());
+        entidad.setUsuarioId(dto.getUsuarioId()); // 🔹 Nuevo
         return convertirASalida(repository.save(entidad));
     }
 
@@ -63,6 +65,10 @@ public class DispensaService implements IDispensaService {
         existente.setCantidad(dto.getCantidad());
         existente.setPrescripcionDetalleId(dto.getPrescripcionDetalleId());
         existente.setAlmacenId(dto.getAlmacenId());
+        existente.setLoteId(dto.getLoteId());
+        if (dto.getUsuarioId() != null) {
+            existente.setUsuarioId(dto.getUsuarioId()); // 🔹 Solo si viene en la petición
+        }
         return convertirASalida(repository.save(existente));
     }
 
@@ -92,7 +98,7 @@ public class DispensaService implements IDispensaService {
                 .collect(Collectors.toList());
     }
 
-    // 🔄 Conversión manual de entidad a DTO
+    //  Conversión manual de entidad a DTO
     private Dispensa_Salida convertirASalida(Dispensa entidad) {
         Dispensa_Salida salida = new Dispensa_Salida();
         salida.setId(entidad.getId());
@@ -100,6 +106,8 @@ public class DispensaService implements IDispensaService {
         salida.setCantidad(entidad.getCantidad());
         salida.setPrescripcionDetalleId(entidad.getPrescripcionDetalleId());
         salida.setAlmacenId(entidad.getAlmacenId());
+        salida.setLoteId(entidad.getLoteId());
+        salida.setUsuarioId(entidad.getUsuarioId()); // 🔹 Nuevo
         return salida;
     }
 }

@@ -17,16 +17,15 @@ public class ProveedorGuardar implements Serializable {
     private Integer estadoid;
     private String notas;
 
-    // --- Convierte DTO a Entity ---
     public Proveedor toEntity() {
         Proveedor p = new Proveedor();
-        p.setNombre(this.nombre);
-        p.setNit(this.nit);
-        p.setTelefono(this.telefono);
-        p.setEmail(this.email);
-        p.setDireccion(this.direccion);
-        p.setEstadoid(this.estadoid);
-        p.setNotas(this.notas);
+        p.setNombre(nombre);
+        p.setNit(nit);
+        p.setTelefono(telefono);
+        p.setEmail(email);
+        p.setDireccion(direccion);
+        p.setEstadoid(estadoid);
+        p.setNotas(notas);
         return p;
     }
 }

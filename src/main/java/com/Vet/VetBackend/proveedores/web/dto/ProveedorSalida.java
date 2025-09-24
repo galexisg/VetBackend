@@ -18,7 +18,6 @@ public class ProveedorSalida implements Serializable {
     private Integer estadoid;
     private String notas;
 
-    // --- Convierte Entity a DTO ---
     public static ProveedorSalida fromEntity(Proveedor p) {
         ProveedorSalida dto = new ProveedorSalida();
         dto.setId(p.getId());

@@ -8,5 +8,6 @@ import java.util.List;
 public interface IMovimientoDetalleRepository extends JpaRepository<MovimientoDetalle, Integer> {
     List<MovimientoDetalle> findByMovimientoInventario_Id(Integer id);
     List<MovimientoDetalle> findByMedicamento_Id(Integer id);
-    List<MovimientoDetalle> findByLotesMedicamentos_Id(Integer id);
+    List<MovimientoDetalle> findByLoteMedicamento_Id(Integer id);
+    List<MovimientoDetalle> findByUsuario_Id(Integer id); // Nueva query
 }

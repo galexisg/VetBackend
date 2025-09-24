@@ -1,7 +1,5 @@
 package com.Vet.VetBackend.inventario.domain;
 
-import com.Vet.VetBackend.Medicamento.domain.Medicamento;
-import com.Vet.VetBackend.almacen.domain.Almacen;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Inventario")
+@Table(name = "inventario")
 public class Inventario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,11 +23,9 @@ public class Inventario {
     @Column(name = "stock_maximo", nullable = false)
     private double stockMaximo;
 
-//    @ManyToOne
-//    @JoinColumn(name = "almacen_id")
-//    private Almacen almacen;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "medicamento_id")
-//    private Medicamento medicamento;
+    @Column(name = "medicamento_id")
+    private Integer medicamentoId;
+
+    @Column(name = "almacen_id")
+    private Integer almacenId;
 }

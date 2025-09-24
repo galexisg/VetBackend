@@ -1,8 +1,6 @@
 package com.Vet.VetBackend.proveedores.app.implementations;
 
-import com.Vet.VetBackend.proveedores.web.dto.ProveedorGuardar;
-import com.Vet.VetBackend.proveedores.web.dto.ProveedorModificar;
-import com.Vet.VetBackend.proveedores.web.dto.ProveedorSalida;
+import com.Vet.VetBackend.proveedores.web.dto.*;
 import com.Vet.VetBackend.proveedores.domain.Proveedor;
 import com.Vet.VetBackend.proveedores.repo.IProveedorRepository;
 import com.Vet.VetBackend.proveedores.app.services.IProveedorService;
@@ -10,9 +8,7 @@ import com.Vet.VetBackend.proveedores.app.services.IProveedorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +24,7 @@ public class ProveedorService implements IProveedorService {
 
     @Override
     public List<ProveedorSalida> obtenerTodos() {
-        List<Proveedor> proveedores = proveedorRepository.findAll();
-        return proveedores.stream()
+        return proveedorRepository.findAll().stream()
                 .map(ProveedorSalida::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -37,12 +32,10 @@ public class ProveedorService implements IProveedorService {
     @Override
     public Page<ProveedorSalida> obtenerTodosPaginados(Pageable pageable) {
         Page<Proveedor> page = proveedorRepository.findAll(pageable);
-
-        List<ProveedorSalida> proveedorDto = page.stream()
+        List<ProveedorSalida> dtos = page.stream()
                 .map(ProveedorSalida::fromEntity)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(proveedorDto, page.getPageable(), page.getTotalElements());
+        return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
     }
 
     @Override
@@ -53,15 +46,15 @@ public class ProveedorService implements IProveedorService {
     }
 
     @Override
-    public ProveedorSalida crear(ProveedorGuardar proveedorGuardar) {
-        Proveedor proveedor = toEntity(proveedorGuardar);
+    public ProveedorSalida crear(ProveedorGuardar dto) {
+        Proveedor proveedor = dto.toEntity();
         proveedor = proveedorRepository.save(proveedor);
         return ProveedorSalida.fromEntity(proveedor);
     }
 
     @Override
-    public ProveedorSalida editar(ProveedorModificar proveedorModificar) {
-        Proveedor proveedor = toEntity(proveedorModificar);
+    public ProveedorSalida editar(ProveedorModificar dto) {
+        Proveedor proveedor = dto.toEntity();
         proveedor = proveedorRepository.save(proveedor);
         return ProveedorSalida.fromEntity(proveedor);
     }
@@ -69,31 +62,5 @@ public class ProveedorService implements IProveedorService {
     @Override
     public void eliminarPorId(Integer id) {
         proveedorRepository.deleteById(id);
-    }
-
-    // --- Métodos auxiliares para convertir DTOs a Entity ---
-    private Proveedor toEntity(ProveedorGuardar dto) {
-        Proveedor p = new Proveedor();
-        p.setNombre(dto.getNombre());
-        p.setNit(dto.getNit());
-        p.setTelefono(dto.getTelefono());
-        p.setEmail(dto.getEmail());
-        p.setDireccion(dto.getDireccion());
-        p.setEstadoid(dto.getEstadoid());
-        p.setNotas(dto.getNotas());
-        return p;
-    }
-
-    private Proveedor toEntity(ProveedorModificar dto) {
-        Proveedor p = new Proveedor();
-        p.setId(dto.getId()); // importante para editar
-        p.setNombre(dto.getNombre());
-        p.setNit(dto.getNit());
-        p.setTelefono(dto.getTelefono());
-        p.setEmail(dto.getEmail());
-        p.setDireccion(dto.getDireccion());
-        p.setEstadoid(dto.getEstadoid());
-        p.setNotas(dto.getNotas());
-        return p;
     }
 }

@@ -1,17 +1,14 @@
 package com.Vet.VetBackend.almacen.domain;
 
-import com.Vet.VetBackend.inventario.domain.Inventario;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "almacen")
 public class Almacen {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +20,6 @@ public class Almacen {
     @Column(length = 200)
     private String ubicacion;
 
-//    @Column(columnDefinition = "BIT(1)")
+    @Column(name = "activo")
     private Boolean activo;
-
-//    @OneToMany(mappedBy = "almacen")
-//    private List<Inventario> inventario;
-
 }

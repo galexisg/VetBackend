@@ -3,7 +3,6 @@ package com.Vet.VetBackend.tratamientos.web.controller;
 import com.Vet.VetBackend.tratamientos.app.services.ServicioTratamientoService;
 import com.Vet.VetBackend.tratamientos.web.dto.ServicioTratamientoReq;
 import com.Vet.VetBackend.tratamientos.web.dto.ServicioTratamientoRes;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,13 +43,11 @@ public class ServicioTratamientoController {
 
 
     @PatchMapping("/{id}/activar")
-    @Operation(summary = "Activar relación Servicio-Tratamiento", description = "Marca una relación como activa")
     public void activar(@PathVariable Long id) {
         service.activar(id);
     }
 
     @PatchMapping("/{id}/inactivar")
-    @Operation(summary = "Inactivar relación Servicio-Tratamiento", description = "Marca una relación como inactiva")
     public void inactivar(@PathVariable Long id) {
         service.inactivar(id);
     }

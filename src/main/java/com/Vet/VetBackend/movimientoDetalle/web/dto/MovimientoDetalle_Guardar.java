@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 public class MovimientoDetalle_Guardar implements Serializable {
     private double cantidad;
     private double costoUnitario;
+    private LocalDateTime fecha;
 
     private Integer movimientoInventarioId;
     private Integer medicamentoId;
-    private Integer loteMedicamentoId; // corregido nombre
-
-    private Integer almacenId;         //  faltaba
-    private LocalDateTime fecha;      // faltaba
+    private Integer loteMedicamentoId;
+    private Integer almacenId;
+    private Integer usuarioId; // Nuevo campo
 }

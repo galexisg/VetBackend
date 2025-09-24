@@ -15,6 +15,7 @@ public class Dispensa_Actualizar implements Serializable {
     private BigDecimal cantidad;
     private LocalDateTime fecha;
     private Integer prescripcionDetalleId;
+    private Integer usuarioId;
 
 //    private Integer usuarioId;
 }
