@@ -13,26 +13,23 @@ public class Cita {
     private Long citaId;
 
     @Column(name = "mascota_id", nullable = true)
-    private Integer mascotaId;
+    private int mascotaId;
 
     @Column(name = "usuario_id", nullable = true)
-    private Integer usuarioId;
+    private int usuarioId;
 
     @Column(name = "veterinario_id", nullable = true)
-    private Short veterinarioId;
+    private int veterinarioId;
 
     @Column(name = "motivo_id", nullable = true)
-    private Byte motivoId;
+    private int motivoId;
 
     @Column(name = "cita_estado_id", nullable = true)
-    private int citaEstadoId;
+    private Integer citaEstadoId;
 
 
     @Column(name = "factura_id", nullable = true)
     private Long facturaId;
-
-    @Column(name = "consulta_id", nullable = true)
-    private Long consultaId;
 
     public enum Tipo {
         Normal, Emergencia, Control
@@ -73,19 +70,19 @@ public class Cita {
         this.usuarioId = usuarioId;
     }
 
-    public Short getVeterinarioId() {
+    public int getVeterinarioId() {
         return veterinarioId;
     }
 
-    public void setVeterinarioId(Short veterinarioId) {
+    public void setVeterinarioId(int veterinarioId) {
         this.veterinarioId = veterinarioId;
     }
 
-    public Byte getMotivoId() {
+    public int getMotivoId() {
         return motivoId;
     }
 
-    public void setMotivoId(Byte motivoId) {
+    public void setMotivoId(int motivoId) {
         this.motivoId = motivoId;
     }
 
@@ -93,7 +90,7 @@ public class Cita {
         return citaEstadoId;
     }
 
-    public void setCitaEstadoId(Byte citaEstadoId) {
+    public void setCitaEstadoId(int citaEstadoId) {
         this.citaEstadoId = citaEstadoId;
     }
 
@@ -104,14 +101,6 @@ public class Cita {
 
     public void setFacturaId(Long facturaId) {
         this.facturaId = facturaId;
-    }
-
-    public Long getConsultaId() {
-        return consultaId;
-    }
-
-    public void setConsultaId(Long consultaId) {
-        this.consultaId = consultaId;
     }
 
     public Tipo getTipo() {

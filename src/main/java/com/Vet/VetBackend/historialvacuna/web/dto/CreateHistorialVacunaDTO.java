@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class CreateHistorialVacunaDTO {
-
     private Integer vacunaId;
     private Integer mascotaId;
     private Integer veterinarioId;
@@ -17,5 +16,4 @@ public class CreateHistorialVacunaDTO {
     private Integer medicamentoId;
     private Integer loteId;
     private String observacion;
-
 }

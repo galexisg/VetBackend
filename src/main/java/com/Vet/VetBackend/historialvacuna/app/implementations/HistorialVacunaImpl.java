@@ -5,8 +5,8 @@ import com.Vet.VetBackend.historialvacuna.app.repo.HistorialVacunaRepository;
 import com.Vet.VetBackend.historialvacuna.app.services.HistorialVacunaService;
 import com.Vet.VetBackend.historialvacuna.web.dto.CreateHistorialVacunaDTO;
 import com.Vet.VetBackend.historialvacuna.web.dto.HistorialVacunaDTO;
-import com.Vet.VetBackend.vacuna.repo.VacunaRepository; // Suponemos que este repositorio existe
-import com.Vet.VetBackend.vacuna.domain.Vacuna; // Suponemos que esta entidad existe
+import com.Vet.VetBackend.vacuna.repo.VacunaRepository;
+import com.Vet.VetBackend.vacuna.domain.Vacuna;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class HistorialVacunaImpl implements HistorialVacunaService {
 
     private final HistorialVacunaRepository historialVacunaRepository;
-    private final VacunaRepository vacunaRepository; // Inyectar VacunaRepository
+    private final VacunaRepository vacunaRepository;
 
     @Override
     public HistorialVacunaDTO guardar(CreateHistorialVacunaDTO dto) {
@@ -29,7 +29,7 @@ public class HistorialVacunaImpl implements HistorialVacunaService {
         HistorialVacuna historial = HistorialVacuna.builder()
                 .mascotaId(dto.getMascotaId())
                 .veterinarioId(dto.getVeterinarioId())
-                .vacuna(vacuna) // Asignar la entidad Vacuna
+                .vacuna(vacuna)
                 .fecha(dto.getFecha())
                 .medicamentoId(dto.getMedicamentoId())
                 .loteId(dto.getLoteId())

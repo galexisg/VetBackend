@@ -11,4 +11,8 @@ public interface ServicioTratamientoService {
     List<ServicioTratamientoRes> listarTodos();
     ServicioTratamientoRes asociar(ServicioTratamientoReq req);
     void eliminarAsociacion(Long id); // id de la relación
+
+    // nuevos métodos
+    void activar(Long id);
+    void inactivar(Long id);
 }

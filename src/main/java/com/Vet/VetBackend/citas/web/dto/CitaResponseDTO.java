@@ -5,14 +5,12 @@ import java.time.LocalDateTime;
 
 public class CitaResponseDTO {
     private Long citaId;
-    private Integer mascotaId;
-    private Integer usuarioId;
-    private Short veterinarioId;
-    private Byte motivoId;
+    private int mascotaId;
+    private int usuarioId;
+    private int veterinarioId;
+    private int motivoId;
     private int citaEstadoId;
-    private Long historialId;
     private Long facturaId;
-    private Long consultaId;
     private Cita.Tipo tipo;
     private LocalDateTime fechaHora;
     private String observaciones;
@@ -26,35 +24,35 @@ public class CitaResponseDTO {
         this.citaId = citaId;
     }
 
-    public Integer getMascotaId() {
+    public int getMascotaId() {
         return mascotaId;
     }
 
-    public void setMascotaId(Integer mascotaId) {
+    public void setMascotaId(int mascotaId) {
         this.mascotaId = mascotaId;
     }
 
-    public Integer getUsuarioId() {
+    public int getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(Integer usuarioId) {
+    public void setUsuarioId(int usuarioId) {
         this.usuarioId = usuarioId;
     }
 
-    public Short getVeterinarioId() {
+    public int getVeterinarioId() {
         return veterinarioId;
     }
 
-    public void setVeterinarioId(Short veterinarioId) {
+    public void setVeterinarioId(int veterinarioId) {
         this.veterinarioId = veterinarioId;
     }
 
-    public Byte getMotivoId() {
+    public int getMotivoId() {
         return motivoId;
     }
 
-    public void setMotivoId(Byte motivoId) {
+    public void setMotivoId(int motivoId) {
         this.motivoId = motivoId;
     }
 
@@ -66,28 +64,12 @@ public class CitaResponseDTO {
         this.citaEstadoId = citaEstadoId;
     }
 
-    public Long getHistorialId() {
-        return historialId;
-    }
-
-    public void setHistorialId(Long historialId) {
-        this.historialId = historialId;
-    }
-
     public Long getFacturaId() {
         return facturaId;
     }
 
     public void setFacturaId(Long facturaId) {
         this.facturaId = facturaId;
-    }
-
-    public Long getConsultaId() {
-        return consultaId;
-    }
-
-    public void setConsultaId(Long consultaId) {
-        this.consultaId = consultaId;
     }
 
     public Cita.Tipo getTipo() {

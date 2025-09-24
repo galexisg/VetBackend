@@ -1,5 +1,7 @@
+// src/main/java/com/Vet/VetBackend/veterinario/app/implementations/VeterinarioServiceImpl.java
 package com.Vet.VetBackend.veterinario.app.implementations;
 
+import com.Vet.VetBackend.servicios.domain.EstadoServicio;
 import com.Vet.VetBackend.servicios.domain.Servicio;
 import com.Vet.VetBackend.servicios.repo.ServicioRepository;
 import com.Vet.VetBackend.usuarios.domain.Usuario;
@@ -16,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Servicio servicio = servicioRepo.findById(dto.getServicioId())
-                .filter(Servicio::getActivo)
+                .filter(s -> s.getEstado() == EstadoServicio.ACTIVO) // Corregido: Usa el enum
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
 
         Especialidad especialidad = especialidadRepo.findById(dto.getEspecialidadId())
@@ -89,7 +89,7 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
 
         if (dto.getServicioId() != null) {
             Servicio servicio = servicioRepo.findById(dto.getServicioId())
-                    .filter(Servicio::getActivo)
+                    .filter(s -> s.getEstado() == EstadoServicio.ACTIVO) // Corregido: Usa el enum
                     .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
             veterinario.setServicios(servicio);
         }
@@ -128,8 +128,8 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
                 .id(v.getId())
                 .numeroLicencia(v.getNumeroLicencia())
                 .estado(v.getEstado().name())
-                .servicio(v.getServicios().getNombre())        // único
-                .especialidad(v.getEspecialidad().getNombre()) // único
+                .servicio(v.getServicios().getNombre())
+                .especialidad(v.getEspecialidad().getNombre())
                 .usuarioNombre(v.getUsuario().getNombreCompleto())
                 .build();
     }

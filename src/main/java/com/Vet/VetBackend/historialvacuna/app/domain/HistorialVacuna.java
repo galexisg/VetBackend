@@ -18,7 +18,7 @@ public class HistorialVacuna {
     @Column(name = "historialvacunaid")
     private Integer historialVacunaId;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY) // Relación con Vacuna
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "idvacuna", nullable = false)
     private com.Vet.VetBackend.vacuna.domain.Vacuna vacuna;
 
@@ -39,5 +39,4 @@ public class HistorialVacuna {
 
     @Column(name = "observacion", length = 200)
     private String observacion;
-
 }

@@ -5,8 +5,6 @@ import com.Vet.VetBackend.vacuna.app.services.VacunaService;
 import com.Vet.VetBackend.vacuna.web.dto.VacunaRequestDTO;
 import com.Vet.VetBackend.vacuna.web.dto.VacunaResponseDTO;
 import com.Vet.VetBackend.vacuna.web.dto.VacunaEstadoDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +17,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/vacunas")
 @RequiredArgsConstructor
-@Tag(name = "Vacunas", description = "API para gestión de vacunas")
+
 public class VacunaController {
 
     private final VacunaService vacunaService;
 
     // 🔹 Listar todas las vacunas
     @GetMapping
-    @Operation(summary = "Listar todas las vacunas")
     public ResponseEntity<List<VacunaResponseDTO>> listar(@RequestParam(required = false) String q) {
         List<VacunaResponseDTO> vacunas = vacunaService.listar(q).stream()
                 .map(v -> new VacunaResponseDTO(v.getVacunaId(), v.getNombre(), v.getEstado()))
@@ -36,7 +33,6 @@ public class VacunaController {
 
     // 🔹 Obtener por ID
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener vacuna por ID")
     public ResponseEntity<VacunaResponseDTO> obtener(@PathVariable Integer id) {
         Vacuna v = vacunaService.obtener(id);
         VacunaResponseDTO dto = new VacunaResponseDTO(v.getVacunaId(), v.getNombre(), v.getEstado());
@@ -45,7 +41,6 @@ public class VacunaController {
 
     // 🔹 Crear
     @PostMapping
-    @Operation(summary = "Crear nueva vacuna")
     public ResponseEntity<VacunaResponseDTO> crear(@RequestBody @Valid VacunaRequestDTO dto) {
         Vacuna vacuna = new Vacuna();
         vacuna.setNombre(dto.getNombre());
@@ -58,7 +53,6 @@ public class VacunaController {
 
     // 🔹 Actualizar
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar vacuna existente")
     public ResponseEntity<VacunaResponseDTO> actualizar(@PathVariable Integer id,
                                                         @RequestBody @Valid VacunaRequestDTO dto) {
         Vacuna vacuna = new Vacuna();
@@ -71,7 +65,6 @@ public class VacunaController {
 
     // 🔹 Habilitar
     @PatchMapping("/habilitar/{id}")
-    @Operation(summary = "Habilitar vacuna")
     public ResponseEntity<VacunaEstadoDTO> habilitar(@PathVariable Integer id) {
         Vacuna vacuna = vacunaService.estado(id, true);
         return ResponseEntity.ok(new VacunaEstadoDTO(vacuna.getVacunaId(), vacuna.getEstado()));
@@ -79,7 +72,6 @@ public class VacunaController {
 
     // 🔹 Deshabilitar
     @PatchMapping("/deshabilitar/{id}")
-    @Operation(summary = "Deshabilitar vacuna")
     public ResponseEntity<VacunaEstadoDTO> deshabilitar(@PathVariable Integer id) {
         Vacuna vacuna = vacunaService.estado(id, false);
         return ResponseEntity.ok(new VacunaEstadoDTO(vacuna.getVacunaId(), vacuna.getEstado()));
