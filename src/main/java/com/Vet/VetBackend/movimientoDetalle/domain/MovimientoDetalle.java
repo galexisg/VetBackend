@@ -4,7 +4,7 @@ import com.Vet.VetBackend.Medicamento.domain.Medicamento;
 import com.Vet.VetBackend.almacen.domain.Almacen;
 import com.Vet.VetBackend.lote_medicamentos.domain.Lotes_medicamentos;
 import com.Vet.VetBackend.movimientoInventario.domain.MovimientoInventario;
-import com.Vet.VetBackend.usuarios.domain.Usuario; // Import de usuario
+import com.Vet.VetBackend.usuarios.domain.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +45,7 @@ public class MovimientoDetalle {
     private Almacen almacen;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id") // Nueva relación
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
 }

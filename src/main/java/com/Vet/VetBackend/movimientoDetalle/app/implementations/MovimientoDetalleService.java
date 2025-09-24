@@ -19,10 +19,8 @@ import com.Vet.VetBackend.movimientoDetalle.web.dto.Usuario_Salida;
 import com.Vet.VetBackend.movimientoInventario.domain.MovimientoInventario;
 import com.Vet.VetBackend.movimientoInventario.repo.IMovimientoInventarioRepository;
 import com.Vet.VetBackend.movimientoInventario.web.dto.MovimientoInventario_Salida;
-import com.Vet.VetBackend.proveedores.domain.Proveedor;
 import com.Vet.VetBackend.usuarios.domain.Usuario;
 import com.Vet.VetBackend.usuarios.repo.UsuarioRepository;
-//import com.Vet.VetBackend.usuarios.web.dto.Usuario_Salida;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,60 +58,100 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
         if (entidad == null) return null;
 
         MovimientoDetalle_Salida dto = new MovimientoDetalle_Salida();
-        dto.setId(entidad.getId());
-        dto.setCantidad(entidad.getCantidad());
-        dto.setCostoUnitario(entidad.getCostoUnitario());
-        dto.setFecha(entidad.getFecha());
+        try {
+            dto.setId(entidad.getId());
+            dto.setCantidad(entidad.getCantidad());
+            dto.setCostoUnitario(entidad.getCostoUnitario());
+            dto.setFecha(entidad.getFecha());
 
-        if (entidad.getMedicamento() != null) {
-            MedicamentoSalida medDto = new MedicamentoSalida();
-            medDto.setId(entidad.getMedicamento().getId());
-            medDto.setNombre(entidad.getMedicamento().getNombre());
-            dto.setMedicamento(medDto);
-        }
-
-        if (entidad.getAlmacen() != null) {
-            Almacen_Salida almDto = new Almacen_Salida();
-            almDto.setId(entidad.getAlmacen().getId());
-            almDto.setNombre(entidad.getAlmacen().getNombre());
-            dto.setAlmacen(almDto);
-        }
-
-        if (entidad.getLoteMedicamento() != null) {
-            Lotes_medicamentos lote = entidad.getLoteMedicamento();
-            LoteMedicamento_Salida loteDto = new LoteMedicamento_Salida();
-            loteDto.setId(lote.getId());
-            loteDto.setCodigoLote(lote.getCodigoLote());
-            if (lote.getFechaVencimiento() != null)
-                loteDto.setFechaVencimiento(new Date(lote.getFechaVencimiento().getTime()).toLocalDate());
-            loteDto.setObservaciones(lote.getObservaciones());
-            loteDto.setMedicamentoId(lote.getMedicamento().getId());
-            loteDto.setMedicamentoNombre(lote.getMedicamento().getNombre());
-            if (lote.getProveedor() != null) {
-                loteDto.setProveedorId(lote.getProveedor().getId());
-                loteDto.setProveedorNombre(lote.getProveedor().getNombre());
+            if (entidad.getMedicamento() != null) {
+                Medicamento medicamento = entidad.getMedicamento();
+                MedicamentoSalida medDto = new MedicamentoSalida();
+                medDto.setId(medicamento.getId());
+                medDto.setNombre(medicamento.getNombre());
+                medDto.setFormafarmacautica(medicamento.getFormafarmacautica());
+                medDto.setConcentracion(medicamento.getConcentracion());
+                medDto.setUnidad(medicamento.getUnidad());
+                medDto.setVia(medicamento.getVia());
+                medDto.setRequiereReceta(medicamento.getRequiereReceta());
+                medDto.setActivo(medicamento.getActivo());
+                medDto.setTemperaturaalm(medicamento.getTemperaturaalm());
+                medDto.setVidautilmeses(medicamento.getVidautilmeses());
+                dto.setMedicamento(medDto);
+            } else {
+                System.out.println("⚠️ Medicamento nulo en MovimientoDetalle ID: " + entidad.getId());
             }
-            dto.setLoteMedicamento(loteDto);
-        }
 
-        if (entidad.getMovimientoInventario() != null) {
-            MovimientoInventario_Salida movDto = new MovimientoInventario_Salida();
-            movDto.setId(entidad.getMovimientoInventario().getId());
-            dto.setMovimientoInventario(movDto);
-        }
+            if (entidad.getAlmacen() != null) {
+                Almacen almacen = entidad.getAlmacen();
+                Almacen_Salida almDto = new Almacen_Salida();
+                almDto.setId(almacen.getId());
+                almDto.setNombre(almacen.getNombre());
+                dto.setAlmacen(almDto);
+            } else {
+                System.out.println("⚠️ Almacén nulo en MovimientoDetalle ID: " + entidad.getId());
+            }
 
-        if (entidad.getUsuario() != null) {
-            Usuario_Salida userDto = new Usuario_Salida();
-            userDto.setId(entidad.getUsuario().getId());
-            userDto.setNombreCompleto(entidad.getUsuario().getNombreCompleto());
-            userDto.setCorreo(entidad.getUsuario().getCorreo());
-            userDto.setNickName(entidad.getUsuario().getNickName());
-            dto.setUsuario(userDto);
+            if (entidad.getLoteMedicamento() != null) {
+                Lotes_medicamentos lote = entidad.getLoteMedicamento();
+                LoteMedicamento_Salida loteDto = new LoteMedicamento_Salida();
+                loteDto.setId(lote.getId());
+                loteDto.setCodigoLote(lote.getCodigoLote());
+                if (lote.getFechaVencimiento() != null) {
+                    loteDto.setFechaVencimiento(Date.valueOf(new Date(lote.getFechaVencimiento().getTime()).toLocalDate()));
+                } else {
+                    System.out.println("⚠️ Fecha de vencimiento nula en Lote ID: " + lote.getId());
+                }
+                loteDto.setObservaciones(lote.getObservaciones());
+
+                if (lote.getMedicamento() != null) {
+                    loteDto.setMedicamentoId(lote.getMedicamento().getId());
+                    loteDto.setMedicamentoNombre(lote.getMedicamento().getNombre());
+                } else {
+                    System.out.println("⚠️ Medicamento nulo en Lote ID: " + lote.getId());
+                }
+
+                if (lote.getProveedor() != null) {
+                    loteDto.setProveedorId(lote.getProveedor().getId());
+                    loteDto.setProveedorNombre(lote.getProveedor().getNombre());
+                } else {
+                    System.out.println("⚠️ Proveedor nulo en Lote ID: " + lote.getId());
+                }
+
+                dto.setLoteMedicamento(loteDto);
+            } else {
+                System.out.println("⚠️ Lote de medicamento nulo en MovimientoDetalle ID: " + entidad.getId());
+            }
+
+            if (entidad.getMovimientoInventario() != null) {
+                MovimientoInventario_Salida movDto = new MovimientoInventario_Salida();
+                movDto.setId(entidad.getMovimientoInventario().getId());
+                dto.setMovimientoInventario(movDto);
+            } else {
+                System.out.println("⚠️ MovimientoInventario nulo en MovimientoDetalle ID: " + entidad.getId());
+            }
+
+            if (entidad.getUsuario() != null) {
+                Usuario usuario = entidad.getUsuario();
+                Usuario_Salida userDto = new Usuario_Salida();
+                userDto.setId(usuario.getId());
+                userDto.setNombreCompleto(usuario.getNombreCompleto());
+                userDto.setCorreo(usuario.getCorreo());
+                userDto.setNickName(usuario.getNickName());
+                dto.setUsuario(userDto);
+            } else {
+                System.out.println("⚠️ Usuario nulo en MovimientoDetalle ID: " + entidad.getId());
+            }
+
+        } catch (Exception e) {
+            System.out.println("🔥 Error al convertir MovimientoDetalle ID: " + entidad.getId() + " a DTO");
+            e.printStackTrace();
         }
 
         return dto;
     }
 
+    // Resto del código (métodos ya estaban correctos)...
     @Override
     public List<MovimientoDetalle_Salida> obtenerTodos() {
         return movimientoDetalleRepository.findAll().stream()
