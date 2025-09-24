@@ -1,4 +1,4 @@
-package com.Vet.VetBackend.usuarios.web.dto;
+package com.Vet.VetBackend.movimientoDetalle.web.dto;
 
 import lombok.Getter;
 import lombok.Setter;

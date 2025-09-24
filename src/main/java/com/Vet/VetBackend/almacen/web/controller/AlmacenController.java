@@ -1,9 +1,7 @@
 package com.Vet.VetBackend.almacen.web.controller;
 
 import com.Vet.VetBackend.almacen.app.services.IAlmacenService;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_Guardar;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_Actualizar;
-import com.Vet.VetBackend.almacen.web.dto.Almacen_Salida;
+import com.Vet.VetBackend.almacen.web.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,5 +48,12 @@ public class AlmacenController {
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         service.eliminarPorId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // --- Nuevo endpoint para cambiar el estado activo ---
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<Almacen_Salida> cambiarEstado(@PathVariable Integer id,
+                                                        @RequestBody Almacen_CambiarEstado dto) {
+        return ResponseEntity.ok(service.cambiarEstado(id, dto));
     }
 }

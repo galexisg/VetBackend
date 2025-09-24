@@ -15,18 +15,20 @@ import com.Vet.VetBackend.movimientoDetalle.repo.IMovimientoDetalleRepository;
 import com.Vet.VetBackend.movimientoDetalle.web.dto.MovimientoDetalle_Guardar;
 import com.Vet.VetBackend.movimientoDetalle.web.dto.MovimientoDetalle_Modificar;
 import com.Vet.VetBackend.movimientoDetalle.web.dto.MovimientoDetalle_Salida;
+import com.Vet.VetBackend.movimientoDetalle.web.dto.Usuario_Salida;
 import com.Vet.VetBackend.movimientoInventario.domain.MovimientoInventario;
 import com.Vet.VetBackend.movimientoInventario.repo.IMovimientoInventarioRepository;
 import com.Vet.VetBackend.movimientoInventario.web.dto.MovimientoInventario_Salida;
 import com.Vet.VetBackend.proveedores.domain.Proveedor;
 import com.Vet.VetBackend.usuarios.domain.Usuario;
 import com.Vet.VetBackend.usuarios.repo.UsuarioRepository;
-import com.Vet.VetBackend.usuarios.web.dto.Usuario_Salida;
+//import com.Vet.VetBackend.usuarios.web.dto.Usuario_Salida;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,7 +86,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
             loteDto.setId(lote.getId());
             loteDto.setCodigoLote(lote.getCodigoLote());
             if (lote.getFechaVencimiento() != null)
-                loteDto.setFechaVencimiento(new java.sql.Date(lote.getFechaVencimiento().getTime()));
+                loteDto.setFechaVencimiento(new Date(lote.getFechaVencimiento().getTime()).toLocalDate());
             loteDto.setObservaciones(lote.getObservaciones());
             loteDto.setMedicamentoId(lote.getMedicamento().getId());
             loteDto.setMedicamentoNombre(lote.getMedicamento().getNombre());
