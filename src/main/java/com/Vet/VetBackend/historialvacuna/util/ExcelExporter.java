@@ -1,6 +1,6 @@
-package com.Vet.VetBackend.historialvacuna.util; // Ensure the package is correct
+package com.Vet.VetBackend.historialvacuna.util;
 
-import com.Vet.VetBackend.historialvacuna.app.web.dto.ReporteVacunasDTO;
+import com.Vet.VetBackend.historialvacuna.web.dto.ReporteVacunasDTO;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class ExcelExporter {
-
     public static ByteArrayInputStream exportarReporteVacunas(List<ReporteVacunasDTO> reportes) throws IOException {
         String[] columnas = {"Vacuna", "Cantidad Aplicada", "Mascotas Atendidas"};
 
