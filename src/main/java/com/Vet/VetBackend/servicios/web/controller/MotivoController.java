@@ -39,5 +39,7 @@ public class MotivoController {
     @DeleteMapping("/desvincular")
     public void desvincular(@Validated @RequestBody MotivoServicioReq req) {
         svc.desvincular(req.getMotivoId(), req.getServicioId());
+
+
     }
 }

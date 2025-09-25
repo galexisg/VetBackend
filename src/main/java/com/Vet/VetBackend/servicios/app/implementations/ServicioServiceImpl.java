@@ -1,10 +1,11 @@
-// src/main/java/com/Vet/VetBackend/servicios/app/implementations/ServicioServiceImpl.java
 package com.Vet.VetBackend.servicios.app.implementations;
 
 import com.Vet.VetBackend.servicios.app.services.ServicioService;
 import com.Vet.VetBackend.servicios.domain.EstadoServicio;
 import com.Vet.VetBackend.servicios.domain.Servicio;
+import com.Vet.VetBackend.servicios.repo.MotivoServicioRepository;
 import com.Vet.VetBackend.servicios.repo.ServicioRepository;
+import com.Vet.VetBackend.servicios.web.dto.MotivoRes;
 import com.Vet.VetBackend.servicios.web.dto.ServicioReq;
 import com.Vet.VetBackend.servicios.web.dto.ServicioRes;
 import com.Vet.VetBackend.servicios.web.dto.ServicioEstadoReq;
@@ -14,17 +15,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ServicioServiceImpl implements ServicioService {
 
     private final ServicioRepository repo;
+    private final MotivoServicioRepository msRepo;
 
-    public ServicioServiceImpl(ServicioRepository repo) {
+    public ServicioServiceImpl(ServicioRepository repo, MotivoServicioRepository msRepo) {
         this.repo = repo;
+        this.msRepo = msRepo;
     }
 
     @Override
@@ -80,7 +85,6 @@ public class ServicioServiceImpl implements ServicioService {
         return repo.findAll(spec, pageable).map(this::map);
     }
 
-    // Nuevo método para cambiar de estado
     @Override
     public ServicioRes cambiarEstado(Long id, ServicioEstadoReq req) {
         Servicio s = repo.findById(id).orElseThrow(() -> new NoSuchElementException("no encontrado"));
@@ -88,6 +92,25 @@ public class ServicioServiceImpl implements ServicioService {
         return map(repo.save(s));
     }
 
+    // ✅ Nuevo método: listar motivos vinculados a un servicio
+    @Override
+    @Transactional(readOnly = true)
+    public List<MotivoRes> listarMotivosPorServicio(Long servicioId) {
+        // Verificar que el servicio exista
+        if (!repo.existsById(servicioId)) {
+            throw new NoSuchElementException("servicio no encontrado");
+        }
+
+        // Consultar motivos asociados y mapearlos a DTO
+        return msRepo.findMotivosByServicioId(servicioId).stream()
+                .map(m -> MotivoRes.builder()
+                        .id(m.getId())
+                        .nombre(m.getNombre())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    // ✅ Validación de datos antes de guardar
     private void validar(ServicioReq r) {
         if (r.getNombre() == null || r.getNombre().isBlank())
             throw new IllegalArgumentException("nombre requerido");
@@ -95,6 +118,7 @@ public class ServicioServiceImpl implements ServicioService {
             throw new IllegalArgumentException("precio_base >= 0");
     }
 
+    // ✅ Aplica los cambios del DTO a la entidad
     private Servicio aplicar(ServicioReq r, Servicio s) {
         s.setNombre(r.getNombre().trim());
         s.setDescripcion(r.getDescripcion());
@@ -103,6 +127,7 @@ public class ServicioServiceImpl implements ServicioService {
         return s;
     }
 
+    // ✅ Mapea entidad a DTO de respuesta
     private ServicioRes map(Servicio s) {
         return ServicioRes.builder()
                 .id(s.getId())
