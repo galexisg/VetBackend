@@ -1,38 +1,47 @@
-// src/main/java/com/Vet/VetBackend/servicios/domain/Servicio.java
 package com.Vet.VetBackend.servicios.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="servicio", uniqueConstraints=@UniqueConstraint(name="uk_servicio_nombre", columnNames="nombre"))
+@Table(
+        name = "servicio",
+        uniqueConstraints = @UniqueConstraint(name = "uk_servicio_nombre", columnNames = "nombre")
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Servicio {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, length=120)
+    @Column(nullable = false, length = 120)
     private String nombre;
 
-    @Column(length=250)
+    @Column(length = 250)
     private String descripcion;
 
-    @Column(name="precio_base", precision=12, scale=2)
+    @Column(name = "precio_base", precision = 12, scale = 2)
     private BigDecimal precioBase;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     private EstadoServicio estado = EstadoServicio.ACTIVO;
 
-    @Column(name="created_at", updatable=false, insertable=false)
+    // ✅ Timestamps automáticos con Hibernate
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name="updated_at", insertable=false)
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }

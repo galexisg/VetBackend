@@ -33,10 +33,10 @@ public class MotivoServiceImpl implements MotivoService {
 
     @Override
     public MotivoRes crear(MotivoReq req) {
-        if (req.getId() == null) throw new IllegalArgumentException("id requerido");
-        Motivo m = Motivo.builder().id(req.getId()).nombre(req.getNombre()).build();
+        Motivo m = Motivo.builder().nombre(req.getNombre()).build();
         return map(motivoRepo.save(m));
     }
+
 
     @Override
     public MotivoRes actualizar(Short id, MotivoReq req) {
