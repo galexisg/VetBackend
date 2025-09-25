@@ -1,21 +1,23 @@
-package com.Vet.VetBackend.historialvacuna.app.web.dto;
+// src/main/java/com/Vet/VetBackend/historialvacuna/web/dto/CreateHistorialVacunaDTO.java
+package com.Vet.VetBackend.historialvacuna.web.dto;
 
-import lombok.*;
-import java.time.LocalDate;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class CreateHistorialVacunaDTO {
+    private Long mascotaId;
+    private Long vacunaId;
+    private java.time.LocalDate fecha;
+    private String observaciones;
 
-    private Integer vacunaId;
-    private Integer mascotaId;
-    private Integer veterinarioId;
-    private LocalDate fecha;
-    private Integer medicamentoId;
-    private Integer loteId;
-    private String observacion;
+    public CreateHistorialVacunaDTO() {}
 
+    public Long getMascotaId() { return mascotaId; }
+    public void setMascotaId(Long v) { this.mascotaId = v; }
+
+    public Long getVacunaId() { return vacunaId; }
+    public void setVacunaId(Long v) { this.vacunaId = v; }
+
+    public java.time.LocalDate getFecha() { return fecha; }
+    public void setFecha(java.time.LocalDate f) { this.fecha = f; }
+
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String o) { this.observaciones = o; }
 }
