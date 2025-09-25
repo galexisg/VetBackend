@@ -37,4 +37,29 @@ public class ServicioTratamientoServiceImpl implements ServicioTratamientoServic
     public void eliminarAsociacion(Long id) {
         repository.deleteById(id);
     }
+    @Override
+    public List<ServicioTratamientoRes> listarTodos() {
+        return repository.findAll()
+                .stream()
+                .map(ServicioTratamientoRes::fromEntity)
+                .toList();
+    }
+
+    //nuevo
+    @Override
+    public void activar(Long id) {
+        ServicioTratamiento st = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No encontrado"));
+        st.setActivo(true);
+        repository.save(st);
+    }
+
+    @Override
+    public void inactivar(Long id) {
+        ServicioTratamiento st = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No encontrado"));
+        st.setActivo(false);
+        repository.save(st);
+    }
+
 }
