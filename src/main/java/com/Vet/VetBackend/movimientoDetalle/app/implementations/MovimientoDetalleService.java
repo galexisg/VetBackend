@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.util.List;
@@ -85,6 +86,8 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
                 Almacen_Salida almDto = new Almacen_Salida();
                 almDto.setId(almacen.getId());
                 almDto.setNombre(almacen.getNombre());
+                almDto.setUbicacion(almacen.getUbicacion());
+                almDto.setActivo(almacen.getActivo());
                 dto.setAlmacen(almDto);
             }
 
@@ -114,6 +117,10 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
             if (entidad.getMovimientoInventario() != null) {
                 MovimientoInventario_Salida movDto = new MovimientoInventario_Salida();
                 movDto.setId(entidad.getMovimientoInventario().getId());
+                movDto.setFecha(entidad.getMovimientoInventario().getFecha());
+                // ✅ CAMBIO: Convertimos el tipo (enum) a String para el DTO
+                movDto.setTipo(String.valueOf(entidad.getMovimientoInventario().getTipo()));
+                movDto.setObservacion(entidad.getMovimientoInventario().getObservacion());
                 dto.setMovimientoInventario(movDto);
             }
 
@@ -136,6 +143,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovimientoDetalle_Salida> obtenerTodos() {
         return movimientoDetalleRepository.findAll().stream()
                 .map(this::toDto)
@@ -143,6 +151,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<MovimientoDetalle_Salida> obtenerTodosPaginados(Pageable pageable) {
         Page<MovimientoDetalle> page = movimientoDetalleRepository.findAll(pageable);
         List<MovimientoDetalle_Salida> dtos = page.getContent().stream()
@@ -152,6 +161,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MovimientoDetalle_Salida obtenerPorId(Integer id) {
         return movimientoDetalleRepository.findById(id)
                 .map(this::toDto)
@@ -159,6 +169,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovimientoDetalle_Salida> obtenerPorMovimientoInventarioId(Integer id) {
         return movimientoDetalleRepository.findByMovimientoInventario_Id(id).stream()
                 .map(this::toDto)
@@ -166,6 +177,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovimientoDetalle_Salida> obtenerPorMedicamentoId(Integer id) {
         return movimientoDetalleRepository.findByMedicamento_Id(id).stream()
                 .map(this::toDto)
@@ -173,6 +185,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovimientoDetalle_Salida> obtenerPorLoteMedicamento(Integer id) {
         return movimientoDetalleRepository.findByLoteMedicamento_Id(id).stream()
                 .map(this::toDto)
@@ -180,6 +193,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MovimientoDetalle_Salida> obtenerPorUsuarioId(Integer id) {
         return movimientoDetalleRepository.findByUsuario_Id(id).stream()
                 .map(this::toDto)
@@ -187,6 +201,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional
     public MovimientoDetalle_Salida crear(MovimientoDetalle_Guardar dto) {
         MovimientoDetalle entidad = new MovimientoDetalle();
         entidad.setCantidad(dto.getCantidad());
@@ -218,6 +233,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional
     public MovimientoDetalle_Salida editar(MovimientoDetalle_Modificar dto) {
         // 1. Buscar la entidad existente por su ID
         MovimientoDetalle entidad = movimientoDetalleRepository.findById(dto.getId())
@@ -268,6 +284,7 @@ public class MovimientoDetalleService implements IMovimientoDetalleService {
     }
 
     @Override
+    @Transactional
     public void eliminarPorId(Integer id) {
         movimientoDetalleRepository.deleteById(id);
     }
