@@ -32,13 +32,22 @@ public class EspecialidadServiceImpl implements IEspecialidadService {
     }
 
 
+//    @Override
+//    public EspecialidadSalidaRes buscarPorId(Integer id) {
+//        Especialidad especialidad = repositorio.findById(id)
+//                .filter(Especialidad::getActivo) // 🔹 aseguramos que esté activo
+//                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada o inactiva"));
+//        return toSalidaDTO(especialidad);
+//    }
+
+    //nuevo codigo para buscar activos y inactivos en frontend
     @Override
     public EspecialidadSalidaRes buscarPorId(Integer id) {
         Especialidad especialidad = repositorio.findById(id)
-                .filter(Especialidad::getActivo) // 🔹 aseguramos que esté activo
-                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada o inactiva"));
+                .orElseThrow(() -> new RuntimeException("Especialidad no encontrada"));
         return toSalidaDTO(especialidad);
     }
+
 
     @Override
     public EspecialidadSalidaRes guardar(EspecialidadGuardarReq dto) {
@@ -50,13 +59,18 @@ public class EspecialidadServiceImpl implements IEspecialidadService {
     @Override
     public EspecialidadSalidaRes modificar(EspecialidadModificarReq dto) {
         Especialidad especialidad = repositorio.findById(dto.getEspecialidadId())
-                .filter(Especialidad::getActivo) // 🔹 solo modificar si está activo
+//                .filter(Especialidad::getActivo) // quitando esto para poder modificar activos e inactivos
                 .orElseThrow(() -> new RuntimeException("Especialidad no encontrada o inactiva"));
 
         especialidad.setNombre(dto.getNombre());
 
+        if (dto.getActivo() != null) {
+            especialidad.setActivo(dto.getActivo());
+        }
+
         return toSalidaDTO(repositorio.save(especialidad));
     }
+
 
     @Override
     public void eliminar(Integer id) {
@@ -91,6 +105,7 @@ public class EspecialidadServiceImpl implements IEspecialidadService {
         return EspecialidadSalidaRes.builder()
                 .especialidadId(especialidad.getEspecialidadId())
                 .nombre(especialidad.getNombre())
+                .activo(especialidad.getActivo())
                 .build();
     }
 }
