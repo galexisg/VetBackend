@@ -42,6 +42,13 @@ public class FacturaService {
 
     // ========== CRUD ==========
 
+    @Transactional(readOnly = true)
+    public List<FacturaDTO> obtenerTodasFacturas() {
+        return facturaRepository.findAll()
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
     public FacturaDTO crearFactura(FacturaRequestDTO request) {
         if (request == null || !request.isValid()) {
             throw new IllegalArgumentException("Los datos de la factura son inválidos");

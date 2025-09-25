@@ -29,6 +29,21 @@ public class FacturaController {
 
     // ========== OPERACIONES CRUD ==========
 
+
+    /**
+     * Obtener todas las facturas
+     * GET /api/facturas
+     */
+    @GetMapping
+    public ResponseEntity<?> obtenerTodasFacturas() {
+        try {
+            List<FacturaDTO> facturas = facturaService.obtenerTodasFacturas();
+            return ResponseEntity.ok(facturas);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error al obtener todas las facturas"));
+        }
+    }
     /**
      * Crear nueva factura
      * POST /api/facturas
