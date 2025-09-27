@@ -10,4 +10,5 @@ import lombok.*;
 public class EspecialidadModificarReq {
     private Integer  especialidadId;
     private String nombre;
+    private Boolean activo;
 }
