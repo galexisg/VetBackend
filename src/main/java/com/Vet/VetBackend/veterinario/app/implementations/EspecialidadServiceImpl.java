@@ -31,6 +31,14 @@ public class EspecialidadServiceImpl implements IEspecialidadService {
                 .toList();
     }
 
+    // 🔹 Nuevo método para listar todos (activos + inactivos)
+    @Override
+    public List<EspecialidadSalidaRes> listarTodos() {
+        return repositorio.findAll().stream()
+                .map(this::toSalidaDTO)
+                .toList();
+    }
+
 
 //    @Override
 //    public EspecialidadSalidaRes buscarPorId(Integer id) {
