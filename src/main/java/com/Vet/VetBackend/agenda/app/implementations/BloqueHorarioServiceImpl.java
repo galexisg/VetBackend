@@ -34,7 +34,7 @@ public class BloqueHorarioServiceImpl implements IBloqueHorarioService {
     @Override
     public BloqueHorarioSalidaRes buscarPorId(Integer id) {
         BloqueHorario bloque = repositorio.findById(id)
-                .filter(BloqueHorario::getActivo)
+//                .filter(BloqueHorario::getActivo) // buscar activos o inactivos
                 .orElseThrow(() -> new RuntimeException("BloqueHorario no encontrado o inactivo"));
 
         return toSalidaDTO(bloque);
@@ -54,7 +54,7 @@ public class BloqueHorarioServiceImpl implements IBloqueHorarioService {
     @Override
     public BloqueHorarioSalidaRes modificar(BloqueHorarioModificarReq dto) {
         BloqueHorario bloque = repositorio.findById(dto.getId())
-                .filter(BloqueHorario::getActivo)
+//                .filter(BloqueHorario::getActivo) //modificar activos y inactivos
                 .orElseThrow(() -> new RuntimeException("BloqueHorario no encontrado o inactivo"));
 
         bloque.setInicio(dto.getInicio());
@@ -89,6 +89,7 @@ public class BloqueHorarioServiceImpl implements IBloqueHorarioService {
                 .id(b.getBloqueHorarioId())
                 .inicio(b.getInicio())
                 .fin(b.getFin())
+                .activo(b.getActivo())
                 .build();
     }
 }

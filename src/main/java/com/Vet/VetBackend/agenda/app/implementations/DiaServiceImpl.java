@@ -37,13 +37,12 @@ public class DiaServiceImpl implements IDiaService {
 
     @Override
     public DiaSalidaRes save(DiaGuardarReq diaDTO) {
-        // Convertir String a Enum de forma segura
-        EstadoDia.Estado estadoEnum;
-        try {
-            estadoEnum = EstadoDia.Estado.valueOf(diaDTO.getEstadoDia());
-        } catch (IllegalArgumentException e) {
-            throw new EntityNotFoundException("Estado inválido: " + diaDTO.getEstadoDia());
+        // Validar que el estado no sea null
+        if (diaDTO.getEstadoDia() == null || diaDTO.getEstadoDia().trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo estadoDia no puede ser null o vacío");
         }
+
+        EstadoDia.Estado estadoEnum = parseEstado(diaDTO.getEstadoDia());
 
         EstadoDia estadoDia = estadoDiaRepository.findByEstado(estadoEnum)
                 .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado: " + estadoEnum));
@@ -61,13 +60,12 @@ public class DiaServiceImpl implements IDiaService {
         Dia diaExistente = diaRepository.findById(diaId)
                 .orElseThrow(() -> new EntityNotFoundException("Día no encontrado con ID: " + diaId));
 
-        // Convertir String a Enum
-        EstadoDia.Estado estadoEnum;
-        try {
-            estadoEnum = EstadoDia.Estado.valueOf(diaDTO.getEstadoDia());
-        } catch (IllegalArgumentException e) {
-            throw new EntityNotFoundException("Estado inválido: " + diaDTO.getEstadoDia());
+        // Validar que el estado no sea null
+        if (diaDTO.getEstadoDia() == null || diaDTO.getEstadoDia().trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo estadoDia no puede ser null o vacío");
         }
+
+        EstadoDia.Estado estadoEnum = parseEstado(diaDTO.getEstadoDia());
 
         EstadoDia estadoDia = estadoDiaRepository.findByEstado(estadoEnum)
                 .orElseThrow(() -> new EntityNotFoundException("Estado de día no encontrado: " + estadoEnum));
@@ -86,12 +84,21 @@ public class DiaServiceImpl implements IDiaService {
         diaRepository.deleteById(diaId);
     }
 
+    // Método auxiliar para parsear el enum de forma segura
+    private EstadoDia.Estado parseEstado(String estadoStr) {
+        switch (estadoStr.trim().toLowerCase()) {
+            case "activo" -> { return EstadoDia.Estado.Activo; }
+            case "inactivo" -> { return EstadoDia.Estado.Inactivo; }
+            default -> throw new EntityNotFoundException("Estado inválido: " + estadoStr);
+        }
+    }
+
     // DTO de salida simplificado: devuelve solo el nombre del día y el estado
     private DiaSalidaRes toSalidaDTO(Dia dia) {
         return DiaSalidaRes.builder()
                 .diaId(dia.getDiaId())
                 .nombre(dia.getNombre())
-                .estado(dia.getEstadoDia().getEstado().name()) // Solo el nombre del enum como String
+                .estado(dia.getEstadoDia().getEstado().name())
                 .build();
     }
 }

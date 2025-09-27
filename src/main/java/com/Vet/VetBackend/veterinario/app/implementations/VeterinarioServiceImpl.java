@@ -11,6 +11,7 @@ import com.Vet.VetBackend.veterinario.domain.Especialidad;
 import com.Vet.VetBackend.veterinario.domain.Veterinario;
 import com.Vet.VetBackend.veterinario.repo.EspecialidadRepository;
 import com.Vet.VetBackend.veterinario.repo.VeterinarioRepository;
+import com.Vet.VetBackend.veterinario.web.dto.UsuarioSalidaRes;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioGuardarReq;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioModificarReq;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioSalidaRes;
@@ -124,13 +125,31 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
     }
 
     private VeterinarioSalidaRes toSalidaDTO(Veterinario v) {
+        Usuario u = v.getUsuario();
+
+        // Mapeo del usuario
+        var usuarioDTO = UsuarioSalidaRes.builder()
+                .id(u.getId())
+                .nickName(u.getNickName())
+                .correo(u.getCorreo())
+                .nombreCompleto(u.getNombreCompleto())
+                .dui(u.getDui())
+                .telefono(u.getTelefono())
+                .direccion(u.getDireccion())
+                .fechaNacimiento(u.getFechaNacimiento())
+                .rol(u.getRol().getNombre())       // Asumo que en Rol tienes un campo "nombre"
+                .estado(u.getEstado().getNombre()) // Asumo que en Estado tienes un campo "nombre"
+                .build();
+
+        // Retorno con veterinario
         return VeterinarioSalidaRes.builder()
                 .id(v.getId())
                 .numeroLicencia(v.getNumeroLicencia())
                 .estado(v.getEstado().name())
                 .servicio(v.getServicios().getNombre())
                 .especialidad(v.getEspecialidad().getNombre())
-                .usuarioNombre(v.getUsuario().getNombreCompleto())
+                .usuario(usuarioDTO) // 🔹 ahora devuelve todo el usuario
                 .build();
     }
+
 }

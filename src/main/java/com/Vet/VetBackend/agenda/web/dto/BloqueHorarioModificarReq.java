@@ -11,4 +11,5 @@ public class BloqueHorarioModificarReq {
     private Integer  id;
     private LocalTime inicio;
     private LocalTime fin;
+    private Boolean activo;
 }
