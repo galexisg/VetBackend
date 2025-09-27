@@ -14,6 +14,6 @@ public class Inventario_Salida implements Serializable {
         private double stockActual;
         private double stockMinimo;
         private double stockMaximo;
-        private Integer almacenId;
-        private Integer medicamentoId;
+        private Almacen_Salida almacen;
+        private MedicamentoSalida medicamento;
     }
