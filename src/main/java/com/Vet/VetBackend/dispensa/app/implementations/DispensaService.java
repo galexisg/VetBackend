@@ -6,11 +6,16 @@ import com.Vet.VetBackend.dispensa.web.dto.Dispensa_Salida;
 import com.Vet.VetBackend.dispensa.domain.Dispensa;
 import com.Vet.VetBackend.dispensa.repo.IDispensaRepository;
 import com.Vet.VetBackend.dispensa.app.services.IDispensaService;
+import com.Vet.VetBackend.almacen.domain.Almacen;
+import com.Vet.VetBackend.almacen.repo.IAlmacenRepository;
+import com.Vet.VetBackend.usuarios.domain.Usuario;
+import com.Vet.VetBackend.usuarios.repo.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +27,14 @@ public class DispensaService implements IDispensaService {
     @Autowired
     private IDispensaRepository repository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private IAlmacenRepository almacenRepository;
+
     @Override
+    @Transactional(readOnly = true)
     public List<Dispensa_Salida> obtenerTodas() {
         return repository.findAll().stream()
                 .map(this::convertirASalida)
@@ -30,6 +42,7 @@ public class DispensaService implements IDispensaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Dispensa_Salida> obtenerTodasPaginadas(Pageable pageable) {
         Page<Dispensa> page = repository.findAll(pageable);
         List<Dispensa_Salida> dtoList = page.stream()
@@ -39,6 +52,7 @@ public class DispensaService implements IDispensaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Dispensa_Salida obtenerPorId(Integer id) {
         Dispensa entidad = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dispensa no encontrada"));
@@ -46,38 +60,63 @@ public class DispensaService implements IDispensaService {
     }
 
     @Override
+    @Transactional
     public Dispensa_Salida crear(Dispensa_Guardar dto) {
         Dispensa entidad = new Dispensa();
         entidad.setFecha(dto.getFecha());
         entidad.setCantidad(dto.getCantidad());
         entidad.setPrescripcionDetalleId(dto.getPrescripcionDetalleId());
-        entidad.setAlmacenId(dto.getAlmacenId());
         entidad.setLoteId(dto.getLoteId());
-        entidad.setUsuarioId(dto.getUsuarioId()); // 🔹 Nuevo
+
+        if (dto.getUsuarioId() != null) {
+            Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            entidad.setUsuario(usuario);
+        }
+
+        if (dto.getAlmacenId() != null) {
+            Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
+                    .orElseThrow(() -> new RuntimeException("Almacén no encontrado"));
+            entidad.setAlmacen(almacen);
+        }
+
         return convertirASalida(repository.save(entidad));
     }
 
     @Override
+    @Transactional
     public Dispensa_Salida editar(Integer id, Dispensa_Actualizar dto) {
         Dispensa existente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dispensa no encontrada"));
+
         existente.setFecha(dto.getFecha());
         existente.setCantidad(dto.getCantidad());
         existente.setPrescripcionDetalleId(dto.getPrescripcionDetalleId());
-        existente.setAlmacenId(dto.getAlmacenId());
         existente.setLoteId(dto.getLoteId());
+
         if (dto.getUsuarioId() != null) {
-            existente.setUsuarioId(dto.getUsuarioId()); // 🔹 Solo si viene en la petición
+            Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            existente.setUsuario(usuario);
         }
+
+        if (dto.getAlmacenId() != null) {
+            Almacen almacen = almacenRepository.findById(dto.getAlmacenId())
+                    .orElseThrow(() -> new RuntimeException("Almacén no encontrado"));
+            existente.setAlmacen(almacen);
+        }
+
         return convertirASalida(repository.save(existente));
     }
 
     @Override
+    @Transactional
     public void eliminarPorId(Integer id) {
         repository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Dispensa_Salida> obtenerPorPrescripcion(Integer prescripcionDetalleId) {
         return repository.findByPrescripcionDetalleId(prescripcionDetalleId).stream()
                 .map(this::convertirASalida)
@@ -85,6 +124,7 @@ public class DispensaService implements IDispensaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Dispensa_Salida> obtenerPorAlmacen(Integer almacenId) {
         return repository.findByAlmacenId(almacenId).stream()
                 .map(this::convertirASalida)
@@ -92,22 +132,30 @@ public class DispensaService implements IDispensaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Dispensa_Salida> obtenerPorFecha(LocalDate fecha) {
         return repository.findByFecha(fecha).stream()
                 .map(this::convertirASalida)
                 .collect(Collectors.toList());
     }
 
-    //  Conversión manual de entidad a DTO
+    // Conversión manual de entidad a DTO
     private Dispensa_Salida convertirASalida(Dispensa entidad) {
         Dispensa_Salida salida = new Dispensa_Salida();
         salida.setId(entidad.getId());
         salida.setFecha(entidad.getFecha());
         salida.setCantidad(entidad.getCantidad());
         salida.setPrescripcionDetalleId(entidad.getPrescripcionDetalleId());
-        salida.setAlmacenId(entidad.getAlmacenId());
         salida.setLoteId(entidad.getLoteId());
-        salida.setUsuarioId(entidad.getUsuarioId()); // 🔹 Nuevo
+
+        if (entidad.getUsuario() != null) {
+            salida.setUsuarioNombre(entidad.getUsuario().getNombreCompleto());
+        }
+
+        if (entidad.getAlmacen() != null) {
+            salida.setAlmacenNombre(entidad.getAlmacen().getNombre());
+        }
+
         return salida;
     }
 }

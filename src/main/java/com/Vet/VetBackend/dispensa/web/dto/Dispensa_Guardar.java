@@ -11,9 +11,9 @@ import java.io.Serializable;
 @Setter
 public class Dispensa_Guardar implements Serializable {
     private Integer prescripcionDetalleId;
-    private Integer almacenId;
+    private Integer almacenId; // ID para guardar
     private Integer loteId;
     private BigDecimal cantidad;
     private LocalDateTime fecha;
-    private Integer usuarioId;
+    private Integer usuarioId; // ID para guardar
 }

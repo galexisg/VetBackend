@@ -12,9 +12,11 @@ import java.io.Serializable;
 public class Dispensa_Salida implements Serializable {
     private Integer id;
     private Integer prescripcionDetalleId;
-    private Integer almacenId;
     private Integer loteId;
     private BigDecimal cantidad;
     private LocalDateTime fecha;
-    private Integer usuarioId;
+
+    // 🔹 Nuevos campos
+    private String usuarioNombre;
+    private String almacenNombre;
 }

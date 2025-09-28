@@ -1,5 +1,7 @@
 package com.Vet.VetBackend.dispensa.domain;
 
+import com.Vet.VetBackend.almacen.domain.Almacen;
+import com.Vet.VetBackend.usuarios.domain.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,9 +17,6 @@ public class Dispensa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "almacen_id")
-    private Integer almacenId;
-
     @Column(precision = 12, scale = 2)
     private BigDecimal cantidad;
 
@@ -30,6 +29,13 @@ public class Dispensa {
     @Column(name = "prescripcion_detalle_id")
     private Integer prescripcionDetalleId;
 
-    @Column(name = "usuario_id")
-    private Integer usuarioId;  //  Nuevo campo para la relación con Usuario
+    // 🔹 Relación con Usuario
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id") // El campo en la tabla es usuario_id, y la PK en Usuario también
+    private Usuario usuario;
+
+    // 🔹 Relación con Almacén
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "almacen_id", referencedColumnName = "id") // 🔧 Aquí estaba el error
+    private Almacen almacen;
 }
