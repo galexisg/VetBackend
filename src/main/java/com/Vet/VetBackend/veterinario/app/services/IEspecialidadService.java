@@ -23,4 +23,6 @@ public interface IEspecialidadService {
 
     List<EspecialidadSalidaRes> listarInactivos();
 
+    List<EspecialidadSalidaRes> listarTodos();
+
 }

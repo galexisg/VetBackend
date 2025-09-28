@@ -18,6 +18,11 @@ import java.util.Map;
 public class BloqueHorarioController {
 
     private final IBloqueHorarioService service;
+    // 🔹 NUEVO: Listar TODOS (activos + inactivos)
+    @GetMapping
+    public List<BloqueHorarioSalidaRes> listarTodos() {
+        return service.listarTodos();   // <-- Debe existir en el service
+    }
 
     @GetMapping("/activos")
     public List<BloqueHorarioSalidaRes> listar() {

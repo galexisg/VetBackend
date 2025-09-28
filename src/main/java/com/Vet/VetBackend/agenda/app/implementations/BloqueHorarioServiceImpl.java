@@ -31,6 +31,14 @@ public class BloqueHorarioServiceImpl implements IBloqueHorarioService {
                 .toList();
     }
 
+    // 🔹 NUEVO: Listar TODOS (activos + inactivos)
+    @Override
+    public List<BloqueHorarioSalidaRes> listarTodos() {
+        return repositorio.findAll().stream()     // <-- trae todos los registros
+                .map(this::toSalidaDTO)
+                .toList();
+    }
+
     @Override
     public BloqueHorarioSalidaRes buscarPorId(Integer id) {
         BloqueHorario bloque = repositorio.findById(id)
@@ -80,6 +88,8 @@ public class BloqueHorarioServiceImpl implements IBloqueHorarioService {
         bloque.setActivo(true);
         repositorio.save(bloque);
     }
+
+
 
     // ======================
     // 🔹 Mapper

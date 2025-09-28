@@ -20,4 +20,7 @@ public interface IBloqueHorarioService {
     void eliminar(Integer id); // 🔹 desactivar
 
     void activar(Integer id);  // 🔹 reactivar
+
+    List<BloqueHorarioSalidaRes> listarTodos();
+
 }

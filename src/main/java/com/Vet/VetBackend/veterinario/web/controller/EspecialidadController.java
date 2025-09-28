@@ -29,6 +29,11 @@ public class EspecialidadController {
         return service.listarInactivos();
     }
 
+    // 🔹 Nuevo endpoint para listar todos (activos + inactivos)
+    @GetMapping
+    public List<EspecialidadSalidaRes> listarTodos() {
+        return service.listarTodos();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<EspecialidadSalidaRes> buscarPorId(@PathVariable Integer id) {
