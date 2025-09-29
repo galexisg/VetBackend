@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/motivos")
+@RequestMapping("/motivocitas")
 public class MotivoCitaController {
 
     @Autowired
