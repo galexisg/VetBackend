@@ -19,9 +19,6 @@ public class TratamientoAplicado {
     @Column(name = "tratamiento_id", nullable = false)
     private Long tratamientoId;
 
-    @Column(name = "historial_id", nullable = false)
-    private Long historialId;
-
     @Column(name = "veterinario_id", nullable = false)
     private Long veterinarioId;
 

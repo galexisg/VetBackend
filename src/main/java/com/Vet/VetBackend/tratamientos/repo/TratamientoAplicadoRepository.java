@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface TratamientoAplicadoRepository extends JpaRepository<TratamientoAplicado, Long> {
     List<TratamientoAplicado> findByCitaId(Long citaId);
-    List<TratamientoAplicado> findByHistorialId(Long historialId);
 }
 
 

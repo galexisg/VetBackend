@@ -19,28 +19,32 @@ public class TratamientoAplicadoController {
         this.service = service;
     }
 
+    /**
+     * GET /api/tratamientos-aplicados?citaId=1
+     * Lista los tratamientos aplicados a una cita específica
+     */
     @GetMapping
-    public List<TratamientoAplicadoRes> listar(
-            @RequestParam(required = false) Long citaId,
-            @RequestParam(required = false) Long historialId
-    ) {
-        if (citaId != null) return service.listarPorCita(citaId);
-        if (historialId != null) return service.listarPorHistorial(historialId);
-        throw new IllegalArgumentException("Debes enviar citaId o historialId como query param");
+    public List<TratamientoAplicadoRes> listar(@RequestParam(required = true) Long citaId) {
+        return service.listarPorCita(citaId);
     }
 
-    /** POST /api/tratamientos-aplicados */
+    /**
+     * POST /api/tratamientos-aplicados
+     * Registra un nuevo tratamiento aplicado
+     */
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public TratamientoAplicadoRes crear(@RequestBody TratamientoAplicadoReq req) {
-        // yo requiero citaId en el body porque ya no viene en el path
         if (req.getCitaId() == null) {
             throw new IllegalArgumentException("citaId es requerido en el body");
         }
         return service.registrar(req);
     }
 
-    /** PUT /api/tratamientos-aplicados/{id}  (yo permito actualizar estado y/o observaciones en un solo golpe) */
+    /**
+     * PUT /api/tratamientos-aplicados/{id}
+     * Actualiza estado y/o observaciones de un tratamiento aplicado
+     */
     @PutMapping(path = "/{id}", consumes = "application/json")
     public TratamientoAplicadoRes actualizar(@PathVariable Long id, @RequestBody ActualizarReq body) {
         TratamientoAplicadoRes res = null;
@@ -58,10 +62,12 @@ public class TratamientoAplicadoController {
         return res;
     }
 
-    /** DTO interno para PUT */
+    /**
+     * DTO interno para actualizar
+     */
     @Data
     public static class ActualizarReq {
-        private String estado;         // p.ej. APLICADO | PENDIENTE | CANCELADO
-        private String observaciones;  // texto libre
+        private String estado;         // PLANIFICADO | EN_CURSO | APLICADO | CANCELADO
+        private String observaciones;  // Texto libre
     }
 }

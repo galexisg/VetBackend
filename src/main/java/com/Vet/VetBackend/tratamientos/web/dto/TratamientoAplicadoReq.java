@@ -6,7 +6,6 @@ import lombok.Data;
 public class TratamientoAplicadoReq {
     private Long citaId;
     private Long tratamientoId;
-    private Long historialId;
     private Long veterinarioId;
     private String observaciones;
 }
