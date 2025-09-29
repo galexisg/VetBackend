@@ -9,7 +9,6 @@ public class TratamientoAplicadoRes {
     private Long id;           // ← id
     private Long citaId;
     private Long tratamientoId;
-    private Long historialId;
     private Long veterinarioId;
     private String estado;
     private String observaciones;
@@ -19,7 +18,6 @@ public class TratamientoAplicadoRes {
         res.setId(ta.getId());
         res.setCitaId(ta.getCitaId());
         res.setTratamientoId(ta.getTratamientoId());
-        res.setHistorialId(ta.getHistorialId());
         res.setVeterinarioId(ta.getVeterinarioId());
         res.setEstado(ta.getEstado());
         res.setObservaciones(ta.getObservaciones());

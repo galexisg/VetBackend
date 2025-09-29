@@ -10,8 +10,6 @@ public interface TratamientoAplicadoService {
 
     List<TratamientoAplicadoRes> listarPorCita(Long citaId);
 
-    List<TratamientoAplicadoRes> listarPorHistorial(Long historialId);
-
     TratamientoAplicadoRes registrar(TratamientoAplicadoReq req);
 
     TratamientoAplicadoRes actualizarEstado(Long id, String estado);
