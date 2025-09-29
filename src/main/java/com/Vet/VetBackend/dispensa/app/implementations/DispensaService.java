@@ -62,7 +62,6 @@ public class DispensaService implements IDispensaService {
     @Override
     @Transactional
     public Dispensa_Salida crear(Dispensa_Guardar dto) {
-        System.out.println("📥 DTO recibido: " + dto);
         Dispensa entidad = new Dispensa();
         entidad.setFecha(dto.getFecha());
         entidad.setCantidad(dto.getCantidad());
