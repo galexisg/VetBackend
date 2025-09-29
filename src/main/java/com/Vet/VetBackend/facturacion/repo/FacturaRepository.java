@@ -16,19 +16,17 @@ import java.util.Optional;
 public interface FacturaRepository extends JpaRepository<Factura, Long> {
 
     // ===== Derived queries =====
-    List<Factura> findByClienteId(Long clienteId);
+    List<Factura> findByClienteId(Integer clienteId);
 
     Optional<Factura> findByCitaId(Long citaId);
 
-    // ahora tipado a enum
     List<Factura> findByEstado(FacturaEstado estado);
 
     List<Factura> findBySaldoGreaterThan(BigDecimal saldo);
 
     List<Factura> findByCreatedAtBetween(LocalDateTime fechaInicio, LocalDateTime fechaFin);
 
-    // ahora tipado a enum
-    List<Factura> findByClienteIdAndEstado(Long clienteId, FacturaEstado estado);
+    List<Factura> findByClienteIdAndEstado(Integer clienteId, FacturaEstado estado);
 
     // ===== Fetch helpers =====
     @Query("SELECT f FROM Factura f LEFT JOIN FETCH f.detalles WHERE f.id = :id")
@@ -52,7 +50,7 @@ public interface FacturaRepository extends JpaRepository<Factura, Long> {
            WHERE f.clienteId = :clienteId
              AND f.estado <> com.Vet.VetBackend.facturacion.domain.FacturaEstado.ANULADA
            """)
-    BigDecimal getTotalFacturadoPorCliente(@Param("clienteId") Long clienteId);
+    BigDecimal getTotalFacturadoPorCliente(@Param("clienteId") Integer clienteId);
 
     @Query("""
            SELECT f
@@ -78,7 +76,7 @@ public interface FacturaRepository extends JpaRepository<Factura, Long> {
              AND f.createdAt BETWEEN :fechaInicio AND :fechaFin
            ORDER BY f.createdAt DESC
            """)
-    List<Factura> findByClienteIdAndFechas(@Param("clienteId") Long clienteId,
+    List<Factura> findByClienteIdAndFechas(@Param("clienteId") Integer clienteId,
                                            @Param("fechaInicio") LocalDateTime fechaInicio,
                                            @Param("fechaFin") LocalDateTime fechaFin);
 
@@ -90,7 +88,6 @@ public interface FacturaRepository extends JpaRepository<Factura, Long> {
            """)
     List<Factura> findTopFacturasByMonto();
 
-    // ahora uso derived query tipada (sin @Query)
     Long countByEstado(FacturaEstado estado);
 
     @Query("""

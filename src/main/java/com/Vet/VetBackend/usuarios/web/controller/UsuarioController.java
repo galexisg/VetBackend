@@ -46,9 +46,13 @@ public class UsuarioController {
         return mapToRes(u);
     }
 
-    @GetMapping
+    @GetMapping("/listarclientes")
     public List<UsuarioRes> listar() {
-        return usuarioService.listar().stream().map(this::mapToRes).collect(Collectors.toList());
+        return usuarioService.listar()
+                .stream()
+                .filter(u -> u.getRol() != null && u.getRol().getId() == 2) // ✅ solo usuarios con rol id = 2
+                .map(this::mapToRes)
+                .collect(Collectors.toList());
     }
 
     @PostMapping

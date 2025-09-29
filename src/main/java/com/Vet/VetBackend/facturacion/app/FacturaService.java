@@ -51,17 +51,16 @@ public class FacturaService {
             throw new IllegalArgumentException("Ya existe una factura para esta cita");
         }
 
-        // yo convierto el String del DTO a enum; si viene null, uso PENDIENTE
         FacturaEstado estadoInicial = parseEstadoOrDefault(request.getEstado(), FacturaEstado.PENDIENTE);
 
-        // creo la factura con estado enum y saldo 0 para no violar NOT NULL
+        // Nota: clienteId = Integer, citaId = Long (según la BD/entidad)
         Factura factura = new Factura(
-                request.getClienteId(),
-                request.getCitaId(),
+                request.getClienteId(),   // <- Integer ahora
+                request.getCitaId(),      // <- Long
                 estadoInicial,
                 BigDecimal.ZERO
         );
-        factura.setSaldo(BigDecimal.ZERO); // defensivo para el primer insert
+        factura.setSaldo(BigDecimal.ZERO);
         factura = facturaRepository.save(factura);
 
         BigDecimal totalFactura = BigDecimal.ZERO;
@@ -79,12 +78,12 @@ public class FacturaService {
 
                 FacturaDetalle detalle = new FacturaDetalle(
                         factura,
-                        nd.servicioId,      // hoy tu DTO solo trae servicioId
-                        nd.tratamientoId,   // quedará null (XOR ok)
+                        nd.servicioId,
+                        nd.tratamientoId,
                         nd.cantidad,
                         nd.precioUnitario,
                         nd.descuento != null ? nd.descuento : BigDecimal.ZERO,
-                        nd.descripcionItem  // null hoy
+                        nd.descripcionItem
                 );
 
                 if (!detalle.isValid()) {
@@ -118,7 +117,7 @@ public class FacturaService {
     }
 
     @Transactional(readOnly = true)
-    public List<FacturaDTO> obtenerFacturasPorCliente(Long clienteId) {
+    public List<FacturaDTO> obtenerFacturasPorCliente(Integer clienteId) { // Integer aquí
         return facturaRepository.findByClienteId(clienteId)
                 .stream().map(this::convertirADTO).collect(Collectors.toList());
     }
@@ -151,7 +150,7 @@ public class FacturaService {
         return convertirADTO(factura);
     }
 
-    public FacturaDTO anularFactura(Long facturaId, String motivo, Long usuarioId) {
+    public FacturaDTO anularFactura(Long facturaId, String motivo, Integer usuarioId) { // Integer aquí
         Factura factura = facturaRepository.findById(facturaId)
                 .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
 
@@ -164,7 +163,7 @@ public class FacturaService {
 
         factura.setEstado(FacturaEstado.ANULADA);
         factura.setMotivoAnulacion(motivo);
-        factura.setUsuarioAnulaId(usuarioId);
+        factura.setUsuarioAnulaId(usuarioId); // Integer en entidad
         factura.setSaldo(BigDecimal.ZERO);
 
         factura = facturaRepository.save(factura);
@@ -239,13 +238,13 @@ public class FacturaService {
     private FacturaDTO convertirADTO(Factura factura) {
         FacturaDTO dto = new FacturaDTO();
         dto.setId(factura.getId());
-        dto.setClienteId(factura.getClienteId());
-        dto.setCitaId(factura.getCitaId());
+        dto.setClienteId(factura.getClienteId());            // Integer
+        dto.setCitaId(factura.getCitaId());                  // Long
         dto.setEstado(factura.getEstado() != null ? factura.getEstado().name() : null);
         dto.setTotal(factura.getTotal());
         dto.setSaldo(factura.getSaldo());
         dto.setMotivoAnulacion(factura.getMotivoAnulacion());
-        dto.setUsuarioAnulaId(factura.getUsuarioAnulaId());
+        dto.setUsuarioAnulaId(factura.getUsuarioAnulaId());  // Integer
         dto.setCreatedAt(factura.getCreatedAt());
         dto.setUpdatedAt(factura.getUpdatedAt());
 
@@ -274,9 +273,6 @@ public class FacturaService {
         return parseEstado(estado);
     }
 
-    /**
-     * Normalización compatible con tu DTO actual (solo servicioId).
-     */
     private NormalizedDetalle normalizeDetalleRequestCompat(FacturaRequestDTO.DetalleRequestDTO d) {
         NormalizedDetalle nd = new NormalizedDetalle();
         nd.servicioId = d.getServicioId();

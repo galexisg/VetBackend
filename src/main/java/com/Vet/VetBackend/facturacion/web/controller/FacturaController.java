@@ -29,10 +29,7 @@ public class FacturaController {
 
     // ========== OPERACIONES CRUD ==========
 
-    /**
-     * Crear nueva factura
-     * POST /api/facturas
-     */
+    /** Crear nueva factura - POST /api/facturas */
     @PostMapping
     public ResponseEntity<?> crearFactura(@RequestBody FacturaRequestDTO request) {
         try {
@@ -46,31 +43,22 @@ public class FacturaController {
         }
     }
 
-    /**
-     * Obtener factura por ID
-     * GET /api/facturas/{id}
-     */
+    /** Obtener factura por ID - GET /api/facturas/{id} */
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerFactura(@PathVariable Long id) {
         try {
             Optional<FacturaDTO> factura = facturaService.obtenerFacturaPorId(id);
-            if (factura.isPresent()) {
-                return ResponseEntity.ok(factura.get());
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            return factura.<ResponseEntity<?>>map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponse("Error al obtener la factura"));
         }
     }
 
-    /**
-     * Obtener facturas por cliente
-     * GET /api/facturas/cliente/{clienteId}
-     */
+    /** Obtener facturas por cliente - GET /api/facturas/cliente/{clienteId} */
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<?> obtenerFacturasPorCliente(@PathVariable Long clienteId) {
+    public ResponseEntity<?> obtenerFacturasPorCliente(@PathVariable Integer clienteId) {
         try {
             List<FacturaDTO> facturas = facturaService.obtenerFacturasPorCliente(clienteId);
             return ResponseEntity.ok(facturas);
@@ -80,10 +68,7 @@ public class FacturaController {
         }
     }
 
-    /**
-     * Obtener facturas por estado
-     * GET /api/facturas/estado/{estado}
-     */
+    /** Obtener facturas por estado - GET /api/facturas/estado/{estado} */
     @GetMapping("/estado/{estado}")
     public ResponseEntity<?> obtenerFacturasPorEstado(@PathVariable String estado) {
         try {
@@ -95,10 +80,7 @@ public class FacturaController {
         }
     }
 
-    /**
-     * Obtener facturas pendientes
-     * GET /api/facturas/pendientes
-     */
+    /** Obtener facturas pendientes - GET /api/facturas/pendientes */
     @GetMapping("/pendientes")
     public ResponseEntity<?> obtenerFacturasPendientes() {
         try {
@@ -112,10 +94,7 @@ public class FacturaController {
 
     // ========== OPERACIONES DE ESTADO ==========
 
-    /**
-     * Actualizar estado de factura
-     * PUT /api/facturas/{id}/estado
-     */
+    /** Actualizar estado de factura - PUT /api/facturas/{id}/estado */
     @PutMapping("/{id}/estado")
     public ResponseEntity<?> actualizarEstado(@PathVariable Long id,
                                               @RequestBody EstadoRequest request) {
@@ -130,10 +109,7 @@ public class FacturaController {
         }
     }
 
-    /**
-     * Anular factura
-     * PUT /api/facturas/{id}/anular
-     */
+    /** Anular factura - PUT /api/facturas/{id}/anular */
     @PutMapping("/{id}/anular")
     public ResponseEntity<?> anularFactura(@PathVariable Long id,
                                            @RequestBody AnulacionRequest request) {
@@ -149,10 +125,7 @@ public class FacturaController {
         }
     }
 
-    /**
-     * Recalcular totales de factura
-     * PUT /api/facturas/{id}/recalcular
-     */
+    /** Recalcular totales - PUT /api/facturas/{id}/recalcular */
     @PutMapping("/{id}/recalcular")
     public ResponseEntity<?> recalcularTotales(@PathVariable Long id) {
         try {
@@ -166,12 +139,9 @@ public class FacturaController {
         }
     }
 
-    // ========== OPERACIONES DE DETALLES ==========
+    // ========== DETALLES ==========
 
-    /**
-     * Obtener detalles de factura
-     * GET /api/facturas/{id}/detalles
-     */
+    /** Obtener detalles - GET /api/facturas/{id}/detalles */
     @GetMapping("/{id}/detalles")
     public ResponseEntity<?> obtenerDetallesFactura(@PathVariable Long id) {
         try {
@@ -183,10 +153,7 @@ public class FacturaController {
         }
     }
 
-    /**
-     * Agregar detalle a factura
-     * POST /api/facturas/{id}/detalles
-     */
+    /** Agregar detalle - POST /api/facturas/{id}/detalles */
     @PostMapping("/{id}/detalles")
     public ResponseEntity<?> agregarDetalle(@PathVariable Long id,
                                             @RequestBody DetalleRequest request) {
@@ -203,12 +170,9 @@ public class FacturaController {
         }
     }
 
-    // ========== REPORTES Y ESTADÍSTICAS ==========
+    // ========== REPORTES ==========
 
-    /**
-     * Obtener resumen financiero
-     * GET /api/facturas/resumen?fechaInicio=&fechaFin=
-     */
+    /** Resumen financiero - GET /api/facturas/resumen */
     @GetMapping("/resumen")
     public ResponseEntity<?> obtenerResumenFinanciero(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
@@ -223,28 +187,22 @@ public class FacturaController {
         }
     }
 
-    // ========== CLASES INTERNAS PARA REQUESTS ==========
-
+    // ========== CLASES INTERNAS REQUEST/RESP ==========
     public static class EstadoRequest {
         private String nuevoEstado;
-
         public EstadoRequest() {}
-
         public String getNuevoEstado() { return nuevoEstado; }
         public void setNuevoEstado(String nuevoEstado) { this.nuevoEstado = nuevoEstado; }
     }
 
     public static class AnulacionRequest {
         private String motivo;
-        private Long usuarioId;
-
+        private Integer usuarioId; // <-- Integer
         public AnulacionRequest() {}
-
         public String getMotivo() { return motivo; }
         public void setMotivo(String motivo) { this.motivo = motivo; }
-
-        public Long getUsuarioId() { return usuarioId; }
-        public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+        public Integer getUsuarioId() { return usuarioId; }
+        public void setUsuarioId(Integer usuarioId) { this.usuarioId = usuarioId; }
     }
 
     public static class DetalleRequest {
@@ -252,18 +210,13 @@ public class FacturaController {
         private Integer cantidad;
         private java.math.BigDecimal precioUnitario;
         private java.math.BigDecimal descuento;
-
         public DetalleRequest() {}
-
         public Long getServicioId() { return servicioId; }
         public void setServicioId(Long servicioId) { this.servicioId = servicioId; }
-
         public Integer getCantidad() { return cantidad; }
         public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
-
         public java.math.BigDecimal getPrecioUnitario() { return precioUnitario; }
         public void setPrecioUnitario(java.math.BigDecimal precioUnitario) { this.precioUnitario = precioUnitario; }
-
         public java.math.BigDecimal getDescuento() { return descuento; }
         public void setDescuento(java.math.BigDecimal descuento) { this.descuento = descuento; }
     }
@@ -271,12 +224,10 @@ public class FacturaController {
     public static class ErrorResponse {
         private String mensaje;
         private LocalDateTime timestamp;
-
         public ErrorResponse(String mensaje) {
             this.mensaje = mensaje;
             this.timestamp = LocalDateTime.now();
         }
-
         public String getMensaje() { return mensaje; }
         public LocalDateTime getTimestamp() { return timestamp; }
     }

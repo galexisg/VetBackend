@@ -1,16 +1,15 @@
 package com.Vet.VetBackend.facturacion.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacturaRequestDTO {
 
-    private Long clienteId;
-    private Long citaId;
-    private String estado;
-    private String observaciones;
+    private Integer clienteId;          // INT en BD → Integer en Java
+    private Long    citaId;             // BIGINT en BD → Long en Java
+    private String  estado;
+    private String  observaciones;
 
     // Lista de ítems a facturar (servicios y/o tratamientos)
     private List<DetalleRequestDTO> detalles;
@@ -18,20 +17,19 @@ public class FacturaRequestDTO {
     // Información de pago inicial (opcional)
     private PagoRequestDTO pagoInicial;
 
-    // Constructor vacío
     public FacturaRequestDTO() {}
 
     // Constructor básico
-    public FacturaRequestDTO(Long clienteId, Long citaId, List<DetalleRequestDTO> detalles) {
+    public FacturaRequestDTO(Integer clienteId, Long citaId, List<DetalleRequestDTO> detalles) {
         this.clienteId = clienteId;
         this.citaId = citaId;
-        this.estado = "PENDIENTE"; // default
+        this.estado = "PENDIENTE";
         this.detalles = detalles;
     }
 
     // Getters y Setters
-    public Long getClienteId() { return clienteId; }
-    public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+    public Integer getClienteId() { return clienteId; }
+    public void setClienteId(Integer clienteId) { this.clienteId = clienteId; }
 
     public Long getCitaId() { return citaId; }
     public void setCitaId(Long citaId) { this.citaId = citaId; }
@@ -61,23 +59,16 @@ public class FacturaRequestDTO {
     }
 
     // ================== DetalleRequestDTO ==================
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DetalleRequestDTO {
-        // Yo mantengo compatibilidad: servicioId sigue existiendo
-        private Long servicioId;
-
-        // Yo agrego tratamientoId para el nuevo flujo
-        private Long tratamientoId;        // NUEVO (nullable)
-
-        // Yo agrego descripcionItem para “congelar” el texto mostrado (opcional)
-        private String descripcionItem;    // NUEVO (nullable)
+        private Long servicioId;             // compatible con flujo actual
+        private Long tratamientoId;          // NUEVO (nullable)
+        private String descripcionItem;      // NUEVO (nullable)
 
         private Integer cantidad;
         private java.math.BigDecimal precioUnitario;
         private java.math.BigDecimal descuento;
 
-        // Constructor vacío
         public DetalleRequestDTO() {}
 
         // Constructor básico (servicio)
@@ -88,7 +79,7 @@ public class FacturaRequestDTO {
             this.descuento = java.math.BigDecimal.ZERO;
         }
 
-        // Constructor para tratamiento (nuevo)
+        // Constructor para tratamiento
         public DetalleRequestDTO(Integer cantidad, java.math.BigDecimal precioUnitario, Long tratamientoId) {
             this.tratamientoId = tratamientoId;
             this.cantidad = cantidad;
@@ -96,7 +87,6 @@ public class FacturaRequestDTO {
             this.descuento = java.math.BigDecimal.ZERO;
         }
 
-        // Getters y Setters
         public Long getServicioId() { return servicioId; }
         public void setServicioId(Long servicioId) { this.servicioId = servicioId; }
 
@@ -115,8 +105,7 @@ public class FacturaRequestDTO {
         public java.math.BigDecimal getDescuento() { return descuento; }
         public void setDescuento(java.math.BigDecimal descuento) { this.descuento = descuento; }
 
-        // Validación del ítem:
-        // Yo aplico XOR: exactamente uno entre servicioId y tratamientoId.
+        // XOR: servicioId ^ tratamientoId; cantidad>0; precioUnitario>0
         public boolean isValid() {
             boolean xor = (servicioId != null && servicioId > 0) ^ (tratamientoId != null && tratamientoId > 0);
             boolean qtyOk = (cantidad != null && cantidad > 0);
@@ -126,7 +115,6 @@ public class FacturaRequestDTO {
     }
 
     // ================== PagoRequestDTO ==================
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PagoRequestDTO {
         private String metodo;

@@ -13,18 +13,23 @@ public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cliente_id", nullable = false)
-    private Long clienteId;
+    // BD: INT NULL -> en Java usamos Integer
+    @Column(name = "cliente_id", nullable = true)
+    private Integer clienteId;
 
-    @Column(name = "cita_id", nullable = false)
+    // Si la PK de cita es BIGINT, aquí va Long
+    @Column(name = "cita_id", nullable = true)
     private Long citaId;
 
-    // Yo mapeo a enum para alinear con el ENUM de MySQL
+    // Campo presente en la tabla y opcional (NULL)
+    @Column(name = "usuario_id", nullable = true)
+    private Integer usuarioId;
+
     @Enumerated(EnumType.STRING)
     @Column(
             name = "estado",
             nullable = false,
-            columnDefinition = "ENUM('PENDIENTE','PARCIAL','PAGADA','ANULADA')" // opcional
+            columnDefinition = "ENUM('PENDIENTE','PARCIAL','PAGADA','ANULADA')"
     )
     private FacturaEstado estado;
 
@@ -37,8 +42,9 @@ public class Factura {
     @Column(name = "motivo_anulacion", length = 250)
     private String motivoAnulacion;
 
-    @Column(name = "usuario_anula_id")
-    private Long usuarioAnulaId;
+    // BD: INT NULL
+    @Column(name = "usuario_anula_id", nullable = true)
+    private Integer usuarioAnulaId;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -53,16 +59,14 @@ public class Factura {
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pago> pagos;
 
-    // Constructor vacío (JPA)
     public Factura() {}
 
-    // Constructor con campos obligatorios (yo uso enum)
-    public Factura(Long clienteId, Long citaId, FacturaEstado estado, BigDecimal total) {
+    public Factura(Integer clienteId, Long citaId, FacturaEstado estado, BigDecimal total) {
         this.clienteId = clienteId;
         this.citaId = citaId;
         this.estado = estado;
         this.total = total;
-        this.saldo = BigDecimal.ZERO; // yo dejo un default defensivo
+        this.saldo = BigDecimal.ZERO;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -70,11 +74,14 @@ public class Factura {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getClienteId() { return clienteId; }
-    public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
+    public Integer getClienteId() { return clienteId; }
+    public void setClienteId(Integer clienteId) { this.clienteId = clienteId; }
 
     public Long getCitaId() { return citaId; }
     public void setCitaId(Long citaId) { this.citaId = citaId; }
+
+    public Integer getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(Integer usuarioId) { this.usuarioId = usuarioId; }
 
     public FacturaEstado getEstado() { return estado; }
     public void setEstado(FacturaEstado estado) { this.estado = estado; }
@@ -88,8 +95,8 @@ public class Factura {
     public String getMotivoAnulacion() { return motivoAnulacion; }
     public void setMotivoAnulacion(String motivoAnulacion) { this.motivoAnulacion = motivoAnulacion; }
 
-    public Long getUsuarioAnulaId() { return usuarioAnulaId; }
-    public void setUsuarioAnulaId(Long usuarioAnulaId) { this.usuarioAnulaId = usuarioAnulaId; }
+    public Integer getUsuarioAnulaId() { return usuarioAnulaId; }
+    public void setUsuarioAnulaId(Integer usuarioAnulaId) { this.usuarioAnulaId = usuarioAnulaId; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
@@ -103,10 +110,8 @@ public class Factura {
     public List<Pago> getPagos() { return pagos; }
     public void setPagos(List<Pago> pagos) { this.pagos = pagos; }
 
-    // Callbacks JPA
     @PrePersist
     public void prePersist() {
-        // yo aseguro defaults para no romper NOT NULL
         if (this.estado == null) this.estado = FacturaEstado.PENDIENTE;
         if (this.total == null) this.total = BigDecimal.ZERO;
         if (this.saldo == null) this.saldo = BigDecimal.ZERO;
@@ -118,7 +123,6 @@ public class Factura {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Helper opcional
     public void calcularSaldo() {
         if (pagos != null && !pagos.isEmpty()) {
             BigDecimal totalPagos = pagos.stream()

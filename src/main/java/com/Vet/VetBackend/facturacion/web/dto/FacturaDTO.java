@@ -11,13 +11,13 @@ import java.util.List;
 public class FacturaDTO {
 
     private Long id;
-    private Long clienteId;
+    private Integer clienteId;          // <- INT → Integer
     private Long citaId;
     private String estado;
     private BigDecimal total;
     private BigDecimal saldo;
     private String motivoAnulacion;
-    private Long usuarioAnulaId;
+    private Integer usuarioAnulaId;     // <- INT → Integer
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -25,22 +25,19 @@ public class FacturaDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    // Información adicional (no está en la BD pero útil para APIs)
+    // extra
     private String nombreCliente;
     private String estadoDescripcion;
     private BigDecimal totalPagado;
     private Integer cantidadDetalles;
     private Integer cantidadPagos;
 
-    // Listas relacionadas (opcional, según necesidad)
     private List<FacturaDetalleDTO> detalles;
     private List<PagoDTO> pagos;
 
-    // Constructor vacío
     public FacturaDTO() {}
 
-    // Constructor básico
-    public FacturaDTO(Long id, Long clienteId, Long citaId, String estado,
+    public FacturaDTO(Long id, Integer clienteId, Long citaId, String estado,
                       BigDecimal total, BigDecimal saldo, LocalDateTime createdAt) {
         this.id = id;
         this.clienteId = clienteId;
@@ -51,163 +48,67 @@ public class FacturaDTO {
         this.createdAt = createdAt;
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Integer getClienteId() { return clienteId; }
+    public void setClienteId(Integer clienteId) { this.clienteId = clienteId; }
 
-    public Long getClienteId() {
-        return clienteId;
-    }
+    public Long getCitaId() { return citaId; }
+    public void setCitaId(Long citaId) { this.citaId = citaId; }
 
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public Long getCitaId() {
-        return citaId;
-    }
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
 
-    public void setCitaId(Long citaId) {
-        this.citaId = citaId;
-    }
+    public BigDecimal getSaldo() { return saldo; }
+    public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
 
-    public String getEstado() {
-        return estado;
-    }
+    public String getMotivoAnulacion() { return motivoAnulacion; }
+    public void setMotivoAnulacion(String motivoAnulacion) { this.motivoAnulacion = motivoAnulacion; }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
+    public Integer getUsuarioAnulaId() { return usuarioAnulaId; }
+    public void setUsuarioAnulaId(Integer usuarioAnulaId) { this.usuarioAnulaId = usuarioAnulaId; }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public BigDecimal getSaldo() {
-        return saldo;
-    }
+    public String getNombreCliente() { return nombreCliente; }
+    public void setNombreCliente(String nombreCliente) { this.nombreCliente = nombreCliente; }
 
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
-    }
+    public String getEstadoDescripcion() { return estadoDescripcion; }
+    public void setEstadoDescripcion(String estadoDescripcion) { this.estadoDescripcion = estadoDescripcion; }
 
-    public String getMotivoAnulacion() {
-        return motivoAnulacion;
-    }
+    public BigDecimal getTotalPagado() { return totalPagado; }
+    public void setTotalPagado(BigDecimal totalPagado) { this.totalPagado = totalPagado; }
 
-    public void setMotivoAnulacion(String motivoAnulacion) {
-        this.motivoAnulacion = motivoAnulacion;
-    }
+    public Integer getCantidadDetalles() { return cantidadDetalles; }
+    public void setCantidadDetalles(Integer cantidadDetalles) { this.cantidadDetalles = cantidadDetalles; }
 
-    public Long getUsuarioAnulaId() {
-        return usuarioAnulaId;
-    }
+    public Integer getCantidadPagos() { return cantidadPagos; }
+    public void setCantidadPagos(Integer cantidadPagos) { this.cantidadPagos = cantidadPagos; }
 
-    public void setUsuarioAnulaId(Long usuarioAnulaId) {
-        this.usuarioAnulaId = usuarioAnulaId;
-    }
+    public List<FacturaDetalleDTO> getDetalles() { return detalles; }
+    public void setDetalles(List<FacturaDetalleDTO> detalles) { this.detalles = detalles; }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public List<PagoDTO> getPagos() { return pagos; }
+    public void setPagos(List<PagoDTO> pagos) { this.pagos = pagos; }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
-
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
-
-    public String getEstadoDescripcion() {
-        return estadoDescripcion;
-    }
-
-    public void setEstadoDescripcion(String estadoDescripcion) {
-        this.estadoDescripcion = estadoDescripcion;
-    }
-
-    public BigDecimal getTotalPagado() {
-        return totalPagado;
-    }
-
-    public void setTotalPagado(BigDecimal totalPagado) {
-        this.totalPagado = totalPagado;
-    }
-
-    public Integer getCantidadDetalles() {
-        return cantidadDetalles;
-    }
-
-    public void setCantidadDetalles(Integer cantidadDetalles) {
-        this.cantidadDetalles = cantidadDetalles;
-    }
-
-    public Integer getCantidadPagos() {
-        return cantidadPagos;
-    }
-
-    public void setCantidadPagos(Integer cantidadPagos) {
-        this.cantidadPagos = cantidadPagos;
-    }
-
-    public List<FacturaDetalleDTO> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<FacturaDetalleDTO> detalles) {
-        this.detalles = detalles;
-    }
-
-    public List<PagoDTO> getPagos() {
-        return pagos;
-    }
-
-    public void setPagos(List<PagoDTO> pagos) {
-        this.pagos = pagos;
-    }
-
-    // Métodos de utilidad
+    // Utilidad
     public boolean isPagada() {
         return saldo != null && saldo.compareTo(BigDecimal.ZERO) == 0;
     }
-
-    public boolean isPendiente() {
-        return "PENDIENTE".equalsIgnoreCase(estado);
-    }
-
-    public boolean isAnulada() {
-        return "ANULADA".equalsIgnoreCase(estado);
-    }
+    public boolean isPendiente() { return "PENDIENTE".equalsIgnoreCase(estado); }
+    public boolean isAnulada() { return "ANULADA".equalsIgnoreCase(estado); }
 
     public BigDecimal getPorcentajePagado() {
-        if (total == null || total.compareTo(BigDecimal.ZERO) == 0) {
-            return BigDecimal.ZERO;
-        }
-        if (totalPagado == null) {
-            return BigDecimal.ZERO;
-        }
+        if (total == null || total.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+        if (totalPagado == null) return BigDecimal.ZERO;
         return totalPagado.divide(total, 4, BigDecimal.ROUND_HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
     }
