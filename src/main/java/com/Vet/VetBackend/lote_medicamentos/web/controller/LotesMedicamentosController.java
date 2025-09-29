@@ -7,6 +7,7 @@ import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Guardar;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,9 +53,17 @@ public class LotesMedicamentosController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        lotesMedicamentoService.eliminarPorId(id);
-        return ResponseEntity.noContent().build(); // ✅ respuesta estándar para DELETE
+        try {
+            lotesMedicamentoService.eliminarPorId(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .header("Error-Message", ex.getMessage())
+                    .build();
+        }
     }
+
 
     @GetMapping("/Medicamento/{medicamentoId}")
     public ResponseEntity<List<LoteMedicamento_Salida>> obtenerPorMedicamento(@PathVariable Integer medicamentoId) {

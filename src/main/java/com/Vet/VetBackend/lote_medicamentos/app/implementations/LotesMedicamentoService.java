@@ -9,6 +9,7 @@ import com.Vet.VetBackend.lote_medicamentos.app.services.ILotesMedicamentoServic
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamento_Salida;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Actualizar;
 import com.Vet.VetBackend.lote_medicamentos.web.dto.LoteMedicamentos_Guardar;
+import com.Vet.VetBackend.movimientoDetalle.repo.IMovimientoDetalleRepository;
 import com.Vet.VetBackend.proveedores.domain.Proveedor;
 import com.Vet.VetBackend.proveedores.repo.IProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,12 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
 
     @Autowired
     private IProveedorRepository proveedorRepository;
+
+    @Autowired
+    private ILotesMedicamentosRepository loteRepo;
+
+    @Autowired
+    private IMovimientoDetalleRepository movDetRepo;
 
     @Override
     @Transactional(readOnly = true)
@@ -102,7 +109,16 @@ public class LotesMedicamentoService implements ILotesMedicamentoService {
     @Override
     @Transactional
     public void eliminarPorId(Integer id) {
-        lotesMedicamentosRepository.deleteById(id);
+        // 1. Verifica si el lote existe
+        if (!loteRepo.existsById(id)) {
+            throw new RuntimeException("No se puede eliminar: lote con ID " + id + " no existe.");
+        }
+
+        // 2. Borra todos los movimientos detalle que lo referencian
+        movDetRepo.deleteByLoteMedicamentoId(id);
+
+        // 3. Ahora sí elimina el lote
+        loteRepo.deleteById(id);
     }
 
     @Override
