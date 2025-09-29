@@ -30,12 +30,6 @@ public class TratamientoAplicadoServiceImpl implements TratamientoAplicadoServic
     }
 
     @Override
-    public List<TratamientoAplicadoRes> listarPorHistorial(Long historialId) {
-        return repo.findByHistorialId(historialId)
-                .stream().map(TratamientoAplicadoRes::fromEntity).toList();
-    }
-
-    @Override
     public TratamientoAplicadoRes registrar(TratamientoAplicadoReq req) {
         TratamientoAplicado entity = new TratamientoAplicado();
         entity.setCitaId(req.getCitaId());
