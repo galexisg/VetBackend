@@ -16,6 +16,7 @@ public interface IVeterinarioService {
     VeterinarioSalidaRes guardar(VeterinarioGuardarReq dto);
 
     VeterinarioSalidaRes modificar(VeterinarioModificarReq dto);
+    VeterinarioSalidaRes buscarPorId(int id);
 
     void inactivar(int id);
 

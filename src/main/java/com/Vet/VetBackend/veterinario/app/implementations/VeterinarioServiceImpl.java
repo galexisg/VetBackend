@@ -16,7 +16,9 @@ import com.Vet.VetBackend.veterinario.web.dto.VeterinarioGuardarReq;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioModificarReq;
 import com.Vet.VetBackend.veterinario.web.dto.VeterinarioSalidaRes;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,8 +36,14 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
         Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        // 🔹 Validación de rol
+        if (usuario.getRol() == null ||
+                !usuario.getRol().getNombre().equalsIgnoreCase("Veterinario")) {
+            throw new RuntimeException("El usuario debe tener rol Veterinario para ser asignado.");
+        }
+
         Servicio servicio = servicioRepo.findById(dto.getServicioId())
-                .filter(s -> s.getEstado() == EstadoServicio.ACTIVO) // Corregido: Usa el enum
+                .filter(s -> s.getEstado() == EstadoServicio.ACTIVO)
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
 
         Especialidad especialidad = especialidadRepo.findById(dto.getEspecialidadId())
@@ -85,12 +93,18 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
         if (dto.getUsuarioId() != null) {
             Usuario usuario = usuarioRepo.findById(dto.getUsuarioId())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            if (usuario.getRol() == null ||
+                    !usuario.getRol().getNombre().equalsIgnoreCase("Veterinario")) {
+                throw new RuntimeException("El usuario debe tener rol Veterinario para ser asignado.");
+            }
+
             veterinario.setUsuario(usuario);
         }
 
         if (dto.getServicioId() != null) {
             Servicio servicio = servicioRepo.findById(dto.getServicioId())
-                    .filter(s -> s.getEstado() == EstadoServicio.ACTIVO) // Corregido: Usa el enum
+                    .filter(s -> s.getEstado() == EstadoServicio.ACTIVO)
                     .orElseThrow(() -> new RuntimeException("Servicio no encontrado o inactivo"));
             veterinario.setServicios(servicio);
         }
@@ -101,12 +115,18 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
             veterinario.setEspecialidad(especialidad);
         }
 
+        // 🔹 Reemplaza tu antigua línea por esta validación segura
         if (dto.getEstado() != null) {
-            veterinario.setEstado(Veterinario.Estado.valueOf(dto.getEstado()));
+            try {
+                veterinario.setEstado(Veterinario.Estado.valueOf(dto.getEstado()));
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado inválido: " + dto.getEstado());
+            }
         }
 
         return toSalidaDTO(repositorio.save(veterinario));
     }
+
 
     @Override
     public void inactivar(int id) {
@@ -124,10 +144,17 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
         repositorio.save(v);
     }
 
+    @Override
+    public VeterinarioSalidaRes buscarPorId(int id) {
+        Veterinario entidad = repositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Veterinario no encontrado"));
+
+        return toSalidaDTO(entidad);
+    }
+
     private VeterinarioSalidaRes toSalidaDTO(Veterinario v) {
         Usuario u = v.getUsuario();
 
-        // Mapeo del usuario
         var usuarioDTO = UsuarioSalidaRes.builder()
                 .id(u.getId())
                 .nickName(u.getNickName())
@@ -137,19 +164,17 @@ public class VeterinarioServiceImpl implements IVeterinarioService {
                 .telefono(u.getTelefono())
                 .direccion(u.getDireccion())
                 .fechaNacimiento(u.getFechaNacimiento())
-                .rol(u.getRol().getNombre())       // Asumo que en Rol tienes un campo "nombre"
-                .estado(u.getEstado().getNombre()) // Asumo que en Estado tienes un campo "nombre"
+                .rol(u.getRol().getNombre())
+                .estado(u.getEstado().getNombre())
                 .build();
 
-        // Retorno con veterinario
         return VeterinarioSalidaRes.builder()
                 .id(v.getId())
                 .numeroLicencia(v.getNumeroLicencia())
                 .estado(v.getEstado().name())
                 .servicio(v.getServicios().getNombre())
                 .especialidad(v.getEspecialidad().getNombre())
-                .usuario(usuarioDTO) // 🔹 ahora devuelve todo el usuario
+                .usuario(usuarioDTO)
                 .build();
     }
-
 }

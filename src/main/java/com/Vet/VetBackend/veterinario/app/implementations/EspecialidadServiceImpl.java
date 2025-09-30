@@ -48,6 +48,7 @@ public class EspecialidadServiceImpl implements IEspecialidadService {
 //        return toSalidaDTO(especialidad);
 //    }
 
+
     //nuevo codigo para buscar activos y inactivos en frontend
     @Override
     public EspecialidadSalidaRes buscarPorId(Integer id) {
